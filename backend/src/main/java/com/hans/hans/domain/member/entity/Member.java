@@ -1,11 +1,14 @@
 package com.hans.hans.domain.member.entity;
 
+import com.hans.hans.domain.ranking.entity.Ranking;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "MEMBER")
 @Entity
@@ -31,6 +34,9 @@ public class Member {
 
     @Column(name = "REFRESH_TOKEN", nullable = false)
     private String refreshToken;
+
+    @OneToMany(mappedBy = "member")
+    List<Ranking> rankings = new ArrayList<Ranking>();
 
     @Builder
     public Member(String nickname, String email, String provider, String introduction, String refreshToken){
