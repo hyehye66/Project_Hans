@@ -58,7 +58,7 @@ const routes = [
     component :() => import('@/views/chat/ChatMainView.vue'),
   },
   {
-    path : '/chat/detail',
+    path : '/chat/detail/:mode/:sessionName',
     name : 'ChatDetailView',
     component :() => import('@/views/chat/ChatDetailView.vue'),
   },

@@ -32,36 +32,39 @@
         <div class="px-4 py-5 flex-auto">
           <div class="tab-content tab-space">
             <div v-bind:class="{'hidden': openTab !== 1, 'block': openTab === 1}">
-              <one-dialog />
+            <ul class="list-group" style="width: 750px" v-for="situation in situationSentence" :key="situation.situationSequence">
+              <li class="list-group-item" v-if="situation.category==='제목1'">
+                <one-dialog :sentence="situation.sentence"/>
+              </li>
+            </ul>  
             </div>
             <div v-bind:class="{'hidden': openTab !== 2, 'block': openTab === 2}">
-              <two-dialog />
+            <ul class="list-group" style="width: 750px" v-for="situation in situationSentence" :key="situation.situationSequence">
+              <li class="list-group-item" v-if="situation.category==='제목2'">
+                <one-dialog :sentence="situation.sentence"/>
+              </li>
+            </ul>  
             </div>
             <div v-bind:class="{'hidden': openTab !== 3, 'block': openTab === 3}">
-              <three-dialog />
+            <ul class="list-group" style="width: 750px" v-for="situation in situationSentence" :key="situation.situationSequence">
+              <li class="list-group-item" v-if="situation.category==='제목3'">
+                <one-dialog :sentence="situation.sentence"/>
+              </li>
+            </ul>  
             </div>
             <div v-bind:class="{'hidden': openTab !== 4, 'block': openTab === 4}">
-              <p>
-                Efficiently unleash cross-media information without
-                cross-media value.
-                <br />
-                <br />
-                Dramatically maintain clicks-and-mortar solutions
-                without functional solutions.
-              </p>
+            <ul class="list-group" style="width: 750px" v-for="situation in situationSentence" :key="situation.situationSequence">
+              <li class="list-group-item" v-if="situation.category==='제목4'">
+                <one-dialog :sentence="situation.sentence"/>
+              </li>
+            </ul>  
             </div>
             <div v-bind:class="{'hidden': openTab !== 5, 'block': openTab === 5}">
-              <p>
-                Efficiently unleash cross-media information without
-                cross-media value.
-                <br />
-                Quickly maximize timely deliverables for
-                real-time schemas.
-                <br />
-                <br />
-                Dramatically maintain clicks-and-mortar solutions
-                without functional solutions.
-              </p>
+            <ul class="list-group" style="width: 750px" v-for="situation in situationSentence" :key="situation.situationSequence">
+              <li class="list-group-item" v-if="situation.category==='제목5'">
+                <one-dialog :sentence="situation.sentence"/>
+              </li>
+            </ul>  
             </div>
 
           </div>
@@ -74,16 +77,15 @@
 
 <script>
 import OneDialog from '@/views/communication/components/OneDialog.vue'
-import TwoDialog from '@/views/communication/components/TwoDialog.vue'
-import ThreeDialog from '@/views/communication/components/ThreeDialog.vue'
 
 export default {
   name: 'CommunicationTab',
   components: {
     OneDialog,
-    TwoDialog,
-    ThreeDialog,
-  },
+},
+props : {
+  situationSentence : Array
+},
   data() {
     return {
       openTab: 1
