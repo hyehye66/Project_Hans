@@ -8,7 +8,14 @@ module.exports = {
   './index.html',
   './src/components/NavBar.vue',
   './src/views/modal/components/LoginModal.vue',
+<<<<<<< HEAD
+  './src/views/modal/components/ChatRoomCreateModal.vue',
+  './src/views/communication/components/CommunicationList.vue',
+  './src/views/chat/components/ChatMainCardListItem.vue',
+  ],
+=======
   './src/views/communication/components/CommunicationList.vue'],
+>>>>>>> f3f369ee3c3aeafc5daee88af0185dfdd46b09b0
   theme: {
     extend: {
       colors: {
