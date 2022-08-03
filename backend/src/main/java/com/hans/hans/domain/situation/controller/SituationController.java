@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/situations")
 @RequiredArgsConstructor
@@ -19,8 +21,12 @@ public class SituationController {
 
     @GetMapping()
     public ResponseEntity<?> getSituationList() {
+
         SituationResponseDto situationResponseDto = situationServiceImpl.getSituationList();
-        return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("상황별 교육 Data가 조회되었습니다.",situationResponseDto));
+        return ResponseEntity.ok(situationResponseDto);
+
     }
 
 }
+
+
