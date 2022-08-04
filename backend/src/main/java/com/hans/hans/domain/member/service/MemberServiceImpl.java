@@ -27,7 +27,6 @@ public class MemberServiceImpl implements MemberService{
     }
 
     // 회원가입
-    @Transactional
     @Override
     public MemberResponseDto createMember(MemberRequestDto memberRequestDto, String refreshToken){
         try{
@@ -41,7 +40,6 @@ public class MemberServiceImpl implements MemberService{
     }
 
     // 회원정보 수정
-    @Transactional
     @Override
     public MemberResponseDto updateMemberInfo(String email, MemberUpdateRequestDto memberUpdateRequestDto){
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
@@ -57,7 +55,6 @@ public class MemberServiceImpl implements MemberService{
     }
 
     // 회원탈퇴
-    @Transactional
     @Override
     public void deleteMember(String email){
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
