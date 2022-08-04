@@ -27,12 +27,12 @@
 				<!-- <input class="btn btn-large btn-danger" type="button" id="buttonLeaveSession" @click="leaveSession" value="Leave session"> -->
 				<div class="back-title">
 					<!-- 뒤로가기 -->
-					<div class="icon-area">
+					<!-- <div class="icon-area"> -->
 						<svg class="w-6 h-6" id="buttonLeaveSession" @click="leaveSession" value="Leave session" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z">
 							</path>
 						</svg>
-					</div>
+					<!-- </div> -->
 					<!-- <input class="btn btn-large btn-danger" type="button" id="buttonLeaveSession" @click="leaveSession" value="Leave session">				 -->
 					<!-- <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
 						back
@@ -51,6 +51,7 @@
 					</div>
 				</div>
 			</div>
+			<br>
 
 			<div id="session-header2">
 				<!-- 방안사람들 -->
@@ -62,90 +63,131 @@
 				</div>
 
 				<!-- 현재 문제 남은 시간 타이머 -->
-				<div class="problem-timer rounded-full h-30 w-30">남은 시간</div>
+				<div class="problem-timer" style="width: 40; height: 40;">남은 시간</div>
 			</div>
 			<br>
 
-			<div id="session-body-left">
-				<!-- 메인화면 -->
-				<div id="main-video" class="col-md-6">
-					<user-video :stream-manager="mainStreamManager"/>
-				</div>
-				<!-- 캠,마이크,나가기,설정 -->
-				<div class="cam-buttons" style="height: 100%">
-					<!-- <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded-full">
-						캠
-					</button> -->
-					<div class="icon-area">
-						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-							d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
-							</path>
-						</svg>
+			<div class="left-right">
+
+				<div id="session-body-left">
+					<!-- 메인화면 -->
+					<div id="main-video" class="col-md-6">
+						<user-video :stream-manager="mainStreamManager"/>
+					</div>
+					<!-- 캠,마이크,나가기,설정 -->
+					<div class="cam-buttons">
+						<!-- style="height: 100%" -->
+						<div class="icon-area">
+							<VideoCameraIcon style="height: 40; width: 40;" />
+						</div>
+						<div class="icon-area">
+							<MicrophoneIcon style="height: 40; width: 40;"/>
+						</div>
+						<div class="icon-area">
+							<LogoutIcon style="height: 40; width: 40;"/>
+						</div>
+						<div class="icon-area">
+							<CogIcon style="height: 40; width: 40;"/>
+						</div>
+						<!-- h-6 w-6 text-blue-500 -->
+						
+						<!-- test -->
+						<!-- <div class="icon-area">
+							<svg class="w-6 h-6" id="buttonLeaveSession" @click="leaveSession" value="Leave session" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z">
+								</path>
+							</svg>
+						</div> -->
+						
+						<!-- <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded-full">
+							캠
+						</button> -->
+						<!-- <div class="icon-area">
+							<VideoCameraIcon class="h-6 w-6 text-blue-500"/>
+						</div> -->
+
+						<!-- <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded-full">
+							마이크
+						</button> -->
+						<!-- <div class="icon-area">
+							<MicrophoneIcon class="h-6 w-6 text-blue-500"/>
+						</div> -->
+
+						<!-- <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded-full">
+							나가기
+						</button> -->
+						<!-- <div class="icon-area">
+							<LogoutIcon class="h-6 w-6 text-blue-500"/>
+						</div> -->
+
+						<!-- <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded-full">
+							설정
+						</button> -->
+						<!-- <div class="icon-area">
+							<CogIcon class="h-6 w-6 text-blue-500"/>						
+						</div> -->
 					</div>
 
-					<!-- <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded-full">
-						마이크
+					<!-- 정답입력란 -->
+					<!-- <div class="answer-send">
+						<input type="text" name="" id="answer-sheet" v-model="answerSheet" size="40">
+						<PaperAirplaneIcon style="height: 30; width: 30;"/>					 -->
+					<!-- <div class="icon-area">										
+						<PaperAirplaneIcon class="h-6 w-6 text-blue-500"/>					
+					</div> -->
+					<!-- <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
+						>
 					</button> -->
-					<div class="icon-area">
-						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-							d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z">
-							</path>
-						</svg>
-					</div>
+					<!-- </div> -->
 
-					<!-- <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded-full">
-						나가기
-					</button> -->
-					<div class="icon-area">
-						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-							d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
-							</path>
-						</svg>
+					<!-- 답 입력창 -->
+					<!-- 출제자 일때 -->
+					<div v-if="myUserNick === mainStreamManager_nickname">
+						<div class="card2">
+								<p>키워드:</p>&nbsp;{{ BodyDetailRTC.keyword }}
+						</div>
 					</div>
-
-					<!-- <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded-full">
-						설정
-					</button> -->
-					<div class="icon-area">
-						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-							d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-							</path>
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z">
-							</path>
-						</svg>
+					<!-- 출제자가 아닐 때 -->
+					<div v-else>
+						<div class="answer-send">
+								<input v-model="answerSheet" class="answer-sheet" placeholder="답을 입력해주세요." type="text" @keyup.enter="check_answer"/>
+								<PaperAirplaneIcon style="height: 30; width: 30;"/>
+						</div> 
 					</div>
 
 				</div>
-				<!-- 정답입력란 -->
-				<div class="answer-send">
-				<input type="text" name="" id="" v-model="answerSheet">
-				<div class="icon-area">
-					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8">
-						</path>
-					</svg>
-				</div>
-				<!-- <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
-					>
-				</button> -->
-				</div>				
-			</div>
 
-			<div id="session-body-right">
-				<!-- 랭크 -->
-				<div class="shadow-md py-60 px-50">
-					<h2>랭크</h2>
+				<div id="session-body-right">
+					<!-- 랭크 -->
+					<div class="rank shadow-md py-60 px-50">
+						<h2>랭크</h2>
+					</div>
+					<!-- 시작버튼 -->
+					<div v-if="!start && !ready">
+							<div class="main_box_2">
+								<!-- 방장만 스타트 버튼 보이기 -->
+								<div v-if='myUserNick === roominfo.ownerNicknames'>
+										<div @click="game_start">
+											<Start />
+										</div>
+								</div>
+								<!-- 방장 아닌 사람은 준비중 -->
+								<div v-else>
+										<p>준비중</p>
+								</div>
+							</div>
+					</div>
+					
+					<!-- 321 -->
+					<div v-else-if="!ready && start ">
+							<Ready />
+					</div>
+					<!-- <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
+						START
+					</button> -->
+					<!-- 정오답 알림 메시지 -->
+					<input type="text" v-model="answerAlert" />
 				</div>
-				<!-- 시작버튼 -->
-				<button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
-					START
-				</button>
-				<!-- 정오답 알림 메시지 -->
-				<input type="text" v-model="answerAlert" />
 			</div>
 
 
@@ -160,6 +202,8 @@ import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 import UserVideo from '@/components/UserVideo';
 import BodyRoomCreateModal from '@/views/modal/components/BodyRoomCreateModal.vue';
+// import { CogIcon } from '@heroicons/vue/solid';
+import { VideoCameraIcon, MicrophoneIcon, LogoutIcon, CogIcon, PaperAirplaneIcon } from '@heroicons/vue/outline';
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
@@ -169,6 +213,13 @@ export default {
 	components: {
 		UserVideo,
 		BodyRoomCreateModal,
+
+		VideoCameraIcon,
+		MicrophoneIcon,
+		LogoutIcon,
+		CogIcon,
+		PaperAirplaneIcon,
+
 	},
 	data () {
 		return {
@@ -181,12 +232,38 @@ export default {
 			subscribers: [],
 			mySessionId: 'SessionA',
 			myUserName: 'Participant' + Math.floor(Math.random() * 100),
-			// 답입력값
-			answerSheet: '',
 			// 방이름
 			detailTitle: '',
+
+			start: false,
+			ready: false,
+
+			// 답입력값
+			answerSheet: '',
+			gameStatus: 0,
+			picture: false,
+
 		}
 	},
+
+	// created () {
+	// 	// 스타트 버튼이 눌렸다는 신호가 오면 사람들한데도 알려줌
+	// 	this.session.on('signal:start-btn', () => {
+	// 			this.start = true
+	// 			setTimeout(() => {
+	// 				this.ready = true;
+	// 				// this.picture = true
+	// 				}, 3600);
+					
+	// 			setTimeout(() => {
+	// 				this.ready = true;
+	// 				// this.picture = false
+	// 				}, 3900);
+	// 			this.gameStatus = 1
+	// 	})
+
+	// },
+
 	methods: {
 		joinSession () {
 			// --- Get an OpenVidu object ---
@@ -308,7 +385,46 @@ export default {
 					.catch(error => reject(error.response));
 			});
 		},
+
+		game_start() {
+			// ----------------시작 버튼 누르고-------------------
+			this.session.signal({
+				data: JSON.stringify(this.ready),
+				type: 'start-btn'
+			})
+			.then(() => {
+				console.log('시작버튼')
+			})
+			.catch(err => {
+				console.log(err)
+			})
+			// ----------------게임 시작할 때 참가자들 한테 시그널 보내기-------------------
+			this.session.signal({
+				data: JSON.stringify({
+					// 게임 상태 (게임시작)
+					"gameStatus": 0, 
+					//라운드
+					// "round": 0, 
+					//방 id
+					// "conferenceId": this.$route.params.roomid,
+					//토큰
+					// "JWT":this.$store.state.accessToken
+				}),
+		// 		type: 'game'
+		// 	})
+		// 	.then(() => {
+				
+		// 	})
+		// 	.catch(error => {
+		// 		console.log(error);
+		// 	})
+		// },
+		// //  ----------------답 입력 맞추기---------------
+		// check_answer() {
+
+		// },
 	}
+	}}
 }
 </script>
 
@@ -316,15 +432,24 @@ export default {
 
 #session-header {
 	display: flex;
-  flex-direction: row;
-  /* align-self: center; */
+  flex-flow: row wrap;
+	justify-content: space-between;
+  align-self: center;
 
 }
 
 .icon-area {
   border: none;
   display: inline-block;
+	width: 40;
+	height: 40;
 }
+
+/* svg {
+	width: 6;
+	height: 6;
+} */
+
 #buttonLeaveSession {
   width: 30px;
   height: 30px;
@@ -333,9 +458,12 @@ export default {
 
 #session-header2 {
 	display: flex;
-	flex-direction: row;
+	/* flex-direction: row;
+	flex-wrap: wrap; */
+	flex-flow: row wrap;
+	justify-content: space-between;
 	/* justify-content: center; */
-	/* align-self: center; */
+	align-self: center;
 	/* right: 0%; */
 }
 
@@ -343,12 +471,78 @@ export default {
   display: flex;
   flex-direction: row;
 	float: left;
-  /* justify-content: center;
-  align-self: center; */
+  /* justify-content: center; */
+  align-self: center;
 	/* right: 0%; */
 }
 
+/* user-video {
+	width: 200;
+	height: 180;
+} */
+
 .problem-timer {
+	align-self: center;
+	/* float: right; */
+	/* width: 50 !important;
+	height: 50 !important; */
+	/* border: 1px dotted black;
+	border-radius: 100% 100% 100% 100%; */
+	
+}
+
+#main-video {
+	/* justify-content: center; */
+}
+
+#cam-buttons {
+	display: flex;
+	/* flex-direction: row; */
+  flex-flow: row wrap;
+	justify-content: space-evenly;
+  align-self: center;
+	/* width: 400;
+	height: 40; */
+
+	
+}
+
+/* VideoCameraIcon {
+	width: 6;
+	height: 6;
+} */
+/* MicrophoneIcon
+LogoutIcon
+CogIcon
+PaperAirplaneIcon */
+
+.left-right {
+	justify-content: space-around;
+}
+
+#session-body-left {
+	display: flex;
+	flex-direction: column;
+	/* float: left; */
+	/* justify-content: center; */
+	align-self: center;
+	
+}
+
+.answer-send {
+	display: flex;
+	flex-direction: row;
+	/* align-self: center; */
+}
+
+#answer-sheet {
+	/* border: 1; */
+	border: 1px dotted black;
+}
+
+#session-body-right {
+	display: flex;
+  /* justify-content: flex-end; */
 	float: right;
 	
 }
