@@ -7,14 +7,14 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Table(name = "MEMBER")
+@Table(name = "MEMBERS")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MEMBER_SEQ")
     private Long memberSequence;
 
@@ -33,7 +33,8 @@ public class Member {
     private String refreshToken;
 
     @Builder
-    public Member(String nickname, String email, String provider, String introduction, String refreshToken){
+    public Member(Long memberSequence, String nickname, String email, String provider, String introduction, String refreshToken){
+        this.memberSequence = memberSequence;
         this.nickname = nickname;
         this.email = email;
         this.provider = provider;
