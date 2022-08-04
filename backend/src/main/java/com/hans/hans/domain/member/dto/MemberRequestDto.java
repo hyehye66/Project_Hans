@@ -1,13 +1,14 @@
 package com.hans.hans.domain.member.dto;
 
 import com.hans.hans.domain.member.entity.Member;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class MemberRequestDto {
 
