@@ -8,6 +8,9 @@ module.exports = {
   './index.html',
   './src/components/NavBar.vue',
   './src/views/modal/components/LoginModal.vue',
+  './src/views/modal/components/ChatRoomCreateModal.vue',
+  './src/views/communication/components/CommunicationList.vue',
+  './src/views/chat/components/ChatMainCardListItem.vue',
   './src/views/communication/components/CommunicationList.vue'],
   theme: {
     extend: {

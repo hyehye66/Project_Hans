@@ -32,7 +32,7 @@
         <!-- <button @click="$emit('update:open', !open)" type="button" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-3 rounded" data-bs-dismiss="modal">Close</button> -->
       </div>
     </div>
-<!-- </div> -->
+</div>
 </template>
 
 <script>

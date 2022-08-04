@@ -246,24 +246,6 @@ export default {
 		}
 	},
 
-	// created () {
-	// 	// 스타트 버튼이 눌렸다는 신호가 오면 사람들한데도 알려줌
-	// 	this.session.on('signal:start-btn', () => {
-	// 			this.start = true
-	// 			setTimeout(() => {
-	// 				this.ready = true;
-	// 				// this.picture = true
-	// 				}, 3600);
-					
-	// 			setTimeout(() => {
-	// 				this.ready = true;
-	// 				// this.picture = false
-	// 				}, 3900);
-	// 			this.gameStatus = 1
-	// 	})
-
-	// },
-
 	methods: {
 		joinSession () {
 			// --- Get an OpenVidu object ---
@@ -385,46 +367,7 @@ export default {
 					.catch(error => reject(error.response));
 			});
 		},
-
-		game_start() {
-			// ----------------시작 버튼 누르고-------------------
-			this.session.signal({
-				data: JSON.stringify(this.ready),
-				type: 'start-btn'
-			})
-			.then(() => {
-				console.log('시작버튼')
-			})
-			.catch(err => {
-				console.log(err)
-			})
-			// ----------------게임 시작할 때 참가자들 한테 시그널 보내기-------------------
-			this.session.signal({
-				data: JSON.stringify({
-					// 게임 상태 (게임시작)
-					"gameStatus": 0, 
-					//라운드
-					// "round": 0, 
-					//방 id
-					// "conferenceId": this.$route.params.roomid,
-					//토큰
-					// "JWT":this.$store.state.accessToken
-				}),
-		// 		type: 'game'
-		// 	})
-		// 	.then(() => {
-				
-		// 	})
-		// 	.catch(error => {
-		// 		console.log(error);
-		// 	})
-		// },
-		// //  ----------------답 입력 맞추기---------------
-		// check_answer() {
-
-		// },
 	}
-	}}
 }
 </script>
 
