@@ -3,7 +3,7 @@
       <h1 class="text-2xl text-gray-800 font-semibold mb-3">{{ room.sessionId }}</h1>
       <p class="text-gray-600 leading-6 tracking-normal">방장 : {{ room.connections.content[0].clientData.slice(15,-2) }}</p>
 	<p class="text-gray-600 leading-6 tracking-normal">참여인원 : {{ room.connections.numberOfElements }}/6</p>
-      <button class="py-2 px-4 mt-8 bg-indigo-600 text-white rounded-md shadow-xl" @click="joinSession(room.sessionId)"><router-link :to="{ name: 'ChatDetailView', params: { mode : mode, sessionName : room.sessionId}}" :sessionName="room.sessionId">입장하기</router-link></button>
+      <button class="py-2 px-4 mt-8 bg-indigo-600 text-white rounded-md shadow-xl" ><router-link :to="{ name: 'ChatDetailView', params: { mode : mode, sessionName : room.sessionId}}" :sessionName="room.sessionId">입장하기</router-link></button>
       <div>
         <span class="absolute py-2 px-8 text-sm text-white top-0 right-0 bg-indigo-600 rounded-md transform translate-x-2 -translate-y-3 shadow-xl">{{ mode }}</span>
       </div>
@@ -20,13 +20,12 @@ const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
 const OPENVIDU_SERVER_SECRET = "MY_SECRET";
 
 export default {
-  
 	props : {
 		room : Object,
 		mode : String,
 	},
 	created(){
-		
+		console.log(this.room)	
 	},
   data () {
 		return {
@@ -36,7 +35,7 @@ export default {
 			publisher: undefined,
 			subscribers: [],
 			mySessionId: '',
-			myUserName: 'Participant' + Math.floor(Math.random() * 100),
+			myUserName: '영택임' + Math.floor(Math.random() * 100),
 		}
 	},
   methods: {
@@ -90,24 +89,9 @@ export default {
 			});
 
 			window.addEventListener('beforeunload', this.leaveSession)
+			this.$router.push({name : 'ChatDetailView', params : {mode : this.mode, sessionName : this.room.sessionId}})
 		},
-		leaveSession () {
-			// --- Leave the session by calling 'disconnect' method over the Session object ---
-			if (this.session) this.session.disconnect();
-
-			this.session = undefined;
-			this.mainStreamManager = undefined;
-			this.publisher = undefined;
-			this.subscribers = [];
-			this.OV = undefined;
-
-			window.removeEventListener('beforeunload', this.leaveSession);
-		},
-
-		updateMainVideoStreamManager (stream) {
-			if (this.mainStreamManager === stream) return;
-			this.mainStreamManager = stream;
-		},
+		
         getToken (mySessionId) {
 			return this.createSession(mySessionId).then(sessionId => this.createToken(sessionId));
 		},

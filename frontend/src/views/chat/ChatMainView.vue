@@ -19,8 +19,8 @@ import ChatRoomCreateModal from '../modal/components/ChatRoomCreateModal.vue'
 export default {
   name : 'ChatMainView',
   components : {
-    ChatRoomCreateModal,
-    ChatMainCardList
+    ChatMainCardList,
+    ChatRoomCreateModal
   },
   data (){
     return {
@@ -46,5 +46,4 @@ export default {
   display : flex;
   justify-content: center;
 }
-
 </style>
