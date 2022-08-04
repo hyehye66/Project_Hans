@@ -4,35 +4,35 @@
       <li class="list-group-item">
         how much is it? |
         <b>얼마예요?   </b>
-        <button type="button" class="bg-white hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="tts1" @click="startSpeechToTxt1">
+        <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="tts1" @click="startSpeechToTxt1">
           listen 
         </button>
       </li>
       <li class="list-group-item">
         It's 1,0000 won each. |
         <b>한 개에 만 원입니다.   </b>
-        <button type="button" class="bg-white hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="tts2" @click="startSpeechToTxt2">
+        <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="tts2" @click="startSpeechToTxt2">
           listen 
         </button>
       </li>
       <li class="list-group-item">
         Here you are. |
         <b>여기 있습니다.   </b>
-        <button type="button" class="bg-white hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="tts3" @click="startSpeechToTxt3">
+        <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="tts3" @click="startSpeechToTxt3">
           listen 
         </button>
       </li>
       <li class="list-group-item">
         Thank you. |
         <b>감사합니다.   </b>
-        <button type="button" class="bg-white hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="tts4" @click="startSpeechToTxt4">
+        <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="tts4" @click="startSpeechToTxt4">
           listen 
         </button>
       </li>
       <li class="list-group-item">
         Goodbye. |
         <b>안녕히 계세요.   </b>
-        <button type="button" class="bg-white hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="tts5" @click="startSpeechToTxt5">
+        <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="tts5" @click="startSpeechToTxt5">
           listen 
         </button>
       </li>

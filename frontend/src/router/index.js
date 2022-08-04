@@ -67,6 +67,11 @@ const routes = [
     name : 'RankingView',
     component :() => import('@/views/rank/RankingView.vue'),
   },
+  {
+    path : '/body/roomupdatemodal',
+    name : 'BodyRoomUpdateModal',
+    component :() => import('@/views/modal/components/BodyRoomUpdateModal.vue'),
+  },
 
 ]
 
