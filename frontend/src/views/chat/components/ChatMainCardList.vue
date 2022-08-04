@@ -1,8 +1,9 @@
 <template>
-<div class="bg-gray-100 flex items-center justify-center py-5">
-<div class="containter mx-auto lg-2 px-20">
-  
-<ChatMainCardListItem v-for="room in rooms" :room="room" :key="room.id" :mode="mode" />  </div></div>
+  <div class="bg-gray-100 flex items-center justify-center py-5">
+  <div class="containter mx-auto lg-2 px-20">
+    
+  <ChatMainCardListItem v-for="room in rooms" :room="room" :key="room.id" :mode="mode" />  
+  </div></div>
 </template>
 
 <script>
@@ -30,13 +31,14 @@ export default {
   methods : {
     // 모든 세션 데이터 받아오는 함수 
     getSession(){
+      console.log(123)
 			axios.get(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`,
 			{auth: {
 							username: 'OPENVIDUAPP',
 							password: OPENVIDU_SERVER_SECRET,
 						}},)
             .then(res =>{this.rooms = res.data.content})
-            .catch(err => console.log(err))
+            .catch(err => console.log(err,1234))
 
     },
     

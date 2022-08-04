@@ -16,7 +16,7 @@
       </select>
       </div>
       <div class="modal-footer">
-        <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" data-bs-dismiss="modal" type="button" cursor="pointer" @click="createSession(mySessionId)">생성하기</button>
+        <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" data-bs-dismiss="modal" type="button" cursor="pointer" @click="createSession(mySessionId)" >생성하기</button>
         <button @click="$emit('update:chatcreateopen', !chatcreateopen)" type="button" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" data-bs-dismiss="modal">Close</button>        
       </div>
     </div>
@@ -40,14 +40,14 @@ export default {
   data(){
     return {
     mySessionId: '',
-		myUserName: '영택임' + Math.floor(Math.random() * 100)}
-  },
-  methods : {
+	myUserName: '영택임' + Math.floor(Math.random() * 100),
+	mode : 'chat'}},
+    methods : {
     isChatCreateClose() {
       console.log(this.chatcreateopen)
       this.$emit('update:chatcreateopen', false)
     },
-    joinSession () {
+    joinSession (sessionId) {
 			// --- Get an OpenVidu object ---
 			this.OV = new OpenVidu();
 
@@ -129,7 +129,7 @@ export default {
 					})
 					.then(response => response.data)
 					.then(data => resolve(data.id))
-          .then(sessionId => this.joinSession())
+          .then(sessionId => this.joinSession(sessionId))
 					.catch(error => {
 						if (error.response.status === 409) {
 							resolve(sessionId);
@@ -141,6 +141,7 @@ export default {
 							reject(error.response);
 						}
 					});
+					this.$router.push({ name: 'ChatDetailView', params: { mode : this.mode, sessionName : sessionId}})
 			});
 		},
     
@@ -158,7 +159,10 @@ export default {
 					.catch(error => reject(error.response));
 			});
 		},
-	
+	createRoom(){
+		this.$router.push({ name: 'ChatDetailView', params: { mode : this.mode, sessionName : this.mySessionId}})
+		this.isChatCreateClose()
+	},
   }
 }
 </script>
