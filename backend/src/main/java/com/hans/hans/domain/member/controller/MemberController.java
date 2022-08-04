@@ -48,7 +48,7 @@ public class MemberController {
 
         HttpHeaders headers = loginService.createTokenHeader(accessToken, refreshToken);
 
-        MemberResponseDto memberResponseDto = memberService.signUpMember(memberRequestDto, refreshToken);
+        MemberResponseDto memberResponseDto = memberService.createMember(memberRequestDto, refreshToken);
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(CommonResponse.createSuccess("회원가입이 완료되었습니다.",memberResponseDto));
     }
 
