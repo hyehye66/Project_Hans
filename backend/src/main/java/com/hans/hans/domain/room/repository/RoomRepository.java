@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
     Page<Room> findRoomsByMode(Mode mode, Pageable pageable);
-
+    Room findByRoomSequence(Long roomSequence);
 }

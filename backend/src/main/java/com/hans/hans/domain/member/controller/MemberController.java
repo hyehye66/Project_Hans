@@ -31,7 +31,7 @@ public class MemberController {
     public ResponseEntity<?> getMemberInfo(HttpServletRequest request){
         String email = (String) request.getAttribute("email");
         MemberResponseDto memberResponseDto = memberService.getMemberInfo(email);
-        return ResponseEntity.ok(memberResponseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
     }
 
     /*
@@ -39,7 +39,7 @@ public class MemberController {
        MemberUpdateRequestDto : nickname, introduction
      */
     @PostMapping("/sign-up")
-    public ResponseEntity<?> signUpMember(@Valid @RequestBody MemberRequestDto memberRequestDto){
+    public ResponseEntity<?> createMember(@Valid @RequestBody MemberRequestDto memberRequestDto){
 
         String email = memberRequestDto.getEmail();
 
@@ -49,6 +49,7 @@ public class MemberController {
         HttpHeaders headers = loginService.createTokenHeader(accessToken, refreshToken);
 
         MemberResponseDto memberResponseDto = memberService.createMember(memberRequestDto, refreshToken);
+
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(CommonResponse.createSuccess("회원가입이 완료되었습니다.",memberResponseDto));
     }
 

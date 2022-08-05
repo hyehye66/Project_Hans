@@ -1,5 +1,6 @@
 package com.hans.hans.global.response;
 
+import lombok.Getter;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Getter
 public class CommonResponse<T>{
     private static final String SUCCESS = "SUCCESS";
     private static final String FAIL = "FAIL";
@@ -24,7 +26,7 @@ public class CommonResponse<T>{
     }
 
     public static <T> CommonResponse createSuccess(String message, T data){
-        return new CommonResponse(SUCCESS, null, data);
+        return new CommonResponse(SUCCESS, message, data);
     }
 
     // Hibernate Validator에 의해 유효하지 않은 데이터로 인해 API 호출이 거부될때 반환
