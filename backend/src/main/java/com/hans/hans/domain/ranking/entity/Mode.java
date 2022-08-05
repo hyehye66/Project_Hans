@@ -1,13 +1,11 @@
 package com.hans.hans.domain.ranking.entity;
 
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Table(name = "MODE")
+@Table(name = "MODES")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -18,5 +16,6 @@ public class Mode {
     private Long modeSequence;
 
     @Column(name = "MODE_NAME")
-    private String mode;
+    private String modeName;
+
 }
