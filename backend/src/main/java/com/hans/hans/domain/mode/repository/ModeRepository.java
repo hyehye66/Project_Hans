@@ -1,6 +1,6 @@
-package com.hans.hans.domain.conversation.Repository;
+package com.hans.hans.domain.mode.repository;
 
-import com.hans.hans.domain.conversation.entity.Mode;
+import com.hans.hans.domain.mode.entity.Mode;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ModeRepository extends JpaRepository<Mode,Long> {
