@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 
 @Getter
 @AllArgsConstructor
-@ToString
 public class RoomReponseDto {
     private Page<Room> listRooms;
 }

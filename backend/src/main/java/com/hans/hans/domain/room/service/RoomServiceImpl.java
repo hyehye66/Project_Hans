@@ -3,6 +3,7 @@ package com.hans.hans.domain.room.service;
 import com.hans.hans.domain.mode.repository.ModeRepository;
 import com.hans.hans.domain.conversation.dto.ConversationCreateRequestDto;
 import com.hans.hans.domain.conversation.dto.ConversationCreateResponseDto;
+import com.hans.hans.domain.room.dto.RoomMemberResponseDto;
 import com.hans.hans.domain.room.dto.RoomReponseDto;
 import com.hans.hans.domain.room.dto.RoomGetRequestDto;
 import com.hans.hans.domain.room.entity.Room;
@@ -34,6 +35,36 @@ public class RoomServiceImpl implements RoomService{
         RoomReponseDto roomReponseDto = new RoomReponseDto(rooms);
         return roomReponseDto;
     }
+
+    @Override
+    public boolean checkEnterRoom(Long roomSequence){
+        Room room = roomRepository.findByRoomSequence(roomSequence);
+        if(room.getRestrictNum()==room.getCurrentNum()) return false;
+        return true;
+    }
+
+    @Override
+    public RoomMemberResponseDto enterRoom(String email, Long roomSequence){
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
+        Room room = roomRepository.findByRoomSequence(roomSequence);
+
+        Date now = new Date();
+
+        room.updateCurrentNum(room.getCurrentNum()+1);
+        roomRepository.save(room);
+
+        RoomMember roomMember = roomMemberRepository.save(
+                RoomMember.builder()
+                        .member(member)
+                        .room(room)
+                        .enterDTTM(now)
+                        .build()
+        );
+
+        RoomMemberResponseDto roomMemberResponseDto = new RoomMemberResponseDto(roomMember);
+        return roomMemberResponseDto;
+    }
+
     @Override
     public ConversationCreateResponseDto createConversationRoom(String email, ConversationCreateRequestDto conversationCreateRequestDto) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
@@ -44,13 +75,14 @@ public class RoomServiceImpl implements RoomService{
 
         Room room = roomRepository.save(
                 Room.builder()
-                .member(member)
-                .mode(modeRepository.findByModeSequence(1L))
-                .title(title)
-                .restrictNum(restrictNum)
-                .roomDTTM(now)
-                .roomStatus(false)
-                .build());
+                        .member(member)
+                        .mode(modeRepository.findByModeSequence(1L))
+                        .title(title)
+                        .restrictNum(restrictNum)
+                        .currentNum(1)
+                        .roomDTTM(now)
+                        .roomStatus(false)
+                        .build());
 
         roomMemberRepository.save(
                 RoomMember.builder()

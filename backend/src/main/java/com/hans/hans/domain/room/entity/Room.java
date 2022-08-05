@@ -27,6 +27,9 @@ public class Room {
     @Column(name = "RESTRICT_NUM", nullable = false)
     private int restrictNum;
 
+    @Column(name = "CURRENT_NUM", nullable = false)
+    private int currentNum;
+
     @Column(name = "ROOM_DTTM",nullable = false)
     private Date roomDTTM;
 
@@ -42,13 +45,22 @@ public class Room {
     private Mode mode;
 
     @Builder
-    public Room(Mode mode, String title, int restrictNum, Date roomDTTM, boolean roomStatus, Member member){
+    public Room(Mode mode, String title, int restrictNum, int currentNum, Date roomDTTM, boolean roomStatus, Member member){
         this.mode = mode;
         this.title = title;
         this.restrictNum = restrictNum;
+        this.currentNum = currentNum;
         this.roomDTTM = roomDTTM;
         this.roomStatus = roomStatus;
         this.member = member;
+    }
+
+    public void updateRoomStatus(boolean roomStatus){
+        this.roomStatus = roomStatus;
+    }
+
+    public void updateCurrentNum(int currentNum){
+        this.currentNum=currentNum;
     }
 
 }
