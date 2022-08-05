@@ -35,9 +35,6 @@ public class Member {
     @Column(name = "REFRESH_TOKEN", nullable = false)
     private String refreshToken;
 
-    @OneToMany(mappedBy = "member")
-    List<Ranking> rankings = new ArrayList<Ranking>();
-
     @Builder
     public Member(Long memberSequence, String nickname, String email, String provider, String introduction, String refreshToken){
         this.memberSequence = memberSequence;
