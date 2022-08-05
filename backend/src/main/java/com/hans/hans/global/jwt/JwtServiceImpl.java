@@ -1,4 +1,4 @@
-package com.hans.hans.global.util;
+package com.hans.hans.global.jwt;
 
 import com.hans.hans.domain.member.entity.Member;
 import com.hans.hans.domain.member.repository.MemberRepository;

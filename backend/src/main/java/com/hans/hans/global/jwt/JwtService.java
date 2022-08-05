@@ -1,4 +1,4 @@
-package com.hans.hans.global.util;
+package com.hans.hans.global.jwt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 

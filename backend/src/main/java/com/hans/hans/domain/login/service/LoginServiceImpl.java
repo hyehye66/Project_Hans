@@ -2,7 +2,7 @@ package com.hans.hans.domain.login.service;
 
 import com.hans.hans.domain.login.dto.GoogleMemberInfoResponseDto;
 import com.hans.hans.domain.login.dto.GoogleTokenResponseDto;
-import com.hans.hans.global.util.JwtService;
+import com.hans.hans.global.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;

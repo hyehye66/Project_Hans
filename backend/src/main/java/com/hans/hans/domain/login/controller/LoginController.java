@@ -6,7 +6,7 @@ import com.hans.hans.domain.member.dto.MemberResponseDto;
 import com.hans.hans.domain.member.service.MemberService;
 import com.hans.hans.global.exception.NoExistMemberException;
 import com.hans.hans.global.response.CommonResponse;
-import com.hans.hans.global.util.JwtService;
+import com.hans.hans.global.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
