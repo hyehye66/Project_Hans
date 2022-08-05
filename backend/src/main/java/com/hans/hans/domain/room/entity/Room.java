@@ -63,4 +63,9 @@ public class Room {
         this.currentNum=currentNum;
     }
 
+    public void updateRoomTitleAndRestricNum(String title, int restrictNum){
+        this.title = title;
+        this.restrictNum = restrictNum;
+    }
+
 }

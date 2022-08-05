@@ -1,10 +1,11 @@
 package com.hans.hans.domain.room.service;
 
+import com.hans.hans.domain.conversation.dto.ConversationUpdateRequestDto;
 import com.hans.hans.domain.mode.repository.ModeRepository;
 import com.hans.hans.domain.conversation.dto.ConversationCreateRequestDto;
-import com.hans.hans.domain.conversation.dto.ConversationCreateResponseDto;
+import com.hans.hans.domain.room.dto.RoomResponseDto;
 import com.hans.hans.domain.room.dto.RoomMemberResponseDto;
-import com.hans.hans.domain.room.dto.RoomReponseDto;
+import com.hans.hans.domain.room.dto.RoomsResponseDto;
 import com.hans.hans.domain.room.dto.RoomGetRequestDto;
 import com.hans.hans.domain.room.entity.Room;
 import com.hans.hans.domain.room.entity.RoomMember;
@@ -19,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,10 +31,10 @@ public class RoomServiceImpl implements RoomService{
     private final RoomMemberRepository roomMemberRepository;
 
     @Override
-    public RoomReponseDto getRooms(RoomGetRequestDto roomGetRequestDto, Pageable pageable) {
+    public RoomsResponseDto getRooms(RoomGetRequestDto roomGetRequestDto, Pageable pageable) {
         Page<Room> rooms = roomRepository.findRoomsByMode(roomGetRequestDto.toEntity(), pageable);
-        RoomReponseDto roomReponseDto = new RoomReponseDto(rooms);
-        return roomReponseDto;
+        RoomsResponseDto roomsResponseDto = new RoomsResponseDto(rooms);
+        return roomsResponseDto;
     }
 
     @Override
@@ -67,23 +67,23 @@ public class RoomServiceImpl implements RoomService{
     }
 
     @Override
-    public RoomReponseDto searchRoomByTitle(String title, Pageable pageable){
+    public RoomsResponseDto searchRoomByTitle(String title, Pageable pageable){
         Page<Room> rooms = roomRepository.findRoomsByTitleContaining(title, pageable);
-        RoomReponseDto roomReponseDto = new RoomReponseDto(rooms);
-        return roomReponseDto;
+        RoomsResponseDto roomsResponseDto = new RoomsResponseDto(rooms);
+        return roomsResponseDto;
     }
 
     @Override
-    public RoomReponseDto searchRoomByNickname(String nickname, Pageable pageable){
+    public RoomsResponseDto searchRoomByNickname(String nickname, Pageable pageable){
         Member member = memberRepository.findByNickname(nickname);
         Page<Room> rooms = roomRepository.findRoomsByMember(member,pageable);
 
-        RoomReponseDto roomReponseDto = new RoomReponseDto(rooms);
-        return roomReponseDto;
+        RoomsResponseDto roomsResponseDto = new RoomsResponseDto(rooms);
+        return roomsResponseDto;
     }
 
     @Override
-    public ConversationCreateResponseDto createConversationRoom(String email, ConversationCreateRequestDto conversationCreateRequestDto) {
+    public RoomResponseDto createConversationRoom(String email, ConversationCreateRequestDto conversationCreateRequestDto) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
 
         Date now = new Date();
@@ -109,9 +109,19 @@ public class RoomServiceImpl implements RoomService{
                         .build()
         );
 
-        ConversationCreateResponseDto conversationCreateResponseDto = new ConversationCreateResponseDto(room);
+        RoomResponseDto roomResponseDto = new RoomResponseDto(room);
 
-        return conversationCreateResponseDto;
+        return roomResponseDto;
+    }
+
+    @Override
+    public RoomResponseDto updateRoom(Long roomSequence, ConversationUpdateRequestDto conversationUpdateRequestDto){
+        Room room = roomRepository.findByRoomSequence(roomSequence);
+        room.updateRoomTitleAndRestricNum(conversationUpdateRequestDto.getTitle(), conversationUpdateRequestDto.getRestricNum());
+        RoomResponseDto roomResponseDto = new RoomResponseDto(roomRepository.save(room));
+
+        return roomResponseDto;
+
     }
 
 }
