@@ -1,9 +1,9 @@
 package com.hans.hans.domain.ranking.service;
 
+import com.hans.hans.domain.mode.entity.Mode;
+import com.hans.hans.domain.mode.repository.ModeRepository;
 import com.hans.hans.domain.ranking.dto.RankingResponseDto;
-import com.hans.hans.domain.ranking.entity.Mode;
 import com.hans.hans.domain.ranking.entity.Ranking;
-import com.hans.hans.domain.ranking.repository.ModeRepository;
 import com.hans.hans.domain.ranking.repository.RankingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

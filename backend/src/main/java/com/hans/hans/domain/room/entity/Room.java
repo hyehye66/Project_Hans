@@ -1,7 +1,7 @@
-package com.hans.hans.domain.conversation.entity;
+package com.hans.hans.domain.room.entity;
 
 import com.hans.hans.domain.member.entity.Member;
-import com.sun.org.apache.xpath.internal.operations.Mod;
+import com.hans.hans.domain.mode.entity.Mode;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

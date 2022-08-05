@@ -1,7 +1,6 @@
-package com.hans.hans.domain.conversation.dto;
+package com.hans.hans.domain.room.dto;
 
-
-import com.hans.hans.domain.conversation.entity.Mode;
+import com.hans.hans.domain.mode.entity.Mode;
 import lombok.Builder;
 
 public class RoomGetRequestDto {

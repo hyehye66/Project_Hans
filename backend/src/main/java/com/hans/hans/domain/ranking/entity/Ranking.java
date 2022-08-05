@@ -1,6 +1,7 @@
 package com.hans.hans.domain.ranking.entity;
 
 import com.hans.hans.domain.member.entity.Member;
+import com.hans.hans.domain.mode.entity.Mode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

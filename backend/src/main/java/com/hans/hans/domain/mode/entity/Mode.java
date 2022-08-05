@@ -1,7 +1,9 @@
-package com.hans.hans.domain.ranking.entity;
+package com.hans.hans.domain.mode.entity;
 
-
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -15,7 +17,11 @@ public class Mode {
     @Column(name = "MODE_SEQ")
     private Long modeSequence;
 
-    @Column(name = "MODE_NAME")
+    @Column(name = "MODE_NAME", nullable = false)
     private String modeName;
 
+    @Builder
+    public Mode(Long modeSequence){
+        this.modeSequence = modeSequence;
+    }
 }
