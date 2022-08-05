@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/conversations/rooms")
+@RequestMapping("/api/conversation/rooms")
 @RequiredArgsConstructor
 public class ConversationController {
     private final RoomService roomService;
