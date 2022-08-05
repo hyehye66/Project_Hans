@@ -47,7 +47,17 @@ public class ConversationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createSuccess("대화방 입장에 성공하였습니다.",roomMemberResponseDto));
     }
 
+    @GetMapping("/search-title")
+    public ResponseEntity<?> searchConversationRoomsByTitle(@RequestParam(value = "title") String title, Pageable pageable){
+        RoomReponseDto roomReponseDto = roomService.searchRoomByTitle(title, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("대화방 제목으로 검색 조회에 성공하였습니다.",roomReponseDto));
+    }
 
+    @GetMapping("/search-nickname")
+    public ResponseEntity<?> searchConversationRoomsByNickname(@RequestParam(value = "nickname") String nickname, Pageable pageable){
+        RoomReponseDto roomReponseDto = roomService.searchRoomByNickname(nickname,pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("대화방 닉네임으로 검색 조회에 성공하였습니다.", roomReponseDto));
+    }
 
 
 }
