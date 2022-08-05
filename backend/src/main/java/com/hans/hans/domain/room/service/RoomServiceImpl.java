@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -63,6 +64,22 @@ public class RoomServiceImpl implements RoomService{
 
         RoomMemberResponseDto roomMemberResponseDto = new RoomMemberResponseDto(roomMember);
         return roomMemberResponseDto;
+    }
+
+    @Override
+    public RoomReponseDto searchRoomByTitle(String title, Pageable pageable){
+        Page<Room> rooms = roomRepository.findRoomsByTitleContaining(title, pageable);
+        RoomReponseDto roomReponseDto = new RoomReponseDto(rooms);
+        return roomReponseDto;
+    }
+
+    @Override
+    public RoomReponseDto searchRoomByNickname(String nickname, Pageable pageable){
+        Member member = memberRepository.findByNickname(nickname);
+        Page<Room> rooms = roomRepository.findRoomsByMember(member,pageable);
+
+        RoomReponseDto roomReponseDto = new RoomReponseDto(rooms);
+        return roomReponseDto;
     }
 
     @Override
