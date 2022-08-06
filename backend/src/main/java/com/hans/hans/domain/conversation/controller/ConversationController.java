@@ -32,7 +32,8 @@ public class ConversationController {
 
     @PostMapping()
     public ResponseEntity<?> createConversationRoom(HttpServletRequest request, @Valid @RequestBody ConversationCreateRequestDto conversationCreateRequestDto){
-        String email = (String)request.getAttribute("email");
+//        String email = (String)request.getAttribute("email");
+        String email = "test@navsdsder.com";
         RoomResponseDto roomResponseDto = roomService.createConversationRoom(email,conversationCreateRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createSuccess("대화방 생성에 성공하였습니다.", roomResponseDto));
     }
@@ -43,7 +44,8 @@ public class ConversationController {
             return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createError("현재 대화방에 들어갈 수 있는 인원이 없습니다."));
         }
 
-        String email = (String)request.getAttribute("email");
+//        String email = (String)request.getAttribute("email");
+        String email = "syi0sdas@naver.com";
         RoomMemberResponseDto roomMemberResponseDto = roomService.enterRoom(email,roomSequence);
         return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createSuccess("대화방 입장에 성공하였습니다.",roomMemberResponseDto));
     }
@@ -64,6 +66,14 @@ public class ConversationController {
     public ResponseEntity<?> updateConversationRoom(@PathVariable(name = "room-seq") Long roomSequence, @Valid @RequestBody ConversationUpdateRequestDto conversationUpdateRequestDto){
         RoomResponseDto roomResponseDto = roomService.updateRoom(roomSequence, conversationUpdateRequestDto);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(CommonResponse.createSuccess("대화방 정보 수정이 완료되었습니다.",roomResponseDto));
+    }
+
+    @DeleteMapping("/{room-seq}")
+    public ResponseEntity<?> leaveConversationRoom(@PathVariable(name = "room-seq") Long roomSequence, HttpServletRequest request){
+//        String email = (String)request.getAttribute("email");
+        String email = "test@navsdsder.com";
+        roomService.leaveRoom(roomSequence,email);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(CommonResponse.createSuccess("대화방 나가기가 완료되었습니다.",null));
     }
 
 
