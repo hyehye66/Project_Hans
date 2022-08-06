@@ -2,6 +2,7 @@ package com.hans.hans.domain.room.service;
 
 import com.hans.hans.domain.conversation.dto.ConversationCreateResponseDto;
 import com.hans.hans.domain.conversation.dto.ConversationUpdateRequestDto;
+import com.hans.hans.domain.conversation.dto.ConversationUpdateResponseDto;
 import com.hans.hans.domain.mode.repository.ModeRepository;
 import com.hans.hans.domain.conversation.dto.ConversationCreateRequestDto;
 import com.hans.hans.domain.room.dto.RoomResponseDto;
@@ -16,6 +17,8 @@ import com.hans.hans.domain.member.entity.Member;
 import com.hans.hans.domain.member.repository.MemberRepository;
 import com.hans.hans.domain.wordgame.dto.WordGameCreateRequestDto;
 import com.hans.hans.domain.wordgame.dto.WordGameCreateResponseDto;
+import com.hans.hans.domain.wordgame.dto.WordGameUpdateRequestDto;
+import com.hans.hans.domain.wordgame.dto.WordGameUpdateResponseDto;
 import com.hans.hans.global.exception.NoExistMemberException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -146,19 +149,31 @@ public class RoomServiceImpl implements RoomService{
         );
 
         WordGameCreateResponseDto wordGameCreateResponseDto = new WordGameCreateResponseDto(room);
-        wordGameCreateResponseDto.setProblemNum(problemNum);
+        wordGameCreateResponseDto.updateProblemNum(problemNum);
 
         return wordGameCreateResponseDto;
     }
 
     @Override
-    public RoomResponseDto updateRoom(Long roomSequence, ConversationUpdateRequestDto conversationUpdateRequestDto){
+    public ConversationUpdateResponseDto updateConversationRoom(Long roomSequence, ConversationUpdateRequestDto conversationUpdateRequestDto){
         Room room = roomRepository.findByRoomSequence(roomSequence);
-        room.updateRoomTitleAndRestricNum(conversationUpdateRequestDto.getTitle(), conversationUpdateRequestDto.getRestricNum());
-        RoomResponseDto roomResponseDto = new RoomResponseDto(roomRepository.save(room));
+        room.updateRoomTitleAndRestricNum(conversationUpdateRequestDto.getTitle(), conversationUpdateRequestDto.getRestrictNum());
 
-        return roomResponseDto;
+        ConversationUpdateResponseDto conversationUpdateResponseDto = new ConversationUpdateResponseDto(roomRepository.save(room));
 
+        return conversationUpdateResponseDto;
+
+    }
+
+    @Override
+    public WordGameUpdateResponseDto updateWordGameRoom(Long roomSequence, WordGameUpdateRequestDto wordGameUpdateRequestDto){
+        Room room = roomRepository.findByRoomSequence(roomSequence);
+        room.updateRoomTitleAndRestricNum(wordGameUpdateRequestDto.getTitle(), wordGameUpdateRequestDto.getRestrictNum());
+
+        WordGameUpdateResponseDto wordGameUpdateResponseDto = new WordGameUpdateResponseDto(roomRepository.save(room));
+        wordGameUpdateResponseDto.updateProblemNum(wordGameUpdateRequestDto.getProblemNum());
+
+        return wordGameUpdateResponseDto;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.hans.hans.domain.conversation.dto;
+package com.hans.hans.domain.wordgame.dto;
 
 import com.hans.hans.domain.member.entity.Member;
 import com.hans.hans.domain.mode.entity.Mode;
@@ -8,17 +8,22 @@ import lombok.Getter;
 import java.util.Date;
 
 @Getter
-public class ConversationCreateResponseDto {
+public class WordGameUpdateResponseDto {
     private Long roomSequence;
     private Member member;
     private Mode mode;
     private String title;
     private int restrictNum;
     private int currentNum;
+    private int problemNum;
     private Date roomDTTM;
     private boolean roomStatus;
 
-    public ConversationCreateResponseDto(Room room){
+    public void updateProblemNum(int problemNum){
+        this.problemNum = problemNum;
+    }
+
+    public WordGameUpdateResponseDto(Room room){
         this.roomSequence = room.getRoomSequence();
         this.member = room.getMember();
         this.mode = room.getMode();

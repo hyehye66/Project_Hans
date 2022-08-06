@@ -3,6 +3,7 @@ package com.hans.hans.domain.conversation.controller;
 import com.hans.hans.domain.conversation.dto.ConversationCreateRequestDto;
 import com.hans.hans.domain.conversation.dto.ConversationCreateResponseDto;
 import com.hans.hans.domain.conversation.dto.ConversationUpdateRequestDto;
+import com.hans.hans.domain.conversation.dto.ConversationUpdateResponseDto;
 import com.hans.hans.domain.room.dto.RoomResponseDto;
 import com.hans.hans.domain.room.dto.RoomGetRequestDto;
 import com.hans.hans.domain.room.dto.RoomMemberResponseDto;
@@ -33,7 +34,8 @@ public class ConversationController {
 
     @PostMapping()
     public ResponseEntity<?> createConversationRoom(HttpServletRequest request, @Valid @RequestBody ConversationCreateRequestDto conversationCreateRequestDto){
-        String email = (String)request.getAttribute("email");
+//        String email = (String)request.getAttribute("email");
+        String email = "syi0000@naver.com";
         ConversationCreateResponseDto conversationCreateResponseDto = roomService.createConversationRoom(email,conversationCreateRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createSuccess("대화방 생성에 성공하였습니다.", conversationCreateResponseDto));
     }
@@ -63,8 +65,8 @@ public class ConversationController {
 
     @PutMapping("/{room-seq}")
     public ResponseEntity<?> updateConversationRoom(@PathVariable(name = "room-seq") Long roomSequence, @Valid @RequestBody ConversationUpdateRequestDto conversationUpdateRequestDto){
-        RoomResponseDto roomResponseDto = roomService.updateRoom(roomSequence, conversationUpdateRequestDto);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(CommonResponse.createSuccess("대화방 정보 수정이 완료되었습니다.",roomResponseDto));
+        ConversationUpdateResponseDto conversationUpdateResponseDto = roomService.updateConversationRoom(roomSequence, conversationUpdateRequestDto);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(CommonResponse.createSuccess("대화방 정보 수정이 완료되었습니다.",conversationUpdateResponseDto));
     }
 
     @DeleteMapping("/{room-seq}")

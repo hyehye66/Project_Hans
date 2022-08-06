@@ -2,13 +2,15 @@ package com.hans.hans.domain.room.service;
 
 import com.hans.hans.domain.conversation.dto.ConversationCreateRequestDto;
 import com.hans.hans.domain.conversation.dto.ConversationCreateResponseDto;
-import com.hans.hans.domain.room.dto.RoomResponseDto;
+import com.hans.hans.domain.conversation.dto.ConversationUpdateResponseDto;
 import com.hans.hans.domain.conversation.dto.ConversationUpdateRequestDto;
 import com.hans.hans.domain.room.dto.RoomMemberResponseDto;
 import com.hans.hans.domain.room.dto.RoomsResponseDto;
 import com.hans.hans.domain.room.dto.RoomGetRequestDto;
 import com.hans.hans.domain.wordgame.dto.WordGameCreateRequestDto;
 import com.hans.hans.domain.wordgame.dto.WordGameCreateResponseDto;
+import com.hans.hans.domain.wordgame.dto.WordGameUpdateRequestDto;
+import com.hans.hans.domain.wordgame.dto.WordGameUpdateResponseDto;
 import org.springframework.data.domain.Pageable;
 
 public interface RoomService {
@@ -19,6 +21,7 @@ public interface RoomService {
     boolean checkEnterRoom(Long roomSequence);
     RoomsResponseDto searchRoomByTitle(String title, Pageable pageable);
     RoomsResponseDto searchRoomByNickname(String nickname, Pageable pageable);
-    RoomResponseDto updateRoom(Long roomSequence, ConversationUpdateRequestDto conversationUpdateRequestDto);
+    ConversationUpdateResponseDto updateConversationRoom(Long roomSequence, ConversationUpdateRequestDto conversationUpdateRequestDto);
+    WordGameUpdateResponseDto updateWordGameRoom(Long roomSequence, WordGameUpdateRequestDto wordGameUpdateRequestDto);
     void leaveRoom(Long roomSequence, String email);
 }
