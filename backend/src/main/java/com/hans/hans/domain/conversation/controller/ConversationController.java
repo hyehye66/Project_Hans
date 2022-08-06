@@ -1,6 +1,7 @@
 package com.hans.hans.domain.conversation.controller;
 
 import com.hans.hans.domain.conversation.dto.ConversationCreateRequestDto;
+import com.hans.hans.domain.conversation.dto.ConversationCreateResponseDto;
 import com.hans.hans.domain.conversation.dto.ConversationUpdateRequestDto;
 import com.hans.hans.domain.room.dto.RoomResponseDto;
 import com.hans.hans.domain.room.dto.RoomGetRequestDto;
@@ -33,8 +34,8 @@ public class ConversationController {
     @PostMapping()
     public ResponseEntity<?> createConversationRoom(HttpServletRequest request, @Valid @RequestBody ConversationCreateRequestDto conversationCreateRequestDto){
         String email = (String)request.getAttribute("email");
-        RoomResponseDto roomResponseDto = roomService.createConversationRoom(email,conversationCreateRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createSuccess("대화방 생성에 성공하였습니다.", roomResponseDto));
+        ConversationCreateResponseDto conversationCreateResponseDto = roomService.createConversationRoom(email,conversationCreateRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createSuccess("대화방 생성에 성공하였습니다.", conversationCreateResponseDto));
     }
 
     @PostMapping("/{room-seq}")
