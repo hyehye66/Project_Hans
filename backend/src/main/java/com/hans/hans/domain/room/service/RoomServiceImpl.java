@@ -1,5 +1,6 @@
 package com.hans.hans.domain.room.service;
 
+import com.hans.hans.domain.conversation.dto.ConversationCreateResponseDto;
 import com.hans.hans.domain.conversation.dto.ConversationUpdateRequestDto;
 import com.hans.hans.domain.mode.repository.ModeRepository;
 import com.hans.hans.domain.conversation.dto.ConversationCreateRequestDto;
@@ -13,6 +14,8 @@ import com.hans.hans.domain.room.repository.RoomMemberRepository;
 import com.hans.hans.domain.room.repository.RoomRepository;
 import com.hans.hans.domain.member.entity.Member;
 import com.hans.hans.domain.member.repository.MemberRepository;
+import com.hans.hans.domain.wordgame.dto.WordGameCreateRequestDto;
+import com.hans.hans.domain.wordgame.dto.WordGameCreateResponseDto;
 import com.hans.hans.global.exception.NoExistMemberException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -83,7 +86,7 @@ public class RoomServiceImpl implements RoomService{
     }
 
     @Override
-    public RoomResponseDto createConversationRoom(String email, ConversationCreateRequestDto conversationCreateRequestDto) {
+    public ConversationCreateResponseDto createConversationRoom(String email, ConversationCreateRequestDto conversationCreateRequestDto) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
 
         Date now = new Date();
@@ -109,9 +112,43 @@ public class RoomServiceImpl implements RoomService{
                         .build()
         );
 
-        RoomResponseDto roomResponseDto = new RoomResponseDto(room);
+        ConversationCreateResponseDto conversationCreateResponseDto = new ConversationCreateResponseDto(room);
 
-        return roomResponseDto;
+        return conversationCreateResponseDto;
+    }
+
+    @Override
+    public WordGameCreateResponseDto createWordGameRoom(String email, WordGameCreateRequestDto wordGameCreateRequestDto){
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
+
+        Date now = new Date();
+        String title = wordGameCreateRequestDto.getTitle();
+        int restrictNum = wordGameCreateRequestDto.getRestrictNum();
+        int problemNum = wordGameCreateRequestDto.getProblemNum();
+
+        Room room = roomRepository.save(
+                Room.builder()
+                        .member(member)
+                        .mode(modeRepository.findByModeSequence(2L))
+                        .title(title)
+                        .restrictNum(restrictNum)
+                        .currentNum(1)
+                        .roomDTTM(now)
+                        .roomStatus(false)
+                        .build());
+
+        roomMemberRepository.save(
+                RoomMember.builder()
+                        .member(member)
+                        .room(room)
+                        .enterDTTM(now)
+                        .build()
+        );
+
+        WordGameCreateResponseDto wordGameCreateResponseDto = new WordGameCreateResponseDto(room);
+
+
+        return wordGameCreateResponseDto;
     }
 
     @Override
