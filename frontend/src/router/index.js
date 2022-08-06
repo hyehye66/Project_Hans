@@ -61,6 +61,7 @@ const routes = [
     path : '/chat/detail/:mode/:sessionName',
     name : 'ChatDetailView',
     component :() => import('@/views/chat/ChatDetailView.vue'),
+    props : true
   },
   {
     path : '/rank',

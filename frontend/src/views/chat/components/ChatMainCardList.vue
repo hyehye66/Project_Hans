@@ -11,11 +11,11 @@ import axios from 'axios';
 import ChatMainCardListItem from './ChatMainCardListItem.vue'
 
 
-const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
-const OPENVIDU_SERVER_SECRET = "MY_SECRET";
+// const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
+// const OPENVIDU_SERVER_SECRET = "MY_SECRET";
 
-// const OPENVIDU_SERVER_URL = "https://i7d109.p.ssafy.io:4443";
-// const OPENVIDU_SERVER_SECRET = "hans";
+const OPENVIDU_SERVER_URL = "https://i7d109.p.ssafy.io";
+const OPENVIDU_SERVER_SECRET = "hans";
 
 export default {
   data () {
@@ -31,14 +31,13 @@ export default {
   methods : {
     // 모든 세션 데이터 받아오는 함수 
     getSession(){
-      console.log(123)
 			axios.get(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`,
 			{auth: {
 							username: 'OPENVIDUAPP',
 							password: OPENVIDU_SERVER_SECRET,
 						}},)
-            .then(res =>{this.rooms = res.data.content})
-            .catch(err => console.log(err,1234))
+            .then(res =>{this.rooms = res.data.content, console.log(res.data)})
+            .catch(err => console.log(err,'error here'))
 
     },
     

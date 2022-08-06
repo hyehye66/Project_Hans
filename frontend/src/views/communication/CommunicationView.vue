@@ -25,9 +25,10 @@ export default {
   methods : {
     getSituationItem (){
       axios.get(
-        'http://localhost:8080/api/situations'
+        // 'http://localhost:8080/api/situations'
+        'https://i7d109.p.ssafy.io/api/situations'
       )
-      .then(res => {this.situationSentence = res.data.situations})
+      .then(res => {this.situationSentence = res.data.situations, console.log(res.data)})
     }
   },
   created(){
