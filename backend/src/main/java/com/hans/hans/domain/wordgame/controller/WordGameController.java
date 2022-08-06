@@ -1,13 +1,13 @@
 package com.hans.hans.domain.wordgame.controller;
 
-import com.hans.hans.domain.conversation.dto.ConversationCreateRequestDto;
 import com.hans.hans.domain.room.dto.RoomGetRequestDto;
 import com.hans.hans.domain.room.dto.RoomMemberResponseDto;
-import com.hans.hans.domain.room.dto.RoomResponseDto;
 import com.hans.hans.domain.room.dto.RoomsResponseDto;
 import com.hans.hans.domain.room.service.RoomService;
 import com.hans.hans.domain.wordgame.dto.WordGameCreateRequestDto;
 import com.hans.hans.domain.wordgame.dto.WordGameCreateResponseDto;
+import com.hans.hans.domain.wordgame.dto.WordGameUpdateRequestDto;
+import com.hans.hans.domain.wordgame.dto.WordGameUpdateResponseDto;
 import com.hans.hans.global.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +34,8 @@ public class WordGameController {
 
     @PostMapping()
     public ResponseEntity<?> createWordGameRoom(HttpServletRequest request, @Valid @RequestBody WordGameCreateRequestDto wordGameCreateRequestDto){
-        String email = (String)request.getAttribute("email");
+//        String email = (String)request.getAttribute("email");
+        String email = "syi0000@naver.com";
         WordGameCreateResponseDto wordGameCreateResponseDto = roomService.createWordGameRoom(email,wordGameCreateRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createSuccess("낱말게임방 생성에 성공하였습니다.", wordGameCreateResponseDto));
     }
@@ -61,6 +62,13 @@ public class WordGameController {
         RoomMemberResponseDto roomMemberResponseDto = roomService.enterRoom(email,roomSequence);
         return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createSuccess("낱말게임방 입장에 성공하였습니다.",roomMemberResponseDto));
     }
+
+    @PutMapping("/{room-seq}")
+    public ResponseEntity<?> updateWordGameRoom(@PathVariable(name = "room-seq") Long roomSequence, @Valid @RequestBody WordGameUpdateRequestDto wordGameUpdateRequestDto){
+        WordGameUpdateResponseDto wordGameUpdateResponseDto = roomService.updateWordGameRoom(roomSequence, wordGameUpdateRequestDto);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(CommonResponse.createSuccess("낱말게임방 정보 수정이 완료되었습니다.",wordGameUpdateResponseDto));
+    }
+
 
 
 }

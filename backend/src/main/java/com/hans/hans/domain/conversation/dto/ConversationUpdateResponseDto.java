@@ -8,7 +8,8 @@ import lombok.Getter;
 import java.util.Date;
 
 @Getter
-public class ConversationCreateResponseDto {
+public class ConversationUpdateResponseDto {
+
     private Long roomSequence;
     private Member member;
     private Mode mode;
@@ -18,7 +19,7 @@ public class ConversationCreateResponseDto {
     private Date roomDTTM;
     private boolean roomStatus;
 
-    public ConversationCreateResponseDto(Room room){
+    public ConversationUpdateResponseDto(Room room){
         this.roomSequence = room.getRoomSequence();
         this.member = room.getMember();
         this.mode = room.getMode();
