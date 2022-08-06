@@ -17,6 +17,7 @@ import ChatMainCardListItem from './ChatMainCardListItem.vue'
 const OPENVIDU_SERVER_URL = "https://i7d109.p.ssafy.io";
 const OPENVIDU_SERVER_SECRET = "hans";
 
+
 export default {
   data () {
     return {
@@ -38,15 +39,12 @@ export default {
 						}},)
             .then(res =>{this.rooms = res.data.content, console.log(res.data)})
             .catch(err => console.log(err,'error here'))
-
-    },
-    
     },
   created(){
     this.getSession()
   },
 
-  }
+  }}
   
 
 </script>
