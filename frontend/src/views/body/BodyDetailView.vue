@@ -36,38 +36,37 @@
 					<!-- <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
 						back
 					</button> -->
-					<!-- 방 제목 issue!!! -->
+					<!-- 방 제목 issue! -->
 					<!-- {{ BodyRoomCreateModal.roomTitle }} -->
 				</div>
 
 
 				<!-- 총 진행시간 -->
-				<div class="box-border h-20 w-32 p-2 border-2 border-gray-400 bg-gray-200">
+				<div class="total-time">
+				<!--  h-30 w-40 p-2 border-2 border-gray-400 bg-gray-200 -->
 					<div class="h-full w-full bg-gray-400">
 						<h1>총 진행시간</h1>
 					</div>
 				</div>
 			</div>
-			<br>
 
-			<div id="session-header2">
+
+			<div id="session-header2" style="width: 100%;">
 				<!-- 방안사람들 -->
-				<div id="video-container" class="col-md-3">
+				<div id="video-container" class="col-lg-12">
+					<!-- col-md-3  -->
 					<!-- updateMainVideoStreamManager(publisher) : 
 						현재의 publisher(나)를 mainstreamer로 지정하여 미팅방 최상단에 보이게 하겠다 -->
 					<user-video :stream-manager="publisher" @click.enter="updateMainVideoStreamManager(publisher)"/>
 					<user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click.enter="updateMainVideoStreamManager(sub)"/>
 				</div>
+			</div>				
 
-				<!-- 현재 문제 남은 시간 타이머 -->
-				<div class="problem-timer" style="width: 40; height: 40;">남은 시간</div>
-			</div>
-			<br>
 
-			<div class="left-right">
-				<div id="session-body-left">
+			<!-- <div class="left-right"> -->
+				<div id="session-body-left" class="col-md-6">
 					<!-- 메인화면 -->
-					<div id="main-video" class="col-md-6">
+					<div id="main-video">
 						<user-video :stream-manager="mainStreamManager"/>
 					</div>
 					<!-- 캠,마이크,나가기,설정 -->
@@ -86,26 +85,46 @@
 							<CogIcon style="height: 40; width: 40;"/>
 						</div>
 					</div>
-					<!-- 정답입력란 -->
-					<div class="answer-send">
-						<input type="text" name="" id="answer-sheet" v-model="answerSheet" size="40">
-						<PaperAirplaneIcon style="height: 30; width: 30;"/>					
-					</div>
+					
 				</div>
 
-				<div id="session-body-right">
+				<div id="session-body-right" class="col-md-5">
 					<!-- 랭크 -->
-					<div class="rank shadow-md py-60 px-50">
-						<h2>랭크</h2>
+					<h1>랭크</h1>
+					<div class="rank col-md-12">
+					<!--  shadow-md py-60 px-50 -->						
+						<ul>
+							<li>김민철 1</li>
+							<li>김지현 2</li>
+							<li>김지현 2</li>
+							<li>김지현 2</li>
+							<li>김지현 2</li>
+							<li>김지현 2</li>
+						</ul>
 					</div>
-					<!-- 시작버튼 -->					
-					<button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
-						START
-					</button>
+					<!-- <br> -->
+					<!-- 현재 문제 남은 시간 타이머 -->
+					<div class="problem-timer" style="width: 30%">남은 시간</div>
+					<!-- style="width: 40; height: 40;" -->
+					<!-- 시작버튼 -->
+					<div class="leader-button">
+						<button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
+							START
+						</button>
+					</div>				
+
+					<!-- 출제자한테는 문제카드 띄울 예정 -->
+					<!-- 정답입력란 -->
+					<div class="answer-send">
+						<input type="text" name="" id="answer-sheet" v-model="answerSheet" size="30">
+						<PaperAirplaneIcon style="height: 25; width: 25;"/>					
+					</div>
 					<!-- 정오답 알림 메시지 -->
-					<input type="text" v-model="answerAlert" />
+					<div class="answer-check">
+						<input type="text" v-model="answerAlert" size="30" />
+					</div>
 				</div>
-			</div>
+			<!-- </div> -->
 
 
 
@@ -288,7 +307,19 @@ export default {
 
 <style>
 
+#main-container {
+	margin: auto;
+}
+
+#join + #session {
+	justify-content: center;
+	width: 100%;
+
+
+}
+
 #session-header {
+	width: 100%;
 	display: flex;
   flex-flow: row wrap;
 	justify-content: space-between;
@@ -323,47 +354,94 @@ export default {
 	/* justify-content: center; */
 	align-self: center;
 	/* right: 0%; */
+	/* margin: 0 2.2vw;
+  padding: 2vh; */
 }
 
 #video-container {
-  display: flex;
+  /* display: flex;
   flex-direction: row;
 	float: left;
+  align-self: center; */
+
   /* justify-content: center; */
-  align-self: center;
 	/* right: 0%; */
 }
 
-/* user-video {
-	width: 200;
-	height: 180;
-} */
+#video-container video {
+   /* position: relative; */
+   float: left;
+   width: 16%;
+   margin-left:0.6%;
+   border:3px solid;
+   border-color:rgb(255, 255, 255);
+   /* cursor: pointer; */
+   /* margin:  2%;  */
+   /* margin-left: 5%; */
+   display: flex;
+   align-items: center;
+   justify-content: space-around;
+}
 
-.problem-timer {
-	align-self: center;
-	/* float: right; */
-	/* width: 50 !important;
-	height: 50 !important; */
-	/* border: 1px dotted black;
-	border-radius: 100% 100% 100% 100%; */
-	
+#video-container video + div {
+  
+  text-align: center;
+  /* line-height: 75px; */
+   float: left;
+   width: 28%;
+   position: relative;
+   margin-left:-28.5%;
+   /* display: flex; */
+   /* justify-content: space-around; */
+}
+
+#video-container p {
+  font-family:'IM_Hyemin-Bold';
+  display: inline-block;
+  background: #f8f8f8;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #3c90c9;
+  font-weight: bold;
+  border-radius: 8px;
+	/* text-align: right; */
+}
+
+video {
+   
+   padding-top: 1vh;
+   /* 맨 아래에 나오는 카메라화면 */
+   /* width: ; */
+    width: 100%;
+   /* height: 48vh; */
+   height: auto;
+   position: relative;
+}
+
+#main-video p {
+  /* position: absolute; */
+  display: inline-block;
+  background: #f8f8f8;
+  padding-left: 5px;
+  padding-right: 5px;
+  font-size: 22px;
+  color: #777777;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+user-video {
+	/* margin-left: 20px; */
+	/* width: 200;
+	height: 180; */
+
 }
 
 #main-video {
 	/* justify-content: center; */
+
 }
 
-#cam-buttons {
-	display: flex;
-	/* flex-direction: row; */
-  flex-flow: row wrap;
-	justify-content: space-evenly;
-  align-self: center;
-	/* width: 400;
-	height: 40; */
-
-	
-}
 
 /* VideoCameraIcon {
 	width: 6;
@@ -374,35 +452,110 @@ LogoutIcon
 CogIcon
 PaperAirplaneIcon */
 
-.left-right {
+/* .left-right {
+	flex-flow: row wrap;
 	justify-content: space-around;
-}
+} */
 
 #session-body-left {
 	display: flex;
 	flex-direction: column;
-	/* float: left; */
-	/* justify-content: center; */
+	float: left;
+	justify-content: center;
 	align-self: center;
 	
+}
+
+.cam-buttons {
+	width: 60%;
+	margin: 0 auto;
+
+	display: flex;
+	/* flex-direction: row; */
+	flex-flow: row wrap;
+	justify-content: space-evenly;
+	align-self: center;
+	/* justify-content: center; */
+	text-align: center;
+	/* width: 400;
+	height: 40; */
+	vertical-align: middle;
+
+
+	
+}
+
+
+#session-body-right {
+	display: flex;
+	flex-direction: column;
+	float: right;
+	/* padding-top: 5px; */
+	margin-top: 10px;
+	justify-content: center;
+	align-self: center;	
+}
+
+.rank {
+	border: thick double #32a1ce;
+	padding-left: 5px;
+  padding-right: 5px;
+	/* width: 20rem; */
+	height: auto;
+	/* text-align: center; */
+	justify-content: center;
+	/* margin: auto; */
+	font-size: 25px;
+}
+
+.problem-timer {
+	align-self: center;
+	/* float: right; */
+	text-align: center;
+	margin-top: 5%;
+	margin-bottom: 3%;
+	/* width: 50 !important;
+	height: 50 !important; */
+	/* border: 1px dotted black;
+	border-radius: 100% 100% 100% 100%; */
+	font-size: 30px;
+	
+}
+
+.leader-button {
+	font-size: 40px;
+	text-align: center;
+	/* justify-content: center; */
+	margin-top: 3%;
+	margin-bottom: 3%;
+}
+
+.leader-button button {
+	width: 30%;
 }
 
 .answer-send {
 	display: flex;
 	flex-direction: row;
 	/* align-self: center; */
+	justify-content: center;
+	margin: auto;
 }
 
 #answer-sheet {
 	/* border: 1; */
 	border: 1px dotted black;
+	font-size: 30px;
 }
 
-#session-body-right {
-	display: flex;
-  /* justify-content: flex-end; */
-	float: right;
-	
+.answer-check {
+	/* border: 1; */
+	border: 1px dotted black;
+	/* text-align: center; */
+	justify-content: center;
+	/* margin: auto; */
+	align-self: center;
+	font-size: 30px;
 }
 
 
