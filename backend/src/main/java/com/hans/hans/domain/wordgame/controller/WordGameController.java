@@ -37,4 +37,16 @@ public class WordGameController {
         WordGameCreateResponseDto wordGameCreateResponseDto = roomService.createWordGameRoom(email,wordGameCreateRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createSuccess("낱말게임방 생성에 성공하였습니다.", wordGameCreateResponseDto));
     }
+
+    @GetMapping("/search-title")
+    public ResponseEntity<?> searchWordGameRoomsByTitle(@RequestParam(value = "title") String title, Pageable pageable){
+        RoomsResponseDto roomsResponseDto = roomService.searchRoomByTitle(title, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("낱말게임방 제목으로 검색 조회에 성공하였습니다.", roomsResponseDto));
+    }
+
+    @GetMapping("/search-nickname")
+    public ResponseEntity<?> searchWordGameRoomsByNickname(@RequestParam(value = "nickname") String nickname, Pageable pageable){
+        RoomsResponseDto roomsResponseDto = roomService.searchRoomByNickname(nickname,pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("낱말게임방 닉네임으로 검색 조회에 성공하였습니다.", roomsResponseDto));
+    }
 }
