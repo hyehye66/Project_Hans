@@ -124,4 +124,23 @@ public class RoomServiceImpl implements RoomService{
 
     }
 
+    @Override
+    public void leaveRoom(Long roomSequence, String email){
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
+        Room room = roomRepository.findByRoomSequence(roomSequence);
+
+        RoomMember leaveMember = roomMemberRepository.findByMember(member);
+        roomMemberRepository.delete(leaveMember);
+
+        if(email.equals(room.getMember().getEmail())){
+            RoomMember nextModerator= roomMemberRepository.findRoomMembersByRoomOrderByEnterDTTMAsc(room).get(0);
+            if(nextModerator!=null){
+                room.updateMemberSeq(nextModerator.getMember());
+                roomRepository.save(room);
+                return;
+            }
+            roomRepository.delete(room);
+        }
+    }
+
 }

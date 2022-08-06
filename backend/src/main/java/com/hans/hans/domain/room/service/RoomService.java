@@ -15,6 +15,6 @@ public interface RoomService {
     boolean checkEnterRoom(Long roomSequence);
     RoomsResponseDto searchRoomByTitle(String title, Pageable pageable);
     RoomsResponseDto searchRoomByNickname(String nickname, Pageable pageable);
-
     RoomResponseDto updateRoom(Long roomSequence, ConversationUpdateRequestDto conversationUpdateRequestDto);
+    void leaveRoom(Long roomSequence, String email);
 }
