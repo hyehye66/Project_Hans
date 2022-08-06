@@ -23,7 +23,7 @@ public class SituationController {
     public ResponseEntity<?> getSituationList() {
 
         SituationResponseDto situationResponseDto = situationServiceImpl.getSituationList();
-        return ResponseEntity.ok(situationResponseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("상황별 한국어 문장 조회에 성공하였습니다.",situationResponseDto));
 
     }
 

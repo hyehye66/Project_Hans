@@ -1,10 +1,8 @@
 package com.hans.hans.domain.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hans.hans.domain.ranking.entity.Ranking;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -34,6 +32,12 @@ public class Member {
 
     @Column(name = "REFRESH_TOKEN", nullable = false)
     private String refreshToken;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    @ToString.Exclude
+    private List<Ranking> rankings;
+
 
     @Builder
     public Member(Long memberSequence, String nickname, String email, String provider, String introduction, String refreshToken){
