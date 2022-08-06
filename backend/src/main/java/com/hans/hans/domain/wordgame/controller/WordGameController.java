@@ -34,8 +34,7 @@ public class WordGameController {
 
     @PostMapping()
     public ResponseEntity<?> createWordGameRoom(HttpServletRequest request, @Valid @RequestBody WordGameCreateRequestDto wordGameCreateRequestDto){
-//        String email = (String)request.getAttribute("email");
-        String email = "syi0000@naver.com";
+        String email = (String)request.getAttribute("email");
         WordGameCreateResponseDto wordGameCreateResponseDto = roomService.createWordGameRoom(email,wordGameCreateRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createSuccess("낱말게임방 생성에 성공하였습니다.", wordGameCreateResponseDto));
     }
@@ -69,6 +68,12 @@ public class WordGameController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(CommonResponse.createSuccess("낱말게임방 정보 수정이 완료되었습니다.",wordGameUpdateResponseDto));
     }
 
+    @DeleteMapping("/{room-seq}")
+    public ResponseEntity<?> leaveWordGameRoom(@PathVariable(name = "room-seq") Long roomSequence, HttpServletRequest request){
+        String email = (String)request.getAttribute("email");
+        roomService.leaveRoom(roomSequence,email);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(CommonResponse.createSuccess("대화방 나가기가 완료되었습니다.",null));
+    }
 
 
 }

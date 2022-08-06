@@ -26,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -185,9 +186,9 @@ public class RoomServiceImpl implements RoomService{
         roomMemberRepository.delete(leaveMember);
 
         if(email.equals(room.getMember().getEmail())){
-            RoomMember nextModerator= roomMemberRepository.findRoomMembersByRoomOrderByEnterDTTMAsc(room).get(0);
-            if(nextModerator!=null){
-                room.updateMemberSeq(nextModerator.getMember());
+            List<RoomMember> nextModerator= roomMemberRepository.findRoomMembersByRoomOrderByEnterDTTMAsc(room);
+            if(nextModerator.size()!=0){
+                room.updateMemberSeq(nextModerator.get(0).getMember());
                 roomRepository.save(room);
                 return;
             }
