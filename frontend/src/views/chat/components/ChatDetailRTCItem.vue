@@ -9,11 +9,17 @@
 import OvVideo from './OvVideo';
 export default {
   name: 'UserVideo',
-	
+<<<<<<< HEAD
+
 	components: {
 		OvVideo,
 	},
 
+=======
+  components: {
+	OvVideo,
+   },
+>>>>>>> 58e7f32a79cf96b06e081ff2fececfeb6a1aa4e5
 	props: {
 		streamManager: Object,
 	},

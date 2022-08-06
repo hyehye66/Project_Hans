@@ -29,6 +29,7 @@ export default {
         'https://i7d109.p.ssafy.io/api/situations'
       )
       .then(res => {this.situationSentence = res.data.situations, console.log(res.data)})
+
     }
   },
   created(){
