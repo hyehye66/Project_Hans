@@ -68,4 +68,8 @@ public class Room {
         this.restrictNum = restrictNum;
     }
 
+    public void updateMemberSeq(Member member){
+        this.member = member;
+    }
+
 }
