@@ -1,13 +1,16 @@
-import Vue from 'vue'
-import { createStore } from 'vuex'
-import axios from "axios"
+import Vuex from "vuex"
 
 const SERVER_URL = process.env.VUE_APP_SERVER_URL
 
-// Vue.use(Vuex)
 
-export default createStore({
-  state: {
+import member from './modules/member'
+
+
+
+
+
+export default new Vuex.Store({
+  modules: { member,
   },
   getters: {
   },
@@ -20,6 +23,9 @@ export default createStore({
       commit('CONFERENCE_ID', contents)
     },
   },
-  modules: {
-  }
+
+
 })
+
+
+
