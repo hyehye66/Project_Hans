@@ -1,9 +1,10 @@
 <template>
   
   <div class="container">
-    <h1 class="text-2xl d-flex justify-content-space-around py-2 px-4 mt-8">대화방</h1>
-    <button class="bg-indigo-600  text-white font-bold py-2 px-4 rounded" @click="isChatCreateOpen" style="cursor: pointer">방 생성하기</button>
-    
+    <p id="chat-main-title" class="d-flex justify-content-space-around py-2 px-4 mt-8">대화방</p>
+    <div class="btn-container py-4 px-4">
+      <button id="chat-main-create" class="bg-indigo-600  text-white font-bold py-2 px-4 rounded" @click="isChatCreateOpen" style="cursor: pointer">방 생성하기</button>
+    </div>
     <div class="card-container">
     <ChatMainCardList /></div>
   </div>
@@ -40,10 +41,28 @@ export default {
 .container {
   display : flex;
   width : 1200px;
-  flex-direction : column
+  height : 1000px;
+  flex-direction : column;
 }
+
+.btn-container {
+  display : flex;
+  padding-top : 1rem;
+}
+
 .card-container{
   display : flex;
   justify-content: center;
+}
+
+#chat-main-title {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+#chat-main-create {
+  width : 200px;
+  height : 50px;
+  padding-top : 2rem
 }
 </style>

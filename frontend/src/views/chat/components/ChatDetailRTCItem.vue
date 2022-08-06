@@ -9,7 +9,7 @@
 import OvVideo from './OvVideo';
 export default {
   name: 'UserVideo',
-
+	
 	components: {
 		OvVideo,
 	},
@@ -17,7 +17,9 @@ export default {
 	props: {
 		streamManager: Object,
 	},
-
+	created () {
+		console.log(this.streamManager)
+	},
 	computed: {
 		clientData () {
 			const { clientData } = this.getConnectionData();

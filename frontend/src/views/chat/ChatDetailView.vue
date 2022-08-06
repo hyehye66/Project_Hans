@@ -26,8 +26,11 @@ import axios from 'axios'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
-const OPENVIDU_SERVER_SECRET = "MY_SECRET";
+// const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
+// const OPENVIDU_SERVER_SECRET = "MY_SECRET";
+
+const OPENVIDU_SERVER_URL = "https://i7d109.p.ssafy.io";
+const OPENVIDU_SERVER_SECRET = "hans";
 
 export default {
   name : 'ChatDetailView',
@@ -42,49 +45,27 @@ export default {
 		mainStreamManager: undefined,
 		publisher: undefined,
 		subscribers: [],
+		myUserName: '영택임' + Math.floor(Math.random() * 100)
 	}
   },
   props : {
-	sessionName :String,
+	isChatRoomCreate : Boolean
   },
   created(){
-	this.joinSession(this.$route.params.sessionName)
+	this.joinSession()
   },
 
-  
-//   created(){
-// 	this.joinSession(this.sessionName)
-//   },
+
 
   methods : {
-	leaveSession () {
-			// --- Leave the session by calling 'disconnect' method over the Session object ---
-			if (this.session) this.session.disconnect();
+	joinSession () {
 
-			this.session = undefined;
-			this.mainStreamManager = undefined;
-			this.publisher = undefined;
-			this.subscribers = [];
-			this.OV = undefined;
-
-			window.removeEventListener('beforeunload', this.leaveSession);
-			this.$router.push({name : 'ChatMainView'})
-		},
-
-	updateMainVideoStreamManager (stream) {
-			if (this.mainStreamd === stream) return;
-			this.mainStream = stream;
-		},
-
-	joinSession (sessionName) {
-			this.mySessionId = sessionName
+			this.mySessionId = this.$route.params.sessionName
 			this.OV = new OpenVidu();
 			this.session = this.OV.initSession();
-			
 			this.session.on('streamCreated', ({ stream }) => {
 				const subscriber = this.session.subscribe(stream);
 				this.subscribers.push(subscriber);
-				console.log(this.subscribers,123)
 			});
 
 
@@ -95,10 +76,12 @@ export default {
 				}
 			});
 
+
 			this.session.on('exception', ({ exception }) => {
 				console.warn(exception);
 			});
-            
+
+
 			this.getToken(this.mySessionId).then(token => {
 				this.session.connect(token, { clientData: this.myUserName })
 					.then(() => {
@@ -129,11 +112,44 @@ export default {
 			});
 
 			window.addEventListener('beforeunload', this.leaveSession)
-        },
-        getToken (mySessionId) {
+		},
+
+		leaveSession () {
+			// --- Leave the session by calling 'disconnect' method over the Session object ---
+			if (this.session) this.session.disconnect();
+
+			this.session = undefined;
+			this.mainStreamManager = undefined;
+			this.publisher = undefined;
+			this.subscribers = [];
+			this.OV = undefined;
+			window.removeEventListener('beforeunload', this.leaveSession);
+			this.$router.push({name : 'ChatMainView'})
+		},
+
+		updateMainVideoStreamManager (stream) {
+			if (this.mainStreamManager === stream) return;
+			this.mainStreamManager = stream;
+		},
+
+		/**
+		 * --------------------------
+		 * SERVER-SIDE RESPONSIBILITY
+		 * --------------------------
+		 * These methods retrieve the mandatory user token from OpenVidu Server.
+		 * This behavior MUST BE IN YOUR SERVER-SIDE IN PRODUCTION (by using
+		 * the API REST, openvidu-java-client or openvidu-node-client):
+		 *   1) Initialize a Session in OpenVidu Server	(POST /openvidu/api/sessions)
+		 *   2) Create a Connection in OpenVidu Server (POST /openvidu/api/sessions/<SESSION_ID>/connection)
+		 *   3) The Connection.token must be consumed in Session.connect() method
+		 */
+
+		getToken (mySessionId) {
 			return this.createSession(mySessionId).then(sessionId => this.createToken(sessionId));
 		},
-		createSession (sessionId) {      
+
+		// See https://docs.openvidu.io/en/stable/reference-docs/REST-API/#post-session
+		createSession (sessionId) {
 			return new Promise((resolve, reject) => {
 				axios
 					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`, JSON.stringify({
@@ -146,7 +162,6 @@ export default {
 					})
 					.then(response => response.data)
 					.then(data => resolve(data.id))
-          .then(sessionId => this.joinSession(sessionId))
 					.catch(error => {
 						if (error.response.status === 409) {
 							resolve(sessionId);
@@ -160,6 +175,8 @@ export default {
 					});
 			});
 		},
+
+		// See https://docs.openvidu.io/en/stable/reference-docs/REST-API/#post-connection
 		createToken (sessionId) {
 			return new Promise((resolve, reject) => {
 				axios
@@ -174,7 +191,8 @@ export default {
 					.catch(error => reject(error.response));
 			});
 		},
-  } }
+	}
+  } 
 
 </script>
 
