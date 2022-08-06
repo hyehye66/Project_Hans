@@ -2,6 +2,8 @@ package com.hans.hans.domain.ranking.service;
 
 import com.hans.hans.domain.mode.entity.Mode;
 import com.hans.hans.domain.mode.repository.ModeRepository;
+import com.hans.hans.domain.ranking.dto.RankingRequestDto;
+import com.hans.hans.domain.ranking.dto.RankingResponseByMemberDto;
 import com.hans.hans.domain.ranking.dto.RankingResponseDto;
 import com.hans.hans.domain.ranking.entity.Ranking;
 import com.hans.hans.domain.ranking.repository.RankingRepository;
@@ -19,10 +21,17 @@ public class RankingServiceImpl implements RankingService{
 
     @Override
     public RankingResponseDto getRankingListByMode(Long id, Pageable pageable) {
-        Mode mode = modeRepository.findById(id).get();
+        Mode mode = modeRepository.findByModeSequence(id);
         Page<Ranking> list = rankingRepository.findRankingsByModeOrderByScoreDesc(mode, pageable);
         RankingResponseDto rankings = new RankingResponseDto(list);
         return rankings;
+    }
+
+    @Override
+    public RankingResponseByMemberDto createRanking(RankingRequestDto rankingRequestDto) {
+        Ranking ranking = rankingRepository.save(rankingRequestDto.toEntity());
+        RankingResponseByMemberDto rankingResponseByMemberDto = new RankingResponseByMemberDto(ranking);
+        return rankingResponseByMemberDto;
     }
 
 }

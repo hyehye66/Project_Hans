@@ -3,10 +3,11 @@ package com.hans.hans.domain.member.controller;
 import com.hans.hans.domain.login.service.LoginService;
 import com.hans.hans.domain.member.dto.MemberRequestDto;
 import com.hans.hans.domain.member.dto.MemberResponseDto;
+import com.hans.hans.domain.member.dto.MemberSignUpResponseDto;
 import com.hans.hans.domain.member.dto.MemberUpdateRequestDto;
 import com.hans.hans.domain.member.service.MemberService;
-import com.hans.hans.global.response.CommonResponse;
 import com.hans.hans.global.jwt.JwtService;
+import com.hans.hans.global.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ public class MemberController {
     @GetMapping()
     public ResponseEntity<?> getMemberInfo(HttpServletRequest request){
         String email = (String) request.getAttribute("email");
+        
         MemberResponseDto memberResponseDto = memberService.getMemberInfo(email);
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("회원정보 조회에 성공하였습니다.",memberResponseDto));
     }
@@ -48,9 +50,9 @@ public class MemberController {
 
         HttpHeaders headers = loginService.createTokenHeader(accessToken, refreshToken);
 
-        MemberResponseDto memberResponseDto = memberService.createMember(memberRequestDto, refreshToken);
+        MemberSignUpResponseDto memberSignUpResponseDto = memberService.createMember(memberRequestDto, refreshToken);
 
-        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(CommonResponse.createSuccess("회원가입이 완료되었습니다.",memberResponseDto));
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(CommonResponse.createSuccess("회원가입이 완료되었습니다.",memberSignUpResponseDto));
     }
 
     /*
