@@ -146,7 +146,7 @@ public class RoomServiceImpl implements RoomService{
         );
 
         WordGameCreateResponseDto wordGameCreateResponseDto = new WordGameCreateResponseDto(room);
-
+        wordGameCreateResponseDto.setProblemNum(problemNum);
 
         return wordGameCreateResponseDto;
     }

@@ -2,6 +2,7 @@ package com.hans.hans.domain.wordgame.controller;
 
 import com.hans.hans.domain.conversation.dto.ConversationCreateRequestDto;
 import com.hans.hans.domain.room.dto.RoomGetRequestDto;
+import com.hans.hans.domain.room.dto.RoomMemberResponseDto;
 import com.hans.hans.domain.room.dto.RoomResponseDto;
 import com.hans.hans.domain.room.dto.RoomsResponseDto;
 import com.hans.hans.domain.room.service.RoomService;
@@ -49,4 +50,17 @@ public class WordGameController {
         RoomsResponseDto roomsResponseDto = roomService.searchRoomByNickname(nickname,pageable);
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("낱말게임방 닉네임으로 검색 조회에 성공하였습니다.", roomsResponseDto));
     }
+
+    @PostMapping("/{room-seq}")
+    public ResponseEntity<?> enterWordGameRoom(HttpServletRequest request, @PathVariable(name = "room-seq") Long roomSequence){
+        if(!roomService.checkEnterRoom(roomSequence)) {
+            return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createError("현재 낱말게임방에 들어갈 수 있는 인원이 없습니다."));
+        }
+
+        String email = (String)request.getAttribute("email");
+        RoomMemberResponseDto roomMemberResponseDto = roomService.enterRoom(email,roomSequence);
+        return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createSuccess("낱말게임방 입장에 성공하였습니다.",roomMemberResponseDto));
+    }
+
+
 }
