@@ -6,6 +6,7 @@ import com.hans.hans.domain.bodygame.dto.BodyGameUpdateRequestDto;
 import com.hans.hans.domain.bodygame.dto.BodyGameUpdateResponseDto;
 import com.hans.hans.domain.conversation.dto.ConversationCreateResponseDto;
 import com.hans.hans.domain.conversation.dto.ConversationUpdateRequestDto;
+import com.hans.hans.domain.conversation.dto.ConversationUpdateResponseDto;
 import com.hans.hans.domain.mode.entity.Mode;
 import com.hans.hans.domain.mode.repository.ModeRepository;
 import com.hans.hans.domain.conversation.dto.ConversationCreateRequestDto;
@@ -28,10 +29,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class RoomServiceImpl implements RoomService{
@@ -71,6 +76,12 @@ public class RoomServiceImpl implements RoomService{
     public boolean checkEnterRoom(Long roomSequence){
         Room room = roomRepository.findByRoomSequence(roomSequence);
         if(room.getRestrictNum()==room.getCurrentNum() || room.isRoomStatus()) return false;
+        return true;
+    }
+    @Override
+    public boolean existRoomByRoomSeq(Long roomSequence){
+        Room room = roomRepository.findByRoomSequence(roomSequence);
+        if(room==null) return false;
         return true;
     }
     @Override
@@ -289,19 +300,36 @@ public class RoomServiceImpl implements RoomService{
     @Override
     public void leaveRoom(Long roomSequence, String email){
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
-        Room room = roomRepository.findByRoomSequence(roomSequence);
-
         RoomMember leaveMember = roomMemberRepository.findByMember(member);
-        roomMemberRepository.delete(leaveMember);
+        if(leaveMember==null){
+            System.out.println("Problems in getting exiting member");
+            return;
+        }
+        Room leaveRoom = leaveMember.getRoom();
+        if(leaveRoom==null){
+            System.out.println("Problems in the app server: the SESSION does not exist");
+            return;
+        }
+        Long roomSeq = leaveRoom.getRoomSequence();
 
-        if(email.equals(room.getMember().getEmail())){
-            List<RoomMember> nextModerator= roomMemberRepository.findRoomMembersByRoomOrderByEnterDTTMAsc(room);
+        // If the token exists
+        if (leaveRoom.getToken() != null) {
+            roomMemberRepository.delete(leaveMember);
+            leaveRoom.updateCurrentNum(leaveRoom.getCurrentNum()-1);
+            roomRepository.save(leaveRoom);
+        } else {
+            // The TOKEN wasn't valid
+            System.out.println("Problems in the app server: the TOKEN wasn't valid");
+        }
+
+        if(email.equals(leaveRoom.getMember().getEmail())){
+            List<RoomMember> nextModerator= roomMemberRepository.findRoomMembersByRoomOrderByEnterDTTMAsc(leaveRoom);
             if(nextModerator.size()!=0){
-                room.updateMemberSeq(nextModerator.get(0).getMember());
-                roomRepository.save(room);
+                leaveRoom.updateMemberSeq(nextModerator.get(0).getMember());
+                roomRepository.save(leaveRoom);
                 return;
             }
-            roomRepository.delete(room);
+            roomRepository.delete(leaveRoom);
         }
     }
 
