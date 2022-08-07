@@ -84,12 +84,7 @@ public class RoomServiceImpl implements RoomService{
         if(room==null) return false;
         return true;
     }
-    @Override
-    public boolean existRoomByRoomSeq(Long roomSequence){
-        Room room = roomRepository.findByRoomSequence(roomSequence);
-        if(room==null) return false;
-        return true;
-    }
+
 
     @Override
     public RoomMemberResponseDto enterRoom(String email, Long roomSequence){
@@ -298,7 +293,7 @@ public class RoomServiceImpl implements RoomService{
     }
 
     @Override
-    public void leaveRoom(Long roomSequence, String email){
+    public void leaveRoom(String email){
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
         RoomMember leaveMember = roomMemberRepository.findByMember(member);
         if(leaveMember==null){

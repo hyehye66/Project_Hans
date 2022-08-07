@@ -29,5 +29,6 @@ public interface RoomService {
     RoomsResponseDto searchRoomByNickname(String nickname, Pageable pageable);
     ConversationUpdateResponseDto updateConversationRoom(Long roomSequence, ConversationUpdateRequestDto conversationUpdateRequestDto);
     WordGameUpdateResponseDto updateWordGameRoom(Long roomSequence, WordGameUpdateRequestDto wordGameUpdateRequestDto);
+    public BodyGameUpdateResponseDto updateBodyGameRoom(Long roomSequence, BodyGameUpdateRequestDto bodyGameUpdateRequestDto);
     void leaveRoom(String email);
 }
