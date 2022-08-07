@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ModeRepository extends JpaRepository<Mode,Long> {
     Mode findByModeSequence(Long modeSequence);
+    Mode findByModeName(String modeName);
 }

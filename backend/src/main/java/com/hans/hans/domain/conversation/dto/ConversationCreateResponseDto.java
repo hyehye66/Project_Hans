@@ -18,6 +18,8 @@ public class ConversationCreateResponseDto {
     private Date roomDTTM;
     private boolean roomStatus;
 
+    private String token;
+
     public ConversationCreateResponseDto(Room room){
         this.roomSequence = room.getRoomSequence();
         this.member = room.getMember();
@@ -27,5 +29,6 @@ public class ConversationCreateResponseDto {
         this.currentNum = room.getCurrentNum();
         this.roomDTTM = room.getRoomDTTM();
         this.roomStatus = room.isRoomStatus();
+        this.token = room.getToken();
     }
 }

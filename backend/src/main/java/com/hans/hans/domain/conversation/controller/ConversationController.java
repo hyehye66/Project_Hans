@@ -36,17 +36,26 @@ public class ConversationController {
     public ResponseEntity<?> createConversationRoom(HttpServletRequest request, @Valid @RequestBody ConversationCreateRequestDto conversationCreateRequestDto){
         String email = (String)request.getAttribute("email");
         ConversationCreateResponseDto conversationCreateResponseDto = roomService.createConversationRoom(email,conversationCreateRequestDto);
+        if(conversationCreateResponseDto==null){
+            return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createError("대화방 중복이라 생성 할수 없습니다."));
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createSuccess("대화방 생성에 성공하였습니다.", conversationCreateResponseDto));
     }
 
     @PostMapping("/{room-seq}")
     public ResponseEntity<?> enterConversationRoom(HttpServletRequest request, @PathVariable(name = "room-seq") Long roomSequence){
+        if(!roomService.existRoomByRoomSeq(roomSequence)){
+            return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createError("현재 해당 대화방이 존재 하지 않습니다."));
+        }
         if(!roomService.checkEnterRoom(roomSequence)) {
             return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createError("현재 대화방에 들어갈 수 있는 인원이 없습니다."));
         }
 
         String email = (String)request.getAttribute("email");
         RoomMemberResponseDto roomMemberResponseDto = roomService.enterRoom(email,roomSequence);
+        if(roomMemberResponseDto==null){
+            return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createError("방에 문제가 생겨 입장 할수 없습니다."));
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createSuccess("대화방 입장에 성공하였습니다.",roomMemberResponseDto));
     }
 
