@@ -1,5 +1,9 @@
 package com.hans.hans.domain.room.service;
 
+import com.hans.hans.domain.bodygame.dto.BodyGameCreateRequestDto;
+import com.hans.hans.domain.bodygame.dto.BodyGameCreateResponseDto;
+import com.hans.hans.domain.bodygame.dto.BodyGameUpdateRequestDto;
+import com.hans.hans.domain.bodygame.dto.BodyGameUpdateResponseDto;
 import com.hans.hans.domain.conversation.dto.ConversationCreateRequestDto;
 import com.hans.hans.domain.conversation.dto.ConversationCreateResponseDto;
 import com.hans.hans.domain.conversation.dto.ConversationUpdateResponseDto;
@@ -18,10 +22,12 @@ public interface RoomService {
     RoomMemberResponseDto enterRoom(String email, Long roomSequence);
     ConversationCreateResponseDto createConversationRoom(String email, ConversationCreateRequestDto conversationCreateRequestDto);
     WordGameCreateResponseDto createWordGameRoom(String email, WordGameCreateRequestDto wordGameCreateRequestDto);
+    BodyGameCreateResponseDto createBodyGameRoom(String email, BodyGameCreateRequestDto bodyGameCreateRequestDto);
     boolean checkEnterRoom(Long roomSequence);
     RoomsResponseDto searchRoomByTitle(String title, Pageable pageable);
     RoomsResponseDto searchRoomByNickname(String nickname, Pageable pageable);
     ConversationUpdateResponseDto updateConversationRoom(Long roomSequence, ConversationUpdateRequestDto conversationUpdateRequestDto);
     WordGameUpdateResponseDto updateWordGameRoom(Long roomSequence, WordGameUpdateRequestDto wordGameUpdateRequestDto);
+    BodyGameUpdateResponseDto updateBodyGameRoom(Long roomSequence, BodyGameUpdateRequestDto bodyGameUpdateRequestDto);
     void leaveRoom(Long roomSequence, String email);
 }
