@@ -176,7 +176,7 @@ public class RoomServiceImpl implements RoomService{
         Room room = roomRepository.save(
                 Room.builder()
                         .member(member)
-                        .mode(modeRepository.findByModeSequence(2L))
+                        .mode(modeRepository.findByModeSequence(3L))
                         .title(title)
                         .restrictNum(restrictNum)
                         .currentNum(1)
