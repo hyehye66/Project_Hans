@@ -8,10 +8,6 @@ import com.hans.hans.domain.room.dto.RoomGetRequestDto;
 import com.hans.hans.domain.room.dto.RoomMemberResponseDto;
 import com.hans.hans.domain.room.dto.RoomsResponseDto;
 import com.hans.hans.domain.room.service.RoomService;
-import com.hans.hans.domain.wordgame.dto.WordGameCreateRequestDto;
-import com.hans.hans.domain.wordgame.dto.WordGameCreateResponseDto;
-import com.hans.hans.domain.wordgame.dto.WordGameUpdateRequestDto;
-import com.hans.hans.domain.wordgame.dto.WordGameUpdateResponseDto;
 import com.hans.hans.global.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -72,10 +68,10 @@ public class BodyGameController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(CommonResponse.createSuccess("몸으로 말해요 게임방 정보 수정이 완료되었습니다.",bodyGameUpdateResponseDto));
     }
 
-    @DeleteMapping("/{room-seq}")
-    public ResponseEntity<?> leaveBodyGameRoom(@PathVariable(name = "room-seq") Long roomSequence, HttpServletRequest request){
+    @DeleteMapping()
+    public ResponseEntity<?> leaveBodyGameRoom(HttpServletRequest request){
         String email = (String)request.getAttribute("email");
-        roomService.leaveRoom(roomSequence,email);
+        roomService.leaveRoom(email);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(CommonResponse.createSuccess("몸으로 말해요 게임방 나가기가 완료되었습니다.",null));
     }
 
