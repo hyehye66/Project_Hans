@@ -1,10 +1,7 @@
 package com.hans.hans.domain.member.controller;
 
 import com.hans.hans.domain.login.service.LoginService;
-import com.hans.hans.domain.member.dto.MemberRequestDto;
-import com.hans.hans.domain.member.dto.MemberResponseDto;
-import com.hans.hans.domain.member.dto.MemberSignUpResponseDto;
-import com.hans.hans.domain.member.dto.MemberUpdateRequestDto;
+import com.hans.hans.domain.member.dto.*;
 import com.hans.hans.domain.member.service.MemberService;
 import com.hans.hans.global.jwt.JwtService;
 import com.hans.hans.global.response.CommonResponse;
@@ -31,9 +28,9 @@ public class MemberController {
     @GetMapping()
     public ResponseEntity<?> getMemberInfo(HttpServletRequest request){
         String email = (String) request.getAttribute("email");
-        
-        MemberResponseDto memberResponseDto = memberService.getMemberInfo(email);
-        return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("회원정보 조회에 성공하였습니다.",memberResponseDto));
+
+        MemberInfoResponseDto memberInfoResponseDto = memberService.getMemberInfo(email);
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("회원정보 조회에 성공하였습니다.",memberInfoResponseDto));
     }
 
     /*
@@ -50,9 +47,9 @@ public class MemberController {
 
         HttpHeaders headers = loginService.createTokenHeader(accessToken, refreshToken);
 
-        MemberSignUpResponseDto memberSignUpResponseDto = memberService.createMember(memberRequestDto, refreshToken);
+        MemberResponseDto memberResponseDto = memberService.createMember(memberRequestDto, refreshToken);
 
-        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(CommonResponse.createSuccess("회원가입이 완료되었습니다.",memberSignUpResponseDto));
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(CommonResponse.createSuccess("회원가입이 완료되었습니다.", memberResponseDto));
     }
 
     /*
@@ -64,7 +61,7 @@ public class MemberController {
         String email = (String) request.getAttribute("email");
 
         MemberResponseDto memberResponseDto = memberService.updateMemberInfo(email, memberUpdateRequestDto);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(CommonResponse.createSuccess("회원정보 수정이 완료되었습니다.",memberResponseDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createSuccess("회원정보 수정이 완료되었습니다.",memberResponseDto));
     }
 
     // 회원탈퇴
@@ -73,7 +70,7 @@ public class MemberController {
         String email = (String) request.getAttribute("email");
 
         memberService.deleteMember(email);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(CommonResponse.createSuccess("회원탈퇴가 완료되었습니다.",null));
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("회원탈퇴가 완료되었습니다.",null));
     }
 
 }
