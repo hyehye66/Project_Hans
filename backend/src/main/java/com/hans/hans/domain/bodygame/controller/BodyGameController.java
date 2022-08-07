@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/word-game/rooms")
+@RequestMapping("/api/body-game/rooms")
 @RequiredArgsConstructor
 public class BodyGameController {
 
