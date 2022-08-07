@@ -1,9 +1,13 @@
 <template>
-  <div class="bg-gray-100 flex items-center justify-center py-5">
-  <div class="containter mx-auto lg-2 px-20">
-    
-  <ChatMainCardListItem v-for="room in rooms" :room="room" :key="room.id" :mode="mode" />  
-  </div></div>
+  <div class="chat-card-list py-3  grid grid-cols-3 gap-6">
+    <div v-for="room in rooms"  :key="room.roomSequence">
+      <ChatMainCardListItem v-if="room.mode.modeSequence===1" :mode="room.mode.modeName" :room="room" />  
+    </div>
+  </div>
+  <div>
+    <input v-model="idx" class="bg-primary" v-on:keyup.enter="getSession(changeIdx)">
+    {{changeIdx}}
+  </div>
 </template>
 
 <script>
@@ -23,7 +27,10 @@ export default {
     return {
       rooms : '',
       temp : '',
-      mode : 'chat'
+      mode : '',
+      totalRoomPage : {},
+      getRoom : true,
+      idx : 0
     }
   },
   components : {
@@ -31,24 +38,39 @@ export default {
   },
   methods : {
     // 모든 세션 데이터 받아오는 함수 
-    getSession(){
-			axios.get(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`,
-			{auth: {
-							username: 'OPENVIDUAPP',
-							password: OPENVIDU_SERVER_SECRET,
-						}},)
-            .then(res =>{this.rooms = res.data.content, console.log(res.data)})
-            .catch(err => console.log(err,'error here'))
-    },
-  created(){
-    this.getSession()
-  },
+      getSession(idx){
 
+        axios.get(`api/conversation/rooms?page=${idx}`,
+          {auth: {
+                username: 'OPENVIDUAPP',
+                password: OPENVIDU_SERVER_SECRET,
+          }},)
+            .then(res =>{this.rooms = res.data.data.listRooms.content, console.log(this.rooms)})
+            .catch(err => console.log(err,'error here'))
+      }
+			
+  
+
+  },
+  created(){
+    this.getSession(this.idx)
+  },
+  computed:{
+    changeIdx() {
+      return this.idx
+    },
   }}
   
 
 </script>
 
 <style scoped>
+.chat-card-list{
+  display : flex;
+  flex-direction: row ; 
+  width : 1200px;
+  height : auto;
+  flex-wrap: wrap;
 
+}
 </style>

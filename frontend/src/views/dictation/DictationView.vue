@@ -51,24 +51,18 @@
       },
         },
         mounted: function () {
-            let googleScript = document.createElement('script');
-            googleScript.src = 'https://accounts.google.com/gsi/client';
-            document.head.appendChild(googleScript);
             
-            window.addEventListener('load', () => {
-                console.log('제에발')
                 console.log(window.google);
                 window.google.accounts.id.initialize({
                     client_id: "772832939234-780cgu6oljtrf34atfes9679m50fihp9.apps.googleusercontent.com",
                     callback: this.handleCredentialResponse
                 });
                 window.google.accounts.id.renderButton(
-                    
                     document.getElementById("signin_button")
                     ,
                     { theme: "outline", size: "medium"}  // customization attributes
                 );
-            })
+            
         }
     }
 </script>

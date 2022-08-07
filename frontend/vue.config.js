@@ -4,15 +4,22 @@ module.exports = defineConfig({
 })
 
 // module.exports = {
-//   devServer: {
-//     proxy: {
-//       '/api': {
-//         "target" : 'http://localhost:8080/',
-//         "pathRewrite": { '^/': '' },
-//         "changeOrigin": true,
-//         "secure": false,
-//         "ws": false,
-//       }
-//     }
+//   devServer : {
+//     proxy : 'https://i7d109.p.ssafy.io/'
 //   }
 // }
+
+module.exports = {
+  devServer: {
+    proxy: {
+      '/api': {
+        // "target" : 'https://i7d109.p.ssafy.io/',
+        "target" : 'http://localhost:8080/',
+        "pathRewrite": { '^/': '' },
+        "changeOrigin": true,
+        "secure": false,
+        "ws": false,
+      }
+    }
+  }
+}

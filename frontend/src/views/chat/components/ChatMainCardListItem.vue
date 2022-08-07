@@ -1,9 +1,9 @@
 <template>
-   <div class="bg-white p-8 rounded-lg shadow-lg relative hover:shadow-2xl transition duration-500">
-      <h1 class="text-2xl text-gray-800 font-semibold mb-3">{{ room.sessionId }}</h1>
-      <p class="text-gray-600 leading-6 tracking-normal">방장 : {{ room.connections.content[0].clientData.slice(15,-2) }}</p>
-	<p class="text-gray-600 leading-6 tracking-normal">참여인원 : {{ room.connections.numberOfElements }}/6</p>
-      <button class="py-2 px-4 mt-8 bg-indigo-600 text-white rounded-md shadow-xl" ><router-link :to="{ name: 'ChatDetailView', params: { mode : mode, sessionName : room.sessionId, isChatRoomCreate : 'false'}}" :sessionName="room.sessionId" :isChatRoomCreate="false">입장하기</router-link></button>
+   <div class="bg-white p-8 rounded-lg shadow-lg relative hover:shadow-2xl transition duration-500 chat-card">
+      <h1 class="text-2xl text-gray-800 font-semibold mb-3">{{ room.title }}</h1>
+      <p class="text-gray-600 leading-6 tracking-normal">방장 : {{ room.member.nickname }}</p>
+	<p class="text-gray-600 leading-6 tracking-normal">참여인원 : {{ room.currentNum }}/{{room.restrictNum}}</p>
+      <button class="py-2 px-4 mt-8 bg-indigo-600 text-white rounded-md shadow-xl" @click="joinChatRoom" >입장하기</button>
       <div>
         <span class="absolute py-2 px-8 text-sm text-white top-0 right-0 bg-indigo-600 rounded-md transform translate-x-2 -translate-y-3 shadow-xl">{{ mode }}</span>
       </div>
@@ -12,38 +12,41 @@
 
 <script>
 import axios from 'axios';
-import { OpenVidu } from 'openvidu-browser';
+// <router-link :to="{ name: 'ChatDetailView', params: { mode : mode, sessionName : room.title, isChatRoomCreate : 'false'}}" :sessionName="room.sessionId" :isChatRoomCreate="false">입장하기</router-link>
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
-const OPENVIDU_SERVER_SECRET = "MY_SECRET";
-
+const OPENVIDU_SERVER_SECRET = 'hans'
 export default {
 	props : {
 		room : Object,
-		mode : String,
+		mode : String
 	},
 	created(){
-		console.log(this.room)
+		
 	},
   data () {
 		return {
-			OV: undefined,
-			session: undefined,
-			mainStreamManager: undefined,
-			publisher: undefined,
-			subscribers: [],
-			mySessionId: '',
-			myUserName: '영택임' + Math.floor(Math.random() * 100),
+			token : ''
 		}
 	},
   methods: {
-		
-		thisMode(){
-		return this.mode
+	getToken(){
+		this.token = this.room.token
+	},
+	joinChatRoom(){
+		axios.post(
+			`/api/conversation/rooms/`+this.room.roomSequence,
+			{auth : 
+			{
+				username: 'OPENVIDUAPP',
+				password: OPENVIDU_SERVER_SECRET
+			}})
+		.then(res => {this.$router.push({ name: 'ChatDetailView', params: { mode : this.mode, sessionName : this.room.title, token : this.room.token}})})
+		.catch(err => console.log(err,123 ))
 	}
-	}}
+	}
+	}
 	
        
 	
@@ -52,5 +55,7 @@ export default {
 </script>
 
 <style scoped>
-
+.chat-card {
+	width : 300px;
+}
 </style>
