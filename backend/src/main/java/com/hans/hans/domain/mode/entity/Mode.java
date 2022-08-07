@@ -15,13 +15,15 @@ public class Mode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MODE_SEQ")
-    private Long modeSequence;
+    private int modeSequence;
 
     @Column(name = "MODE_NAME", nullable = false)
     private String modeName;
 
+
+
     @Builder
-    public Mode(Long modeSequence){
+    public Mode(int modeSequence){
         this.modeSequence = modeSequence;
     }
 }
