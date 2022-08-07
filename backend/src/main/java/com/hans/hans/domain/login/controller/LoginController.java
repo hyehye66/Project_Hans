@@ -1,7 +1,7 @@
 package com.hans.hans.domain.login.controller;
 
 import com.hans.hans.domain.login.service.LoginService;
-import com.hans.hans.domain.member.dto.MemberResponseDto;
+import com.hans.hans.domain.member.dto.MemberInfoResponseDto;
 import com.hans.hans.domain.member.service.MemberService;
 import com.hans.hans.global.exception.NoExistMemberException;
 import com.hans.hans.global.response.CommonResponse;
@@ -36,12 +36,12 @@ public class LoginController {
             HttpHeaders headers = loginService.createTokenHeader(accessToken, refreshToken);
             memberService.updateRefreshToken(email, refreshToken);
 
-            MemberResponseDto memberResponseDto = memberService.getMemberInfo(email);
+            MemberInfoResponseDto memberInfoResponseDto = memberService.getMemberInfo(email);
 
-            return ResponseEntity.status(HttpStatus.OK).headers(headers).body(CommonResponse.createSuccess("로그인이 완료되었습니다.",memberResponseDto));
+            return ResponseEntity.status(HttpStatus.OK).headers(headers).body(CommonResponse.createSuccess("로그인이 완료되었습니다.",memberInfoResponseDto));
 
         }catch (NoExistMemberException e){
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(CommonResponse.createSuccess("회원가입이 필요합니다.",null));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.createSuccess("회원가입이 필요합니다.",null));
         }
 
     }
