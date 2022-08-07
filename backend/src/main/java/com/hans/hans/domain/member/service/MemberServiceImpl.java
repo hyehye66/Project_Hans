@@ -1,9 +1,6 @@
 package com.hans.hans.domain.member.service;
 
-import com.hans.hans.domain.member.dto.MemberRequestDto;
-import com.hans.hans.domain.member.dto.MemberResponseDto;
-import com.hans.hans.domain.member.dto.MemberSignUpResponseDto;
-import com.hans.hans.domain.member.dto.MemberUpdateRequestDto;
+import com.hans.hans.domain.member.dto.*;
 import com.hans.hans.domain.member.entity.Member;
 import com.hans.hans.domain.member.repository.MemberRepository;
 import com.hans.hans.domain.mode.entity.Mode;
@@ -25,26 +22,26 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     // 회원정보 확인
-    public MemberResponseDto getMemberInfo(String email) {
+    public MemberInfoResponseDto getMemberInfo(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
-        MemberResponseDto memberResponseDto = new MemberResponseDto(member);
+        MemberInfoResponseDto memberInfoResponseDto = new MemberInfoResponseDto(member);
 
-        return memberResponseDto;
+        return memberInfoResponseDto;
     }
 
     // 회원가입
     @Override
-    public MemberSignUpResponseDto createMember(MemberRequestDto memberRequestDto, String refreshToken){
+    public MemberResponseDto createMember(MemberRequestDto memberRequestDto, String refreshToken){
         try{
             memberRequestDto.updateRefreshToken(refreshToken);
             Member member = memberRepository.save(memberRequestDto.toEntity());
-            for (Long i=1L;i<=modeRepository.count();i++){
+            for (Long i=1L;i<=3L;i++){
                 Mode mode = modeRepository.findByModeSequence(i);
                 RankingRequestDto rankingRequestDto = new RankingRequestDto(member, mode);
                 rankingServiceImpl.createRanking(rankingRequestDto);
             }
-            MemberSignUpResponseDto memberSignUpResponseDto = new MemberSignUpResponseDto(member);
-            return memberSignUpResponseDto;
+            MemberResponseDto memberResponseDto = new MemberResponseDto(member);
+            return memberResponseDto;
         }catch (DataIntegrityViolationException e){
             throw new ExistNicknameException("존재하는 닉네임입니다.");
         }
