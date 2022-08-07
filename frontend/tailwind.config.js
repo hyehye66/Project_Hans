@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-
+const withMT = require("@material-tailwind/html/utils/withMT");
 // const colors = require('tailwindcss/colors')
 
 
@@ -11,7 +11,9 @@ module.exports = {
   './src/views/modal/components/ChatRoomCreateModal.vue',
   './src/views/communication/components/CommunicationList.vue',
   './src/views/chat/components/ChatMainCardListItem.vue',
-  './src/views/communication/components/CommunicationList.vue'],
+  './src/views/chat/components/ChatMainCardList.vue',
+  './src/views/communication/components/CommunicationList.vue',
+  './src/views/chat/ChatMainView.vue'],
   theme: {
     extend: {
       colors: {
@@ -30,5 +32,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("daisyui")],
+  plugins: [require("daisyui")  ],
 }

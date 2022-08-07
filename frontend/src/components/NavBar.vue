@@ -51,12 +51,12 @@
     </ul>
   </div>
   <div class="navbar-end">
-    <button class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded" @click="isOpen" style="cursor: pointer">Login</button>
+    <button class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded" @click="isLoginOpen" style="cursor: pointer">Login</button>
   </div>
 
 
 </div>
-<LoginModal v-model:open="open" />
+<LoginModal v-model:loginOpen="loginOpen" />
 
         
 </template>
@@ -71,12 +71,13 @@ export default {
   },
   data(){
     return {
-      open : false,
+      loginOpen : false,
     }
   },
   methods : {
-    isOpen (){
-      return this.open = !this.open
+    isLoginOpen (){
+      console.log(this.loginOpen)
+      return this.loginOpen = !this.loginOpen
     }
   },
 }
