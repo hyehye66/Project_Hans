@@ -28,14 +28,13 @@ public class ConversationController {
 
     @GetMapping()
     public ResponseEntity<?> getConversationRooms(@PageableDefault(size = 6) Pageable pageable){
-        RoomsResponseDto roomsResponseDto = roomService.getRooms(RoomGetRequestDto.builder().modeSequence(1L).build(), pageable);
+        RoomsResponseDto roomsResponseDto = roomService.getRooms(RoomGetRequestDto.builder().modeSequence(1).build(), pageable);
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("대화방 리스트 조회에 성공하였습니다. ", roomsResponseDto));
     }
 
     @PostMapping()
     public ResponseEntity<?> createConversationRoom(HttpServletRequest request, @Valid @RequestBody ConversationCreateRequestDto conversationCreateRequestDto){
-//        String email = (String)request.getAttribute("email");
-        String email = "syi0000@naver.com";
+        String email = (String)request.getAttribute("email");
         ConversationCreateResponseDto conversationCreateResponseDto = roomService.createConversationRoom(email,conversationCreateRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createSuccess("대화방 생성에 성공하였습니다.", conversationCreateResponseDto));
     }
