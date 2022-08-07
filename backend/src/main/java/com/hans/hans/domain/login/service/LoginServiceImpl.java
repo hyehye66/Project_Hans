@@ -78,7 +78,7 @@ public class LoginServiceImpl implements LoginService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+accessToken);
-        headers.add("jwt-refresh-token",refreshToken);
+        headers.add("refreshToken",refreshToken);
 
         return headers;
     }
