@@ -4,7 +4,6 @@ import com.hans.hans.domain.conversation.dto.ConversationCreateRequestDto;
 import com.hans.hans.domain.conversation.dto.ConversationCreateResponseDto;
 import com.hans.hans.domain.conversation.dto.ConversationUpdateRequestDto;
 import com.hans.hans.domain.conversation.dto.ConversationUpdateResponseDto;
-import com.hans.hans.domain.room.dto.RoomResponseDto;
 import com.hans.hans.domain.room.dto.RoomGetRequestDto;
 import com.hans.hans.domain.room.dto.RoomMemberResponseDto;
 import com.hans.hans.domain.room.dto.RoomsResponseDto;
@@ -80,7 +79,7 @@ public class ConversationController {
     @DeleteMapping("/{room-seq}")
     public ResponseEntity<?> leaveConversationRoom(@PathVariable(name = "room-seq") Long roomSequence, HttpServletRequest request){
         String email = (String)request.getAttribute("email");
-        roomService.leaveRoom(roomSequence,email);
+        roomService.leaveRoom(email);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(CommonResponse.createSuccess("대화방 나가기가 완료되었습니다.",null));
     }
 
