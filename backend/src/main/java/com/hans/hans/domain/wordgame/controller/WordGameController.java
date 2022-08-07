@@ -68,8 +68,8 @@ public class WordGameController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(CommonResponse.createSuccess("낱말게임방 정보 수정이 완료되었습니다.",wordGameUpdateResponseDto));
     }
 
-    @DeleteMapping("/{room-seq}")
-    public ResponseEntity<?> leaveWordGameRoom(@PathVariable(name = "room-seq") Long roomSequence, HttpServletRequest request){
+    @DeleteMapping()
+    public ResponseEntity<?> leaveWordGameRoom(HttpServletRequest request){
         String email = (String)request.getAttribute("email");
 
         roomService.leaveRoom(email);

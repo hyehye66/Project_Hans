@@ -24,19 +24,15 @@ import com.hans.hans.domain.wordgame.dto.WordGameUpdateResponseDto;
 import com.hans.hans.global.exception.NoExistMemberException;
 import com.hans.hans.global.util.ModeName;
 import io.openvidu.java.client.*;
-import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+
 
 @Service
 public class RoomServiceImpl implements RoomService{
@@ -84,7 +80,6 @@ public class RoomServiceImpl implements RoomService{
         if(room==null) return false;
         return true;
     }
-
 
     @Override
     public RoomMemberResponseDto enterRoom(String email, Long roomSequence){
@@ -305,15 +300,12 @@ public class RoomServiceImpl implements RoomService{
             System.out.println("Problems in the app server: the SESSION does not exist");
             return;
         }
-        Long roomSeq = leaveRoom.getRoomSequence();
 
-        // If the token exists
         if (leaveRoom.getToken() != null) {
             roomMemberRepository.delete(leaveMember);
             leaveRoom.updateCurrentNum(leaveRoom.getCurrentNum()-1);
             roomRepository.save(leaveRoom);
         } else {
-            // The TOKEN wasn't valid
             System.out.println("Problems in the app server: the TOKEN wasn't valid");
         }
 
