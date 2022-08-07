@@ -54,7 +54,7 @@ public class WordGameController {
     @PostMapping("/{room-seq}")
     public ResponseEntity<?> enterWordGameRoom(HttpServletRequest request, @PathVariable(name = "room-seq") Long roomSequence){
         if(!roomService.checkEnterRoom(roomSequence)) {
-            return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createError("현재 낱말게임방에 들어갈 수 있는 인원이 없습니다."));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(CommonResponse.createError("현재 낱말게임방에 들어갈 수 있는 인원이 없습니다."));
         }
 
         String email = (String)request.getAttribute("email");
@@ -65,7 +65,7 @@ public class WordGameController {
     @PutMapping("/{room-seq}")
     public ResponseEntity<?> updateWordGameRoom(@PathVariable(name = "room-seq") Long roomSequence, @Valid @RequestBody WordGameUpdateRequestDto wordGameUpdateRequestDto){
         WordGameUpdateResponseDto wordGameUpdateResponseDto = roomService.updateWordGameRoom(roomSequence, wordGameUpdateRequestDto);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(CommonResponse.createSuccess("낱말게임방 정보 수정이 완료되었습니다.",wordGameUpdateResponseDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createSuccess("낱말게임방 정보 수정이 완료되었습니다.",wordGameUpdateResponseDto));
     }
 
     @DeleteMapping()
@@ -73,7 +73,7 @@ public class WordGameController {
         String email = (String)request.getAttribute("email");
 
         roomService.leaveRoom(email);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(CommonResponse.createSuccess("낱말게임방 나가기가 완료되었습니다.",null));
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("낱말게임방 나가기가 완료되었습니다.",null));
     }
 
 
