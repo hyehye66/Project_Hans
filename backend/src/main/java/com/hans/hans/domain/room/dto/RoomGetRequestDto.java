@@ -4,11 +4,11 @@ import com.hans.hans.domain.mode.entity.Mode;
 import lombok.Builder;
 
 public class RoomGetRequestDto {
-    private Long modeSequence;
+    private int modeSequence;
     private String modeName;
 
     @Builder
-    public RoomGetRequestDto(Long modeSequence, String modeName){
+    public RoomGetRequestDto(int modeSequence, String modeName){
         this.modeSequence = modeSequence;
         this.modeName = modeName;
     }
