@@ -1,6 +1,5 @@
 package com.hans.hans.domain.login.controller;
 
-import com.hans.hans.domain.login.dto.GoogleTokenResponseDto;
 import com.hans.hans.domain.login.service.LoginService;
 import com.hans.hans.domain.member.dto.MemberResponseDto;
 import com.hans.hans.domain.member.service.MemberService;
@@ -8,18 +7,16 @@ import com.hans.hans.global.exception.NoExistMemberException;
 import com.hans.hans.global.response.CommonResponse;
 import com.hans.hans.global.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
 @RestController
+@RequestMapping("/api/login")
 @RequiredArgsConstructor
 public class LoginController {
 
@@ -27,19 +24,9 @@ public class LoginController {
     private final MemberService memberService;
 
     private final JwtService jwtService;
-    @Value("${google.login.url}")
-    private String GOOGLE_OAUTH_URI;
 
-    @GetMapping("/google-login")
-    public void redirectGoogleLoginUri(HttpServletResponse response) throws IOException {
-        response.sendRedirect(GOOGLE_OAUTH_URI);
-    }
-
-    @GetMapping("/login/google-oauth")
-    public ResponseEntity<?> getGoogleAuthorizationCode(@RequestParam String code){
-        GoogleTokenResponseDto googleTokenResponseDto = loginService.getGoogleAccessToken(code);
-        String email = loginService.getGoogleEmail(googleTokenResponseDto.getAccessToken());
-
+    @GetMapping()
+    public ResponseEntity<?> getGoogleAuthorizationCode(@RequestParam String email){
         try{
             memberService.getMemberInfo(email);
 
