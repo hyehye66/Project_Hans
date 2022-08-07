@@ -20,7 +20,7 @@ public class RankingServiceImpl implements RankingService{
     private final ModeRepository modeRepository;
 
     @Override
-    public RankingResponseDto getRankingListByMode(Long id, Pageable pageable) {
+    public RankingResponseDto getRankingListByMode(int id, Pageable pageable) {
         Mode mode = modeRepository.findByModeSequence(id);
         Page<Ranking> list = rankingRepository.findRankingsByModeOrderByScoreDesc(mode, pageable);
         RankingResponseDto rankings = new RankingResponseDto(list);

@@ -81,7 +81,7 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public RoomMemberResponseDto enterRoom(String email, Long roomSequence){
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> {throw new NoExistMemberException("존재하는 회원정보가 없습니다.");});
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
         try{
             Room room = roomRepository.findByRoomSequence(roomSequence);
             OpenViduRole role = OpenViduRole.PUBLISHER;
@@ -130,7 +130,7 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public ConversationCreateResponseDto createConversationRoom(String email, ConversationCreateRequestDto conversationCreateRequestDto) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> {throw new NoExistMemberException("존재하는 회원정보가 없습니다.");});
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
         Mode mode = modeRepository.findByModeName(ModeName.CONVERSATION.name());
 
         OpenViduRole role = OpenViduRole.PUBLISHER;
@@ -148,7 +148,7 @@ public class RoomServiceImpl implements RoomService{
             Room room = roomRepository.save(
                     Room.builder()
                             .member(member)
-                            .mode(modeRepository.findByModeSequence(1L))
+                            .mode(modeRepository.findByModeSequence(1))
                             .title(title)
                             .restrictNum(restrictNum)
                             .currentNum(1)
@@ -179,7 +179,7 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public WordGameCreateResponseDto createWordGameRoom(String email, WordGameCreateRequestDto wordGameCreateRequestDto){
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> {throw new NoExistMemberException("존재하는 회원정보가 없습니다.");});
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
 
         Date now = new Date();
         String title = wordGameCreateRequestDto.getTitle();
@@ -190,7 +190,7 @@ public class RoomServiceImpl implements RoomService{
         Room room = roomRepository.save(
                 Room.builder()
                         .member(member)
-                        .mode(modeRepository.findByModeSequence(2L))
+                        .mode(modeRepository.findByModeSequence(2))
                         .title(title)
                         .restrictNum(restrictNum)
                         .currentNum(1)
@@ -215,7 +215,7 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public BodyGameCreateResponseDto createBodyGameRoom(String email, BodyGameCreateRequestDto bodyGameCreateRequestDto){
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> {throw new NoExistMemberException("존재하는 회원정보가 없습니다.");});
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
 
         Date now = new Date();
         String title = bodyGameCreateRequestDto.getTitle();
@@ -229,7 +229,7 @@ public class RoomServiceImpl implements RoomService{
         Room room = roomRepository.save(
                 Room.builder()
                         .member(member)
-                        .mode(modeRepository.findByModeSequence(3L))
+                        .mode(modeRepository.findByModeSequence(3))
                         .title(title)
                         .restrictNum(restrictNum)
                         .currentNum(1)
@@ -293,7 +293,7 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public void leaveRoom(String email){
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> {throw new NoExistMemberException("존재하는 회원정보가 없습니다.");});
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
         RoomMember leaveMember = roomMemberRepository.findByMember(member);
         if(leaveMember==null){
             System.out.println("Problems in getting exiting member");

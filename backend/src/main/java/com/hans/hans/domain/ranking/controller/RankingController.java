@@ -21,7 +21,7 @@ public class RankingController {
     private final RankingServiceImpl rankingServiceImpl;
 
     @GetMapping("/{modeId}")
-    public ResponseEntity<?> getRankingListByMode(@PathVariable(name="modeId") Long id, @PageableDefault(size=10)Pageable pageable) {
+    public ResponseEntity<?> getRankingListByMode(@PathVariable(name="modeId") int id, @PageableDefault(size=10)Pageable pageable) {
         RankingResponseDto rankingResponseDto = rankingServiceImpl.getRankingListByMode(id, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("랭킹 조회에 성공하였습니다.",rankingResponseDto));
     }
