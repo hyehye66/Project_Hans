@@ -1,5 +1,9 @@
 package com.hans.hans.domain.room.service;
 
+import com.hans.hans.domain.bodygame.dto.BodyGameCreateRequestDto;
+import com.hans.hans.domain.bodygame.dto.BodyGameCreateResponseDto;
+import com.hans.hans.domain.bodygame.dto.BodyGameUpdateRequestDto;
+import com.hans.hans.domain.bodygame.dto.BodyGameUpdateResponseDto;
 import com.hans.hans.domain.conversation.dto.ConversationCreateResponseDto;
 import com.hans.hans.domain.conversation.dto.ConversationUpdateRequestDto;
 import com.hans.hans.domain.conversation.dto.ConversationUpdateResponseDto;
@@ -47,7 +51,7 @@ public class RoomServiceImpl implements RoomService{
     @Override
     public boolean checkEnterRoom(Long roomSequence){
         Room room = roomRepository.findByRoomSequence(roomSequence);
-        if(room.getRestrictNum()==room.getCurrentNum()) return false;
+        if(room.getRestrictNum()==room.getCurrentNum() || room.isRoomStatus()) return false;
         return true;
     }
 
@@ -127,6 +131,7 @@ public class RoomServiceImpl implements RoomService{
 
         Date now = new Date();
         String title = wordGameCreateRequestDto.getTitle();
+
         int restrictNum = wordGameCreateRequestDto.getRestrictNum();
         int problemNum = wordGameCreateRequestDto.getProblemNum();
 
@@ -156,6 +161,44 @@ public class RoomServiceImpl implements RoomService{
     }
 
     @Override
+    public BodyGameCreateResponseDto createBodyGameRoom(String email, BodyGameCreateRequestDto bodyGameCreateRequestDto){
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
+
+        Date now = new Date();
+        String title = bodyGameCreateRequestDto.getTitle();
+
+        int restrictNum = bodyGameCreateRequestDto.getRestrictNum();
+        int problemNum = bodyGameCreateRequestDto.getProblemNum();
+        int difficulty = bodyGameCreateRequestDto.getDifficulty();
+        int timeLimit = bodyGameCreateRequestDto.getTimeLimit();
+
+
+        Room room = roomRepository.save(
+                Room.builder()
+                        .member(member)
+                        .mode(modeRepository.findByModeSequence(2L))
+                        .title(title)
+                        .restrictNum(restrictNum)
+                        .currentNum(1)
+                        .roomDTTM(now)
+                        .roomStatus(false)
+                        .build());
+
+        roomMemberRepository.save(
+                RoomMember.builder()
+                        .member(member)
+                        .room(room)
+                        .enterDTTM(now)
+                        .build()
+        );
+
+        BodyGameCreateResponseDto bodyGameCreateResponseDto = new BodyGameCreateResponseDto(room);
+        bodyGameCreateResponseDto.updateSettings(problemNum,difficulty,timeLimit);
+
+        return bodyGameCreateResponseDto;
+    }
+
+    @Override
     public ConversationUpdateResponseDto updateConversationRoom(Long roomSequence, ConversationUpdateRequestDto conversationUpdateRequestDto){
         Room room = roomRepository.findByRoomSequence(roomSequence);
         room.updateRoomTitleAndRestricNum(conversationUpdateRequestDto.getTitle(), conversationUpdateRequestDto.getRestrictNum());
@@ -171,10 +214,27 @@ public class RoomServiceImpl implements RoomService{
         Room room = roomRepository.findByRoomSequence(roomSequence);
         room.updateRoomTitleAndRestricNum(wordGameUpdateRequestDto.getTitle(), wordGameUpdateRequestDto.getRestrictNum());
 
+        int problemNum = wordGameUpdateRequestDto.getProblemNum();
+
         WordGameUpdateResponseDto wordGameUpdateResponseDto = new WordGameUpdateResponseDto(roomRepository.save(room));
-        wordGameUpdateResponseDto.updateProblemNum(wordGameUpdateRequestDto.getProblemNum());
+        wordGameUpdateResponseDto.updateProblemNum(problemNum);
 
         return wordGameUpdateResponseDto;
+    }
+
+    @Override
+    public BodyGameUpdateResponseDto updateBodyGameRoom(Long roomSequence, BodyGameUpdateRequestDto bodyGameUpdateRequestDto){
+        Room room = roomRepository.findByRoomSequence(roomSequence);
+        room.updateRoomTitleAndRestricNum(bodyGameUpdateRequestDto.getTitle(), bodyGameUpdateRequestDto.getRestrictNum());
+
+        int problemNum = bodyGameUpdateRequestDto.getProblemNum();
+        int difficulty = bodyGameUpdateRequestDto.getDifficulty();
+        int timeLimit = bodyGameUpdateRequestDto.getTimeLimit();
+
+        BodyGameUpdateResponseDto bodyGameUpdateResponseDto = new BodyGameUpdateResponseDto(roomRepository.save(room));
+        bodyGameUpdateResponseDto.updateSettings(problemNum,difficulty,timeLimit);
+
+        return bodyGameUpdateResponseDto;
     }
 
     @Override
