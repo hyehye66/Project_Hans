@@ -40,7 +40,7 @@ public class Room {
     private boolean roomStatus;
 
     @OneToOne
-    @JoinColumn(name = "MEMEBER_SEQ")
+    @JoinColumn(name = "MEMBER_SEQ")
     private Member member;
 
     @ManyToOne
