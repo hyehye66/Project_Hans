@@ -22,6 +22,7 @@ import com.hans.hans.domain.wordgame.dto.WordGameCreateResponseDto;
 import com.hans.hans.domain.wordgame.dto.WordGameUpdateRequestDto;
 import com.hans.hans.domain.wordgame.dto.WordGameUpdateResponseDto;
 import com.hans.hans.global.exception.NoExistMemberException;
+import com.hans.hans.global.exception.NoExistRoomException;
 import com.hans.hans.global.util.ModeName;
 import io.openvidu.java.client.*;
 
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @Service
@@ -65,6 +67,7 @@ public class RoomServiceImpl implements RoomService{
     public RoomsResponseDto getRooms(RoomGetRequestDto roomGetRequestDto, Pageable pageable) {
         Page<Room> rooms = roomRepository.findRoomsByMode(roomGetRequestDto.toEntity(), pageable);
         RoomsResponseDto roomsResponseDto = new RoomsResponseDto(rooms);
+
         return roomsResponseDto;
     }
 
@@ -72,46 +75,46 @@ public class RoomServiceImpl implements RoomService{
     public boolean checkEnterRoom(Long roomSequence){
         Room room = roomRepository.findByRoomSequence(roomSequence);
         if(room.getRestrictNum()==room.getCurrentNum() || room.isRoomStatus()) return false;
-        return true;
-    }
-    @Override
-    public boolean existRoomByRoomSeq(Long roomSequence){
-        Room room = roomRepository.findByRoomSequence(roomSequence);
-        if(room==null) return false;
+
         return true;
     }
 
     @Override
     public RoomMemberResponseDto enterRoom(String email, Long roomSequence){
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
-        Room room = roomRepository.findByRoomSequence(roomSequence);
+        try{
+            Room room = roomRepository.findByRoomSequence(roomSequence);
+            OpenViduRole role = OpenViduRole.PUBLISHER;
+            String serverData = "{\"serverData\": \"" + member.getEmail() + "\"}";
+            ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
 
-        OpenViduRole role = OpenViduRole.PUBLISHER;
-        String serverData = "{\"serverData\": \"" + member.getEmail() + "\"}";
-        ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
+            Date now = new Date();
 
+            room.updateCurrentNum(room.getCurrentNum()+1);
+            roomRepository.save(room);
 
-        Date now = new Date();
+            RoomMember roomMember = roomMemberRepository.save(
+                    RoomMember.builder()
+                            .member(member)
+                            .room(room)
+                            .enterDTTM(now)
+                            .build()
+            );
 
-        room.updateCurrentNum(room.getCurrentNum()+1);
-        roomRepository.save(room);
+            RoomMemberResponseDto roomMemberResponseDto = new RoomMemberResponseDto(roomMember);
 
-        RoomMember roomMember = roomMemberRepository.save(
-                RoomMember.builder()
-                        .member(member)
-                        .room(room)
-                        .enterDTTM(now)
-                        .build()
-        );
+            return roomMemberResponseDto;
+        }catch (NoSuchElementException e){
+            throw new NoExistRoomException("존재하지 않는 방입니다.");
+        }
 
-        RoomMemberResponseDto roomMemberResponseDto = new RoomMemberResponseDto(roomMember);
-        return roomMemberResponseDto;
     }
 
     @Override
     public RoomsResponseDto searchRoomByTitle(String title, Pageable pageable){
         Page<Room> rooms = roomRepository.findRoomsByTitleContaining(title, pageable);
         RoomsResponseDto roomsResponseDto = new RoomsResponseDto(rooms);
+
         return roomsResponseDto;
     }
 
@@ -121,6 +124,7 @@ public class RoomServiceImpl implements RoomService{
         Page<Room> rooms = roomRepository.findRoomsByMember(member,pageable);
 
         RoomsResponseDto roomsResponseDto = new RoomsResponseDto(rooms);
+
         return roomsResponseDto;
     }
 
@@ -132,12 +136,8 @@ public class RoomServiceImpl implements RoomService{
         OpenViduRole role = OpenViduRole.PUBLISHER;
         String serverData = "{\"serverData\": \"" + member.getEmail() + "\"}";
         ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
-        Room findRoom = roomRepository.findRoomByTitleAndMode(conversationCreateRequestDto.getTitle(),mode);
-        if(findRoom!=null){
-            return null;
-        }
-        try {
 
+        try {
             Date now = new Date();
             String title = conversationCreateRequestDto.getTitle();
             int restrictNum = conversationCreateRequestDto.getRestrictNum();
@@ -155,7 +155,9 @@ public class RoomServiceImpl implements RoomService{
                             .roomDTTM(now)
                             .roomStatus(false)
                             .token(token)
-                            .build());
+                            .build()
+            );
+
             roomMemberRepository.save(
                     RoomMember.builder()
                             .member(member)
@@ -194,7 +196,8 @@ public class RoomServiceImpl implements RoomService{
                         .currentNum(1)
                         .roomDTTM(now)
                         .roomStatus(false)
-                        .build());
+                        .build()
+        );
 
         roomMemberRepository.save(
                 RoomMember.builder()
@@ -232,7 +235,8 @@ public class RoomServiceImpl implements RoomService{
                         .currentNum(1)
                         .roomDTTM(now)
                         .roomStatus(false)
-                        .build());
+                        .build()
+        );
 
         roomMemberRepository.save(
                 RoomMember.builder()
@@ -298,6 +302,7 @@ public class RoomServiceImpl implements RoomService{
         Room leaveRoom = leaveMember.getRoom();
         if(leaveRoom==null){
             System.out.println("Problems in the app server: the SESSION does not exist");
+
             return;
         }
 
@@ -314,6 +319,7 @@ public class RoomServiceImpl implements RoomService{
             if(nextModerator.size()!=0){
                 leaveRoom.updateMemberSeq(nextModerator.get(0).getMember());
                 roomRepository.save(leaveRoom);
+
                 return;
             }
             roomRepository.delete(leaveRoom);
