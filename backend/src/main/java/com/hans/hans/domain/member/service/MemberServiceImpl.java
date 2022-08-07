@@ -23,7 +23,7 @@ public class MemberServiceImpl implements MemberService{
     @Override
     // 회원정보 확인
     public MemberInfoResponseDto getMemberInfo(String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> {throw new NoExistMemberException("존재하는 회원정보가 없습니다.");});
         MemberInfoResponseDto memberInfoResponseDto = new MemberInfoResponseDto(member);
 
         return memberInfoResponseDto;
@@ -50,7 +50,7 @@ public class MemberServiceImpl implements MemberService{
     // 회원정보 수정
     @Override
     public MemberResponseDto updateMemberInfo(String email, MemberUpdateRequestDto memberUpdateRequestDto){
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> {throw new NoExistMemberException("존재하는 회원정보가 없습니다.");});
 
         try{
             member.updateInfo(memberUpdateRequestDto.getNickname(), memberUpdateRequestDto.getIntroduction());
@@ -65,13 +65,13 @@ public class MemberServiceImpl implements MemberService{
     // 회원탈퇴
     @Override
     public void deleteMember(String email){
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> {throw new NoExistMemberException("존재하는 회원정보가 없습니다.");});
         memberRepository.delete(member);
     }
 
     @Override
     public void updateRefreshToken(String email, String refreshToken) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> {throw new NoExistMemberException("존재하는 회원정보가 없습니다.");});
         member.updateRefreshToken(refreshToken);
         memberRepository.save(member);
     }
