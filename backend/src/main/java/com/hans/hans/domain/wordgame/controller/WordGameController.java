@@ -29,7 +29,7 @@ public class WordGameController {
 
     @GetMapping()
     public ResponseEntity<?> getWordGameRooms(@PageableDefault(size = 6) Pageable pageable){
-        RoomsResponseDto roomsResponseDto = roomService.getRooms(RoomGetRequestDto.builder().modeSequence(2).build(), pageable);
+        RoomsResponseDto roomsResponseDto = roomService.getRooms(RoomGetRequestDto.builder().modeSequence(Modes.WORD.getModeSequence()).build(), pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("낱말게임방 리스트 조회에 성공하였습니다. ", roomsResponseDto));
     }
@@ -68,7 +68,7 @@ public class WordGameController {
         return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createSuccess("낱말게임방 입장에 성공하였습니다.",roomMemberResponseDto));
     }
 
-    @GetMapping("/random")
+    @PostMapping("/random")
     public ResponseEntity<?> enterWordGameRoomByRandom(HttpServletRequest request){
         String email = (String)request.getAttribute("email");
         RoomMemberResponseDto roomMemberResponseDto = roomService.enterRoomByRandom(email, Modes.WORD);
