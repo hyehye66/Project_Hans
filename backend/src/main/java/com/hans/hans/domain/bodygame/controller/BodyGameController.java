@@ -68,6 +68,14 @@ public class BodyGameController {
         return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createSuccess("몸으로 말해요 게임방 입장에 성공하였습니다.",roomMemberResponseDto));
     }
 
+    @PostMapping("/random")
+    public ResponseEntity<?> enterBodyGameRoomByRandom(HttpServletRequest request){
+        String email = (String)request.getAttribute("email");
+        RoomMemberResponseDto roomMemberResponseDto = roomService.enterRoomByRandom(email, Modes.BODY);
+
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("몸으로 말해요 게임방 랜덤 입장에 성공하였습니다.",roomMemberResponseDto));
+    }
+
     @PutMapping("/{room-seq}")
     public ResponseEntity<?> updateBodyGameRoom(@PathVariable(name = "room-seq") Long roomSequence, @Valid @RequestBody BodyGameUpdateRequestDto bodyGameUpdateRequestDto){
         BodyGameUpdateResponseDto bodyGameUpdateResponseDto = roomService.updateBodyGameRoom(roomSequence, bodyGameUpdateRequestDto);
