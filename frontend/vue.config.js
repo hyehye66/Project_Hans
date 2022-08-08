@@ -3,12 +3,6 @@ module.exports = defineConfig({
   transpileDependencies: true
 })
 
-// module.exports = {
-//   devServer : {
-//     proxy : 'https://i7d109.p.ssafy.io/'
-//   }
-// }
-
 module.exports = {
   devServer: {
     proxy: {

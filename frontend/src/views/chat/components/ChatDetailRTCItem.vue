@@ -10,6 +10,7 @@ import OvVideo from './OvVideo';
 export default {
   name: 'UserVideo',
 
+
 	components: {
 		OvVideo,
 	},

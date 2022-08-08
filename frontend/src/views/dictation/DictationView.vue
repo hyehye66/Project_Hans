@@ -1,7 +1,6 @@
 <template>
     <div>
-        <div id="signin_button">구글로 로그인</div>
-        
+        <div id="signin_button"></div>
     </div>
 
     <div>
@@ -12,6 +11,8 @@
 </template>
 
 <script>
+
+import { mapActions } from 'vuex';
 
     export default {
       data(){
@@ -25,21 +26,25 @@
 
         },
         methods: {
-           
-            handleCredentialResponse(response) {
+          ...mapActions(['login']),
+
+          handleCredentialResponse(response) {
                 const responsePayload = this.decodeJwtResponse(response.credential)
-                console.log(response.credential)
-                console.log( responsePayload)
-                console.log("ID: " + responsePayload.sub);
-                console.log('Full Name: ' + responsePayload.name);
-                console.log('Given Name: ' + responsePayload.given_name);
-                console.log('Family Name: ' + responsePayload.family_name);
-                console.log("Image URL: " + responsePayload.picture)
-                console.log("Email: " + responsePayload.email);
+                this.login(responsePayload.email)
+                // console.log(response.credential)
+                // console.log( responsePayload)
+                // console.log("ID: " + responsePayload.sub);
+                // console.log('Full Name: ' + responsePayload.name);
+                // console.log('Given Name: ' + responsePayload.given_name);
+                // console.log('Family Name: ' + responsePayload.family_name);
+                // console.log("Image URL: " + responsePayload.picture)
+                // console.log("Email: " + responsePayload.email);
                 this.email = responsePayload.email
                 this.fullname = responsePayload.name
                 this.profile = responsePayload.picture
+
             },
+
             decodeJwtResponse (token) {
             var base64Url = token.split('.')[1];
             var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -52,17 +57,21 @@
         },
         mounted: function () {
             
-                console.log(window.google);
+            let googleScript = document.createElement('script');
+            googleScript.src = 'https://accounts.google.com/gsi/client';
+            document.head.appendChild(googleScript);
+               console.log(window.google);
                 window.google.accounts.id.initialize({
                     client_id: "772832939234-780cgu6oljtrf34atfes9679m50fihp9.apps.googleusercontent.com",
                     callback: this.handleCredentialResponse
                 });
                 window.google.accounts.id.renderButton(
+                    
                     document.getElementById("signin_button")
                     ,
                     { theme: "outline", size: "medium"}  // customization attributes
                 );
-            
+
         }
     }
 </script>
@@ -106,6 +115,63 @@ export default {
   },
 
 }
+</script>
+
+<style scoped>
+
+</style> -->
+
+<!-- <template>
+  <section class="test">
+    
+    <div id="g_id_onload"
+     data-client_id="772832939234-780cgu6oljtrf34atfes9679m50fihp9.apps.googleusercontent.com"
+     data-callback= handleCredentialResponse
+     data-context="signin"
+     data-login_uri="http://localhost:8080"
+     data-auto_select="true"
+     data-auto_prompt="false">
+</div>
+    <div class="g_id_signin"
+     data-type="standard"
+     data-size="large"
+     data-theme="outline"
+     data-text="sign_in_with"
+     data-shape="rectangular"
+     data-logo_alignment="left">
+</div>
+  </section>
+</template>
+
+<script>
+export default {
+
+methods:{
+  handleCredentialResponse(response) {
+     // decodeJwtResponse() is a custom function defined by you
+     // to decode the credential response.
+     const responsePayload = decodeJwtResponse(response.credential);
+
+     console.log("ID: " + responsePayload.sub);
+     console.log('Full Name: ' + responsePayload.name);
+     console.log('Given Name: ' + responsePayload.given_name);
+     console.log('Family Name: ' + responsePayload.family_name);
+     console.log("Image URL: " + responsePayload.picture);
+     console.log("Email: " + responsePayload.email);
+  
+},
+mounted: function(){
+  google.accounts.id.initialize({
+   client_id:
+    '772832939234-780cgu6oljtrf34atfes9679m50fihp9.apps.googleusercontent.com',
+     callback: this.handleCredentialResponse,
+   })
+    google.accounts.id.prompt()
+    }
+
+  }
+}
+ 
 </script>
 
 <style>
