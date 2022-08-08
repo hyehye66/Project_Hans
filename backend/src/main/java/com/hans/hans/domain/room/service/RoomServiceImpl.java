@@ -23,6 +23,8 @@ import com.hans.hans.domain.wordgame.dto.WordGameUpdateResponseDto;
 import com.hans.hans.global.enumerate.Modes;
 import com.hans.hans.global.exception.NoExistMemberException;
 import com.hans.hans.global.exception.NoExistRoomException;
+import com.hans.hans.global.exception.NoExistRoomSearchByNicknameException;
+import com.hans.hans.global.exception.NoExistRoomSearchByTitleException;
 import io.openvidu.java.client.*;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -155,6 +157,8 @@ public class RoomServiceImpl implements RoomService{
     @Override
     public RoomsResponseDto searchRoomByTitle(String title, Pageable pageable){
         Page<Room> rooms = roomRepository.findRoomsByTitleContaining(title, pageable);
+        if(rooms.getContent().size()==0) throw new NoExistRoomSearchByTitleException("현재 검색한 방 제목으로 개설된 방이 없습니다.");
+
         RoomsResponseDto roomsResponseDto = new RoomsResponseDto(rooms);
 
         return roomsResponseDto;
@@ -162,8 +166,10 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public RoomsResponseDto searchRoomByNickname(String nickname, Pageable pageable){
-        Member member = memberRepository.findByNickname(nickname).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
+        Member member = memberRepository.findByNickname(nickname);
+
         Page<Room> rooms = roomRepository.findRoomsByMember(member,pageable);
+        if(rooms.getContent().size()==0) throw new NoExistRoomSearchByNicknameException("현재 검색한 방장 닉네임으로 개설된 방이 없습니다.");
 
         RoomsResponseDto roomsResponseDto = new RoomsResponseDto(rooms);
 
