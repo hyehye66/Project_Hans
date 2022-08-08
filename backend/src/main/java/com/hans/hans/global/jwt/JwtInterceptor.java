@@ -1,9 +1,6 @@
 package com.hans.hans.global.jwt;
 
-import com.hans.hans.domain.member.service.MemberService;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.SignatureException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -15,18 +12,14 @@ import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 public class JwtInterceptor implements HandlerInterceptor  {
     private final JwtService jwtService;
-    private final MemberService memberService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        System.out.println("#################Jwt Interceptor Start#################");
-
         String accessToken = request.getHeader("Authorization").replace("Bearer ","");
-        String refreshToken = request.getHeader("jwt-refresh-token");
+        String refreshToken = request.getHeader("refreshToken");
 
         if("OPTIONS".equals(request.getMethod())){
-            System.out.println("request method is OPTIONS");
             return true;
         }
 
