@@ -44,7 +44,7 @@ public class JwtInterceptor implements HandlerInterceptor  {
 
                                 return true;
                             }
-                        }catch (IllegalArgumentException e){
+                        }catch (IllegalArgumentException | JwtException e){
                             throw new JwtException("유효하지 않은 Refresh Token 입니다.");
                         }
                     }
@@ -56,7 +56,7 @@ public class JwtInterceptor implements HandlerInterceptor  {
                 response.setStatus(401);
                 throw new IllegalArgumentException("로그인한 사용자만 접근가능합니다.");
             }
-        }catch (IllegalArgumentException e) {
+        }catch (IllegalArgumentException | JwtException e) {
             throw new JwtException("유효하지 않은 Access Token 입니다.");
         }
 
