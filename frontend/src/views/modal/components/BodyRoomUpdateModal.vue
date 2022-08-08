@@ -1,5 +1,5 @@
 <template>
-<!-- <div v-if="open" class="modal" tabindex="-1" > -->
+<div v-if="open" class="modal" tabindex="-1" >
   <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="staticBackdropLabel">몸으로 말해요 방 설정</h5>
@@ -64,7 +64,7 @@
         <!-- <button @click="$emit('update:open', !open)" type="button" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-3 rounded" data-bs-dismiss="modal">Close</button> -->
       </div>
     </div>
-<!-- </div> -->
+</div>
 </template>
 
 <script>
@@ -124,39 +124,39 @@ export default {
       this.$emit('update:open', false)
     },
 
-    room_info() {
-        this.$store.dispatch('roomInfo',this.contents)
-      },
-      joinSession() {
-        // event?
-        event.preventDefault();
-        return new Promise((resolve, reject) => {
-                axios.defaults.headers.common[
-                    "Authorization"
-                ] = `Bearer ${this.$store.state.accessToken}`;
-                axios.post(`${SERVER_URL}/conferences`, this.contents)
-                    .then((res) => {
-                        console.log('sdsdsdsd')
-                        // console.log(commit);
-                        console.log(res.data.roomId)
-                        // this.$store.dispatch('roomInfo',this.contents)
-                        this.$store.dispatch('joinSession',res.data.roomId)
-                        this.$router.push({ name: "Room" , params: {roomid: res.data.roomId }});
+    // room_info() {
+    //     this.$store.dispatch('roomInfo',this.contents)
+    //   },
+    //   joinSession() {
+    //     // event?
+    //     event.preventDefault();
+    //     return new Promise((resolve, reject) => {
+    //             axios.defaults.headers.common[
+    //                 "Authorization"
+    //             ] = `Bearer ${this.$store.state.accessToken}`;
+    //             axios.post(`${SERVER_URL}/conferences`, this.contents)
+    //                 .then((res) => {
+    //                     console.log('sdsdsdsd')
+    //                     // console.log(commit);
+    //                     console.log(res.data.roomId)
+    //                     // this.$store.dispatch('roomInfo',this.contents)
+    //                     this.$store.dispatch('joinSession',res.data.roomId)
+    //                     this.$router.push({ name: "Room" , params: {roomid: res.data.roomId }});
                         
-                        resolve();
-                    })
-                    .catch((error) => {
-                        reject(error);
-                    })
-            })
-      },
+    //                     resolve();
+    //                 })
+    //                 .catch((error) => {
+    //                     reject(error);
+    //                 })
+    //         })
+    //   },
   }
 }
 </script>
 
 
 <style scoped>
-/* .modal { 
+.modal { 
   position: absolute;
   display : flex; 
   top: 20%;
@@ -167,7 +167,7 @@ export default {
   z-index: 90;
   visibility: visible;
   opacity: 100;
-} */
+}
 
 .roomTitle{
   text-shadow: 5px 5px 70px rgba(190, 209, 212, 0.582);

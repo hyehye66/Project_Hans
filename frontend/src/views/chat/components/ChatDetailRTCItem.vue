@@ -15,7 +15,6 @@ export default {
 		OvVideo,
 	},
 
-
 	props: {
 		streamManager: Object,
 	},
