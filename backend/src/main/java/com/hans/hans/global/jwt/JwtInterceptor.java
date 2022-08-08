@@ -1,5 +1,7 @@
 package com.hans.hans.global.jwt;
 
+import com.hans.hans.global.exception.NoMatchRefreshTokenException;
+import com.hans.hans.global.exception.NotLoggedInException;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -33,11 +35,11 @@ public class JwtInterceptor implements HandlerInterceptor  {
                             if(jwtService.validateToken(refreshToken) && jwtService.compareRefreshToken(refreshToken,email)){
                                 // Access Token 재발급
                                 String newAccessToken = jwtService.createAccessToken(email);
-                                response.setHeader("jwt-access-token",newAccessToken);
+                                response.setHeader("Authorization","Bearer "+newAccessToken);
 
                                 return true;
                             }
-                        }catch (IllegalArgumentException | JwtException e){
+                        }catch (NoMatchRefreshTokenException | JwtException e){
                             throw new JwtException("유효하지 않은 Refresh Token 입니다.");
                         }
                     }
@@ -47,7 +49,7 @@ public class JwtInterceptor implements HandlerInterceptor  {
             }else{
                 response.sendRedirect("/api/login");
                 response.setStatus(401);
-                throw new IllegalArgumentException("로그인한 사용자만 접근가능합니다.");
+                throw new NotLoggedInException("로그인한 사용자만 접근가능합니다.");
             }
         }catch (IllegalArgumentException | JwtException e) {
             throw new JwtException("유효하지 않은 Access Token 입니다.");
