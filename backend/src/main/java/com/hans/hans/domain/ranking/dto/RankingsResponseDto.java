@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 
 @Getter
 @AllArgsConstructor
-public class RankingResponseDto {
+public class RankingsResponseDto {
 
     private Page<Ranking> rankings;
 

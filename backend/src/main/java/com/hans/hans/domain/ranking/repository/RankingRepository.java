@@ -12,4 +12,5 @@ import java.util.List;
 
 public interface RankingRepository extends JpaRepository<Ranking, Long> {
     Page<Ranking> findRankingsByModeOrderByScoreDesc(Mode mode, Pageable pageable);
+    Ranking findRankingByMemberAndMode(Member member, Mode mode);
 }
