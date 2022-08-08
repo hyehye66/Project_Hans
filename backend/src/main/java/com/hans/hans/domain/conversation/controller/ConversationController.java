@@ -74,7 +74,7 @@ public class ConversationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createSuccess("대화방 정보 수정이 완료되었습니다.",conversationUpdateResponseDto));
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/{room-seq}")
     public ResponseEntity<?> leaveConversationRoom(HttpServletRequest request){
         String email = (String)request.getAttribute("email");
         roomService.leaveRoom(email);
