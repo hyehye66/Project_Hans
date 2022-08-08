@@ -35,8 +35,9 @@ import java.util.*;
 
 @Service
 public class RoomServiceImpl implements RoomService{
-
+    // OpenVidu object as entrypoint of the SDK
     private String OPENVIDU_URL;
+    // Secret shared with our OpenVidu server
     private String SECRET;
     private OpenVidu openVidu;
     private final RoomRepository roomRepository;
@@ -111,16 +112,18 @@ public class RoomServiceImpl implements RoomService{
         List<Room> rooms = roomRepository.findRoomsByModeAndRoomStatus(modeRepository.findByModeSequence(modes.getModeSequence()),false);
 
         List<Long> availableRooms = new ArrayList<>();
-        
+
         // 현재 입장 가능한 방의 Room Sequence를 저장
         for(Room room : rooms){
-            availableRooms.add(room.getRoomSequence());
+            if (room.getCurrentNum()<room.getRestrictNum()) availableRooms.add(room.getRoomSequence());
         }
         Collections.shuffle(availableRooms);
-        Long enterRoomSequence = availableRooms.get(0);
 
         try{
+            Long enterRoomSequence = availableRooms.get(0);
+
             Room room = roomRepository.findByRoomSequence(enterRoomSequence);
+
             OpenViduRole role = OpenViduRole.PUBLISHER;
             String serverData = "{\"serverData\": \"" + member.getEmail() + "\"}";
             ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
@@ -143,6 +146,8 @@ public class RoomServiceImpl implements RoomService{
             return roomMemberResponseDto;
         }catch (NoSuchElementException e){
             throw new NoExistRoomException("존재하지 않는 방입니다.");
+        }catch (IndexOutOfBoundsException e){
+            throw new NoExistRoomException("현재 입장하실 수 있는 방이 없습니다.");
         }
 
     }
@@ -207,6 +212,7 @@ public class RoomServiceImpl implements RoomService{
             return conversationCreateResponseDto;
 
         } catch (Exception e) {
+            // If error generate an error message and return it to client
             System.out.println("sessioncontorller exception response");
             return null;
         }
@@ -216,103 +222,75 @@ public class RoomServiceImpl implements RoomService{
     public WordGameCreateResponseDto createWordGameRoom(String email, WordGameCreateRequestDto wordGameCreateRequestDto){
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
 
-        OpenViduRole role = OpenViduRole.PUBLISHER;
-        String serverData = "{\"serverData\": \"" + member.getEmail() + "\"}";
-        ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
+        Date now = new Date();
+        String title = wordGameCreateRequestDto.getTitle();
 
-        try {
+        int restrictNum = wordGameCreateRequestDto.getRestrictNum();
+        int problemNum = wordGameCreateRequestDto.getProblemNum();
 
-            Date now = new Date();
-            String title = wordGameCreateRequestDto.getTitle();
+        Room room = roomRepository.save(
+                Room.builder()
+                        .member(member)
+                        .mode(modeRepository.findByModeSequence(Modes.WORD.getModeSequence()))
+                        .title(title)
+                        .restrictNum(restrictNum)
+                        .currentNum(1)
+                        .roomDTTM(now)
+                        .roomStatus(false)
+                        .build()
+        );
 
-            int restrictNum = wordGameCreateRequestDto.getRestrictNum();
-            int problemNum = wordGameCreateRequestDto.getProblemNum();
+        roomMemberRepository.save(
+                RoomMember.builder()
+                        .member(member)
+                        .room(room)
+                        .enterDTTM(now)
+                        .build()
+        );
 
-            Session session = openVidu.createSession();
-            String token = session.createConnection(connectionProperties).getToken();
+        WordGameCreateResponseDto wordGameCreateResponseDto = new WordGameCreateResponseDto(room);
+        wordGameCreateResponseDto.updateProblemNum(problemNum);
 
-            Room room = roomRepository.save(
-                    Room.builder()
-                            .member(member)
-                            .mode(modeRepository.findByModeSequence(Modes.WORD.getModeSequence()))
-                            .title(title)
-                            .restrictNum(restrictNum)
-                            .currentNum(1)
-                            .roomDTTM(now)
-                            .roomStatus(false)
-                            .token(token)
-                            .build()
-            );
-
-            roomMemberRepository.save(
-                    RoomMember.builder()
-                            .member(member)
-                            .room(room)
-                            .enterDTTM(now)
-                            .build()
-            );
-
-            WordGameCreateResponseDto wordGameCreateResponseDto = new WordGameCreateResponseDto(room);
-            wordGameCreateResponseDto.updateProblemNum(problemNum);
-
-            return wordGameCreateResponseDto;
-        } catch (Exception e) {
-            System.out.println("sessioncontroller exception response");
-            return null;
-        }
+        return wordGameCreateResponseDto;
     }
 
     @Override
     public BodyGameCreateResponseDto createBodyGameRoom(String email, BodyGameCreateRequestDto bodyGameCreateRequestDto){
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
 
-        OpenViduRole role = OpenViduRole.PUBLISHER;
-        String serverData = "{\"serverData\": \"" + member.getEmail() + "\"}";
-        ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
+        Date now = new Date();
+        String title = bodyGameCreateRequestDto.getTitle();
 
-        try {
-
-            Date now = new Date();
-            String title = bodyGameCreateRequestDto.getTitle();
-
-            int restrictNum = bodyGameCreateRequestDto.getRestrictNum();
-            int problemNum = bodyGameCreateRequestDto.getProblemNum();
-            int difficulty = bodyGameCreateRequestDto.getDifficulty();
-            int timeLimit = bodyGameCreateRequestDto.getTimeLimit();
-
-            Session session = openVidu.createSession();
-            String token = session.createConnection(connectionProperties).getToken();
+        int restrictNum = bodyGameCreateRequestDto.getRestrictNum();
+        int problemNum = bodyGameCreateRequestDto.getProblemNum();
+        int difficulty = bodyGameCreateRequestDto.getDifficulty();
+        int timeLimit = bodyGameCreateRequestDto.getTimeLimit();
 
 
-            Room room = roomRepository.save(
-                    Room.builder()
-                            .member(member)
-                            .mode(modeRepository.findByModeSequence(Modes.BODY.getModeSequence()))
-                            .title(title)
-                            .restrictNum(restrictNum)
-                            .currentNum(1)
-                            .roomDTTM(now)
-                            .roomStatus(false)
-                            .token(token)
-                            .build()
-            );
+        Room room = roomRepository.save(
+                Room.builder()
+                        .member(member)
+                        .mode(modeRepository.findByModeSequence(Modes.BODY.getModeSequence()))
+                        .title(title)
+                        .restrictNum(restrictNum)
+                        .currentNum(1)
+                        .roomDTTM(now)
+                        .roomStatus(false)
+                        .build()
+        );
 
-            roomMemberRepository.save(
-                    RoomMember.builder()
-                            .member(member)
-                            .room(room)
-                            .enterDTTM(now)
-                            .build()
-            );
+        roomMemberRepository.save(
+                RoomMember.builder()
+                        .member(member)
+                        .room(room)
+                        .enterDTTM(now)
+                        .build()
+        );
 
-            BodyGameCreateResponseDto bodyGameCreateResponseDto = new BodyGameCreateResponseDto(room);
-            bodyGameCreateResponseDto.updateSettings(problemNum,difficulty,timeLimit);
+        BodyGameCreateResponseDto bodyGameCreateResponseDto = new BodyGameCreateResponseDto(room);
+        bodyGameCreateResponseDto.updateSettings(problemNum,difficulty,timeLimit);
 
-            return bodyGameCreateResponseDto;
-        } catch (Exception e) {
-            System.out.println("sessioncontroller exception response");
-            return null;
-        }
+        return bodyGameCreateResponseDto;
     }
 
     @Override

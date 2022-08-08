@@ -45,6 +45,6 @@ public class CommonResponse<T>{
     
     // 예외 발생으로 API 호출 실패시 반환
     public static CommonResponse createError(String message){
-        return new CommonResponse(ERROR, null, message);
+        return new CommonResponse(ERROR, message, null);
     }
 }
