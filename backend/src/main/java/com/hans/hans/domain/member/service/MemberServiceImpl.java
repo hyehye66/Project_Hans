@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService{
@@ -35,7 +37,8 @@ public class MemberServiceImpl implements MemberService{
         try{
             memberRequestDto.updateRefreshToken(refreshToken);
             Member member = memberRepository.save(memberRequestDto.toEntity());
-            for (int i=2;i<=4;i++){
+            List<Mode> modes = modeRepository.findAll();
+            for (int i=2;i<=modes.size();i++){
                 Mode mode = modeRepository.findByModeSequence(i);
                 RankingRequestDto rankingRequestDto = new RankingRequestDto(member, mode);
                 rankingServiceImpl.createRanking(rankingRequestDto);
