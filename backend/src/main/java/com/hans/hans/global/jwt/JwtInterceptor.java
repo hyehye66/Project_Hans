@@ -46,26 +46,18 @@ public class JwtInterceptor implements HandlerInterceptor  {
                             }
                         }catch (IllegalArgumentException e){
                             throw new JwtException("유효하지 않은 Refresh Token 입니다.");
-                        }catch (ExpiredJwtException e){
-                            throw new JwtException("Refresh Token 기한이 만료되었습니다. 재로그인 하세요.");
-                        }catch (SignatureException e){
-                            throw new JwtException("Refresh Token의 사용자 인증이 실패하였습니다.");
                         }
                     }
                     else return true;
                 }
                 throw new JwtException("유효하지 않은 Access Token 입니다.");
             }else{
-                response.sendRedirect("/google-login");
+                response.sendRedirect("/api/login");
                 response.setStatus(401);
                 throw new IllegalArgumentException("로그인한 사용자만 접근가능합니다.");
             }
         }catch (IllegalArgumentException e) {
             throw new JwtException("유효하지 않은 Access Token 입니다.");
-        }catch (ExpiredJwtException e){
-            throw new JwtException("Access Token 기한이 만료되었습니다.");
-        }catch (SignatureException e){
-            throw new JwtException("Access Token의 사용자 인증이 실패하였습니다.");
         }
 
     }
