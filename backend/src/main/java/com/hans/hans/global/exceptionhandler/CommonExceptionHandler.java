@@ -53,4 +53,8 @@ public class CommonExceptionHandler {
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createError(e.getMessage()));
     }
 
+    @ExceptionHandler(NotLoggedInException.class)
+    public ResponseEntity<CommonResponse> handleNotLoggedInException(RuntimeException e){
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createError(e.getMessage()));
+    }
 }
