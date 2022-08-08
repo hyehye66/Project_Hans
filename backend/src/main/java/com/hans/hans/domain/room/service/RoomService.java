@@ -31,6 +31,5 @@ public interface RoomService {
 
     BodyGameUpdateResponseDto updateBodyGameRoom(Long roomSequence, BodyGameUpdateRequestDto bodyGameUpdateRequestDto);
 
-
     void leaveRoom(String email);
 }

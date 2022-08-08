@@ -37,9 +37,8 @@ import java.util.NoSuchElementException;
 
 @Service
 public class RoomServiceImpl implements RoomService{
-    // OpenVidu object as entrypoint of the SDK
+
     private String OPENVIDU_URL;
-    // Secret shared with our OpenVidu server
     private String SECRET;
     private OpenVidu openVidu;
     private final RoomRepository roomRepository;
@@ -169,7 +168,6 @@ public class RoomServiceImpl implements RoomService{
             return conversationCreateResponseDto;
 
         } catch (Exception e) {
-            // If error generate an error message and return it to client
             System.out.println("sessioncontorller exception response");
             return null;
         }
@@ -179,36 +177,50 @@ public class RoomServiceImpl implements RoomService{
     public WordGameCreateResponseDto createWordGameRoom(String email, WordGameCreateRequestDto wordGameCreateRequestDto){
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
 
-        Date now = new Date();
-        String title = wordGameCreateRequestDto.getTitle();
+        OpenViduRole role = OpenViduRole.PUBLISHER;
+        String serverData = "{\"serverData\": \"" + member.getEmail() + "\"}";
+        ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
 
-        int restrictNum = wordGameCreateRequestDto.getRestrictNum();
-        int problemNum = wordGameCreateRequestDto.getProblemNum();
+        try {
 
-        Room room = roomRepository.save(
-                Room.builder()
-                        .member(member)
-                        .mode(modeRepository.findByModeSequence(Modes.WORD.getModeSequence()))
-                        .title(title)
-                        .restrictNum(restrictNum)
-                        .currentNum(1)
-                        .roomDTTM(now)
-                        .roomStatus(false)
-                        .build()
-        );
+            Date now = new Date();
+            String title = wordGameCreateRequestDto.getTitle();
 
-        roomMemberRepository.save(
-                RoomMember.builder()
-                        .member(member)
-                        .room(room)
-                        .enterDTTM(now)
-                        .build()
-        );
+            int restrictNum = wordGameCreateRequestDto.getRestrictNum();
+            int problemNum = wordGameCreateRequestDto.getProblemNum();
 
-        WordGameCreateResponseDto wordGameCreateResponseDto = new WordGameCreateResponseDto(room);
-        wordGameCreateResponseDto.updateProblemNum(problemNum);
+            Session session = openVidu.createSession();
+            String token = session.createConnection(connectionProperties).getToken();
 
-        return wordGameCreateResponseDto;
+            Room room = roomRepository.save(
+                    Room.builder()
+                            .member(member)
+                            .mode(modeRepository.findByModeSequence(Modes.WORD.getModeSequence()))
+                            .title(title)
+                            .restrictNum(restrictNum)
+                            .currentNum(1)
+                            .roomDTTM(now)
+                            .roomStatus(false)
+                            .token(token)
+                            .build()
+            );
+
+            roomMemberRepository.save(
+                    RoomMember.builder()
+                            .member(member)
+                            .room(room)
+                            .enterDTTM(now)
+                            .build()
+            );
+
+            WordGameCreateResponseDto wordGameCreateResponseDto = new WordGameCreateResponseDto(room);
+            wordGameCreateResponseDto.updateProblemNum(problemNum);
+
+            return wordGameCreateResponseDto;
+        } catch (Exception e) {
+            System.out.println("sessioncontroller exception response");
+            return null;
+        }
     }
 
     @Override
