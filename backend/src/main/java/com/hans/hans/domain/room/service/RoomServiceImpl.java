@@ -227,39 +227,53 @@ public class RoomServiceImpl implements RoomService{
     public BodyGameCreateResponseDto createBodyGameRoom(String email, BodyGameCreateRequestDto bodyGameCreateRequestDto){
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
 
-        Date now = new Date();
-        String title = bodyGameCreateRequestDto.getTitle();
+        OpenViduRole role = OpenViduRole.PUBLISHER;
+        String serverData = "{\"serverData\": \"" + member.getEmail() + "\"}";
+        ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
 
-        int restrictNum = bodyGameCreateRequestDto.getRestrictNum();
-        int problemNum = bodyGameCreateRequestDto.getProblemNum();
-        int difficulty = bodyGameCreateRequestDto.getDifficulty();
-        int timeLimit = bodyGameCreateRequestDto.getTimeLimit();
+        try {
+
+            Date now = new Date();
+            String title = bodyGameCreateRequestDto.getTitle();
+
+            int restrictNum = bodyGameCreateRequestDto.getRestrictNum();
+            int problemNum = bodyGameCreateRequestDto.getProblemNum();
+            int difficulty = bodyGameCreateRequestDto.getDifficulty();
+            int timeLimit = bodyGameCreateRequestDto.getTimeLimit();
+
+            Session session = openVidu.createSession();
+            String token = session.createConnection(connectionProperties).getToken();
 
 
-        Room room = roomRepository.save(
-                Room.builder()
-                        .member(member)
-                        .mode(modeRepository.findByModeSequence(Modes.BODY.getModeSequence()))
-                        .title(title)
-                        .restrictNum(restrictNum)
-                        .currentNum(1)
-                        .roomDTTM(now)
-                        .roomStatus(false)
-                        .build()
-        );
+            Room room = roomRepository.save(
+                    Room.builder()
+                            .member(member)
+                            .mode(modeRepository.findByModeSequence(Modes.BODY.getModeSequence()))
+                            .title(title)
+                            .restrictNum(restrictNum)
+                            .currentNum(1)
+                            .roomDTTM(now)
+                            .roomStatus(false)
+                            .token(token)
+                            .build()
+            );
 
-        roomMemberRepository.save(
-                RoomMember.builder()
-                        .member(member)
-                        .room(room)
-                        .enterDTTM(now)
-                        .build()
-        );
+            roomMemberRepository.save(
+                    RoomMember.builder()
+                            .member(member)
+                            .room(room)
+                            .enterDTTM(now)
+                            .build()
+            );
 
-        BodyGameCreateResponseDto bodyGameCreateResponseDto = new BodyGameCreateResponseDto(room);
-        bodyGameCreateResponseDto.updateSettings(problemNum,difficulty,timeLimit);
+            BodyGameCreateResponseDto bodyGameCreateResponseDto = new BodyGameCreateResponseDto(room);
+            bodyGameCreateResponseDto.updateSettings(problemNum,difficulty,timeLimit);
 
-        return bodyGameCreateResponseDto;
+            return bodyGameCreateResponseDto;
+        } catch (Exception e) {
+            System.out.println("sessioncontroller exception response");
+            return null;
+        }
     }
 
     @Override

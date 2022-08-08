@@ -35,7 +35,7 @@ public class MemberServiceImpl implements MemberService{
         try{
             memberRequestDto.updateRefreshToken(refreshToken);
             Member member = memberRepository.save(memberRequestDto.toEntity());
-            for (int i=1;i<=3;i++){
+            for (int i=2;i<=4;i++){
                 Mode mode = modeRepository.findByModeSequence(i);
                 RankingRequestDto rankingRequestDto = new RankingRequestDto(member, mode);
                 rankingServiceImpl.createRanking(rankingRequestDto);
