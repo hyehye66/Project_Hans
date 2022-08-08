@@ -15,11 +15,13 @@ import com.hans.hans.domain.wordgame.dto.WordGameCreateRequestDto;
 import com.hans.hans.domain.wordgame.dto.WordGameCreateResponseDto;
 import com.hans.hans.domain.wordgame.dto.WordGameUpdateRequestDto;
 import com.hans.hans.domain.wordgame.dto.WordGameUpdateResponseDto;
+import com.hans.hans.global.enumerate.Modes;
 import org.springframework.data.domain.Pageable;
 
 public interface RoomService {
     RoomsResponseDto getRooms(RoomGetRequestDto roomGetRequestDto, Pageable pageable);
     RoomMemberResponseDto enterRoom(String email, Long roomSequence);
+    RoomMemberResponseDto enterRoomByRandom(String email, Modes modes);
     ConversationCreateResponseDto createConversationRoom(String email, ConversationCreateRequestDto conversationCreateRequestDto);
     WordGameCreateResponseDto createWordGameRoom(String email, WordGameCreateRequestDto wordGameCreateRequestDto);
     BodyGameCreateResponseDto createBodyGameRoom(String email, BodyGameCreateRequestDto bodyGameCreateRequestDto);

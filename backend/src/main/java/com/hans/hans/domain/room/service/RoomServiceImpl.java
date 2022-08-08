@@ -30,9 +30,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 
 @Service
@@ -45,8 +43,6 @@ public class RoomServiceImpl implements RoomService{
     private final MemberRepository memberRepository;
     private final ModeRepository modeRepository;
     private final RoomMemberRepository roomMemberRepository;
-
-
 
     public RoomServiceImpl(@Value("${openvidu.secret}") String secret, @Value("${openvidu.url}") String openviduUrl, RoomRepository roomRepository,MemberRepository memberRepository ,ModeRepository modeRepository, RoomMemberRepository roomMemberRepository) {
 
@@ -82,6 +78,49 @@ public class RoomServiceImpl implements RoomService{
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
         try{
             Room room = roomRepository.findByRoomSequence(roomSequence);
+            OpenViduRole role = OpenViduRole.PUBLISHER;
+            String serverData = "{\"serverData\": \"" + member.getEmail() + "\"}";
+            ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
+
+            Date now = new Date();
+
+            room.updateCurrentNum(room.getCurrentNum()+1);
+            roomRepository.save(room);
+
+            RoomMember roomMember = roomMemberRepository.save(
+                    RoomMember.builder()
+                            .member(member)
+                            .room(room)
+                            .enterDTTM(now)
+                            .build()
+            );
+
+            RoomMemberResponseDto roomMemberResponseDto = new RoomMemberResponseDto(roomMember);
+
+            return roomMemberResponseDto;
+        }catch (NoSuchElementException e){
+            throw new NoExistRoomException("존재하지 않는 방입니다.");
+        }
+
+    }
+
+    @Override
+    public RoomMemberResponseDto enterRoomByRandom(String email, Modes modes){
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
+
+        List<Room> rooms = roomRepository.findRoomsByModeAndRoomStatus(modeRepository.findByModeSequence(modes.getModeSequence()),false);
+
+        List<Long> availableRooms = new ArrayList<>();
+        
+        // 현재 입장 가능한 방의 Room Sequence를 저장
+        for(Room room : rooms){
+            availableRooms.add(room.getRoomSequence());
+        }
+        Collections.shuffle(availableRooms);
+        Long enterRoomSequence = availableRooms.get(0);
+
+        try{
+            Room room = roomRepository.findByRoomSequence(enterRoomSequence);
             OpenViduRole role = OpenViduRole.PUBLISHER;
             String serverData = "{\"serverData\": \"" + member.getEmail() + "\"}";
             ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
