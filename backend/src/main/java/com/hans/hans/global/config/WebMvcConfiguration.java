@@ -16,14 +16,9 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtInterceptor)
-                .addPathPatterns("/api/members")
+                .addPathPatterns("/api/**")
                 .excludePathPatterns("/api/members/sing-up")
                 .excludePathPatterns("/api/login");
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("http://localhost:8081");
-    }
 }
