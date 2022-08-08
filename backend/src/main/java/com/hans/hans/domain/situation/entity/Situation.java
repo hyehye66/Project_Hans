@@ -24,4 +24,7 @@ public class Situation {
     @Column(name = "SENTENCE", nullable = false)
     private String sentence;
 
+    @Column(name = "ENGLISH_SENTENCE", nullable = false)
+    private String eng_sentence;
+
 }
