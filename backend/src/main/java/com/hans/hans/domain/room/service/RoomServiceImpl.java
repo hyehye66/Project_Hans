@@ -7,7 +7,6 @@ import com.hans.hans.domain.bodygame.dto.BodyGameUpdateResponseDto;
 import com.hans.hans.domain.conversation.dto.ConversationCreateResponseDto;
 import com.hans.hans.domain.conversation.dto.ConversationUpdateRequestDto;
 import com.hans.hans.domain.conversation.dto.ConversationUpdateResponseDto;
-import com.hans.hans.domain.mode.entity.Mode;
 import com.hans.hans.domain.mode.repository.ModeRepository;
 import com.hans.hans.domain.conversation.dto.ConversationCreateRequestDto;
 import com.hans.hans.domain.room.dto.*;
@@ -24,7 +23,6 @@ import com.hans.hans.domain.wordgame.dto.WordGameUpdateResponseDto;
 import com.hans.hans.global.enumerate.Modes;
 import com.hans.hans.global.exception.NoExistMemberException;
 import com.hans.hans.global.exception.NoExistRoomException;
-import com.hans.hans.global.util.ModeName;
 import io.openvidu.java.client.*;
 
 import org.springframework.beans.factory.annotation.Value;
