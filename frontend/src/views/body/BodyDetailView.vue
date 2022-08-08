@@ -72,16 +72,31 @@
 					<!-- 캠,마이크,나가기,설정 -->
 					<div class="cam-buttons">
 						<!-- style="height: 100%" -->
-						<div class="icon-area">
+						<div class="icon-area" @click='muteVideo'>
 							<VideoCameraIcon style="height: 40; width: 40;" />
+							<!-- <div v-if='publisher.stream.videoActive'>
+								<img src="@/assets/videocamera1.png" alt="cam">
+							</div>
+							<div v-else>
+								<img src="@/assets/videocamera2.png" alt="cam">
+							</div> -->
 						</div>
-						<div class="icon-area">
-							<MicrophoneIcon style="height: 40; width: 40;"/>
+						<div class="icon-area" @click='muteAudio'>
+							<!-- <MicrophoneIcon style="height: 40; width: 40;"/>							 -->
+							<div v-if='publisher.stream.audioActive'>
+								<h1>음소거제거</h1>
+								<!-- <img src="@/assets/microphone1.png" alt="mic"> -->
+							</div>
+							<div v-else>
+								<h1>음소거</h1>
+								<!-- <img src="@/assets/microphone2.png" alt="mic"> -->
+							</div>
 						</div>
-						<div class="icon-area">
+						<div class="icon-area" @click="leaveSession">
 							<LogoutIcon style="height: 40; width: 40;"/>
 						</div>
-						<div class="icon-area">
+						<!-- 설정모달창 띄우는 방법 생각하기 -->
+						<div class="icon-area" @click="isOpen">
 							<CogIcon style="height: 40; width: 40;"/>
 						</div>
 					</div>
@@ -106,32 +121,54 @@
 					<!-- 현재 문제 남은 시간 타이머 -->
 					<div class="problem-timer" style="width: 30%">남은 시간</div>
 					<!-- style="width: 40; height: 40;" -->
-					<!-- 시작버튼 -->
+					<!-- 임시시작버튼 -->
 					<div class="leader-button">
 						<button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
 							START
 						</button>
-					</div>				
+					</div>
+					
+					<!-- 시작버튼자리 -->
+					<!-- <div v-if="!start && !ready">
+						<div class="start-box"> -->
+							<!-- 방장만 스타트 버튼 보이기 -->
+							<!-- <div v-if='myUserNick === roominfo.ownerNicknames'>
+								<button @click="gameStart"
+								class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
+									START
+								</button>
+							</div> -->
+							<!-- 방장 아닌 사람은 준비중 -->
+							<!-- <div v-else>
+									<p>준비중</p>
+							</div>
+						</div>
+					</div> -->
+
 
 					<!-- 출제자한테는 문제카드 띄울 예정 -->
-					<!-- 정답입력란 -->
-					<div class="answer-send">
-						<input type="text" name="" id="answer-sheet" v-model="answerSheet" size="30">
-						<PaperAirplaneIcon style="height: 25; width: 25;"/>					
-					</div>
-					<!-- 정오답 알림 메시지 -->
-					<div class="answer-check">
-						<input type="text" v-model="answerAlert" size="30" />
-					</div>
+					<!-- <div v-if="myUserNick === roominfo.ownerNicknames" class="body-quiz-card col-md-9">
+						<h1>문제카드</h1>
+					</div> -->
+					<!-- 출제자가 아닐 때 -->
+					<!-- <div v-else> -->
+						<!-- 정답입력란 -->
+						<div class="answer-send">
+							<input type="text" name="" id="answer-sheet" v-model="answerSheet" size="30"
+							placeholder="답을 입력해주세요." @keyup.enter="checkAnswer" />
+							<PaperAirplaneIcon style="height: 35; width: 35;" @click="checkAnswer" />					
+						</div>
+						<!-- 정오답 알림 메시지 -->
+						<div class="check-answer">
+							<input type="text" v-model="answerAlert" size="30" />
+						</div>
+					<!-- </div> -->
 				</div>
-			<!-- </div> -->
-
-
-
-
-
 		</div>
 	</div>
+
+	<BodyRoomUpdateModal v-model:open="open" />
+
 </template>
 
 <script>
@@ -139,7 +176,7 @@
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 import UserVideo from '@/components/UserVideo';
-import BodyRoomCreateModal from '@/views/modal/components/BodyRoomCreateModal.vue';
+import BodyRoomUpdateModal from '@/views/modal/components/BodyRoomUpdateModal.vue';
 // import { CogIcon } from '@heroicons/vue/solid';
 import { VideoCameraIcon, MicrophoneIcon, LogoutIcon, CogIcon, PaperAirplaneIcon } from '@heroicons/vue/outline';
 
@@ -150,7 +187,7 @@ export default {
 	name: 'BodyDetailView',
 	components: {
 		UserVideo,
-		BodyRoomCreateModal,
+		BodyRoomUpdateModal,
 
 		VideoCameraIcon,
 		MicrophoneIcon,
@@ -171,15 +208,27 @@ export default {
 			// 방이름
 			detailTitle: '',
 
+			// 게임 시작 관련
 			start: false,
 			ready: false,
 
 			// 답입력값
 			answerSheet: '',
+			answerAlert: '',
 			gameStatus: 0,
-			picture: false,
+			round: 0,
+
+			open : false,
 		}
 	},
+
+	props: {
+    // publisher: Object,
+    // roominfo: Object,
+    // session: Object,
+    // myUserNick: String,
+  },
+
 	methods: {
 		joinSession () {
 			// --- Get an OpenVidu object ---
@@ -301,11 +350,46 @@ export default {
 					.catch(error => reject(error.response));
 			});
 		},
+
+		// 버튼에 해당하는 메서드
+		muteVideo() {
+      if (this.publisher.stream.videoActive) {
+        this.publisher.publishVideo(false)
+      }else {
+        this.publisher.publishVideo(true)
+      }
+    },
+		muteAudio() {
+      if (this.publisher.stream.audioActive) {
+        this.publisher.publishAudio(false)
+      }else {
+        this.publisher.publishAudio(true)
+      }
+    },    
+		isOpen (){
+      return this.open = !this.open
+    },
+
+		gameStart() {
+
+		},
+
+
+		// 정오답 확인
+		checkAnswer() {
+
+		},
+
+
+
 	}
 }
 </script>
 
 <style>
+svg {
+  cursor: pointer;	
+}
 
 #main-container {
 	margin: auto;
@@ -480,9 +564,12 @@ PaperAirplaneIcon */
 	/* width: 400;
 	height: 40; */
 	vertical-align: middle;
-
-
 	
+}
+
+img {
+  width : 4vw;
+  height : 6.7vh;
 }
 
 
@@ -534,12 +621,27 @@ PaperAirplaneIcon */
 	width: 30%;
 }
 
+.start-box {
+   position: relative;
+   width: 33vw;
+   height: 48vh;
+   /* width: 150%; */
+   background: rgba(192, 192, 199, 0.47);
+   border: 3px solid white;
+   border-radius:20px;
+   /* margin: 0 auto 2.5vh; */
+   display:flex;
+   justify-content: center;
+   align-items: center;
+}
+
 .answer-send {
 	display: flex;
 	flex-direction: row;
 	/* align-self: center; */
 	justify-content: center;
 	margin: auto;
+	
 }
 
 #answer-sheet {
@@ -548,14 +650,17 @@ PaperAirplaneIcon */
 	font-size: 30px;
 }
 
-.answer-check {
+.check-answer {
 	/* border: 1; */
-	border: 1px dotted black;
+	/* border: 1px dotted black; */
 	/* text-align: center; */
 	justify-content: center;
 	/* margin: auto; */
 	align-self: center;
 	font-size: 30px;
+	color: red;
+	font-style: italic;
+
 }
 
 
