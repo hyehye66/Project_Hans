@@ -21,6 +21,7 @@ import com.hans.hans.domain.wordgame.dto.WordGameCreateRequestDto;
 import com.hans.hans.domain.wordgame.dto.WordGameCreateResponseDto;
 import com.hans.hans.domain.wordgame.dto.WordGameUpdateRequestDto;
 import com.hans.hans.domain.wordgame.dto.WordGameUpdateResponseDto;
+import com.hans.hans.global.enumerate.Modes;
 import com.hans.hans.global.exception.NoExistMemberException;
 import com.hans.hans.global.exception.NoExistRoomException;
 import com.hans.hans.global.util.ModeName;
@@ -131,7 +132,6 @@ public class RoomServiceImpl implements RoomService{
     @Override
     public ConversationCreateResponseDto createConversationRoom(String email, ConversationCreateRequestDto conversationCreateRequestDto) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
-        Mode mode = modeRepository.findByModeName(ModeName.CONVERSATION.name());
 
         OpenViduRole role = OpenViduRole.PUBLISHER;
         String serverData = "{\"serverData\": \"" + member.getEmail() + "\"}";
@@ -148,7 +148,7 @@ public class RoomServiceImpl implements RoomService{
             Room room = roomRepository.save(
                     Room.builder()
                             .member(member)
-                            .mode(modeRepository.findByModeSequence(1))
+                            .mode(modeRepository.findByModeSequence(Modes.TALK.getModeSequence()))
                             .title(title)
                             .restrictNum(restrictNum)
                             .currentNum(1)
@@ -190,7 +190,7 @@ public class RoomServiceImpl implements RoomService{
         Room room = roomRepository.save(
                 Room.builder()
                         .member(member)
-                        .mode(modeRepository.findByModeSequence(2))
+                        .mode(modeRepository.findByModeSequence(Modes.WORD.getModeSequence()))
                         .title(title)
                         .restrictNum(restrictNum)
                         .currentNum(1)
@@ -229,7 +229,7 @@ public class RoomServiceImpl implements RoomService{
         Room room = roomRepository.save(
                 Room.builder()
                         .member(member)
-                        .mode(modeRepository.findByModeSequence(3))
+                        .mode(modeRepository.findByModeSequence(Modes.BODY.getModeSequence()))
                         .title(title)
                         .restrictNum(restrictNum)
                         .currentNum(1)
