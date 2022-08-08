@@ -8,6 +8,7 @@ export default {
       refreshToken: localStorage.getItem('refreshToken') || '',
       authError: null,
       email : '',
+      profile: {},
   },
   mutations: {
     LOGIN: function(state, credentials){
@@ -18,12 +19,14 @@ export default {
     SET_AUTH_ERROR: (state, error) => state.authError = error,
     SET_MSG : (state, msg) => state.msg = msg,
     SET_EMAIL : (state,email) => state.email = email,
+    SET_PROFILE: (state, profile) => state.profile = profile,
   },
   getters: {
     isLoggedIn: state => !!state.accessToken,
     authHeader: state => ({ Authorization: state.accessToken, refreshToken : state.refreshToken}),
     authError: state => state.authError,
     email : state => state.email,
+    profile: state => state.profile,
   },
   actions: {
     saveToken({ commit }, {accessToken, refreshToken}) {
@@ -102,12 +105,14 @@ export default {
       })
         .then(res => {
           console.log('회원가입완료')
+          alert('회원가입 되었습니다!')
           // 토큰 저장 로직
           const accessToken = res.headers.authorization
           const refreshToken = res.headers.refreshToken
           dispatch('saveToken', {accessToken ,refreshToken}) 
           commit('SET_ACCESS_TOKEN',accessToken)
           commit('SET_REFRESH_TOKEN', refreshToken)
+          
           router.push({ name: 'Home' })
         })
         .catch(err => {
@@ -156,6 +161,53 @@ export default {
           router.push({ name: 'Home' })
         
     },
+    fetchProfile({ commit, getters }) {
+      /*
+      GET: profile URL로 요청보내기
+        성공하면
+          state.profile에 저장
+      */
+     // if(username === )
+      axios({
+        url: '/api/members',
+        method: 'get',
+        headers: getters.authHeader,
+      })
+        .then(res => {
+          commit('SET_PROFILE', res.data.data)
+        })
+    },
+    updateProfile({commit, getters}, {nickname, introduction} ){
+      axios({
+        url: '/api/members',
+        method: 'put',
+        headers : getters.authHeader,
+        data : {nickname, introduction},
+      }).then(res => {
+        commit('SET_PROFILE', res.data.data)
+        alert('회원정보 수정완료!')
+        router.push({
+          name: 'MyPageView',
+        })
+      })
+    },
+
+    withdrawal({dispatch, getters}){
+      axios({
+        url:'/api/members',
+        method: 'delete',
+        headers: getters.authHeader,
+      })
+      .then(()=>{
+          dispatch('removeToken')
+          alert('회원탈퇴 되었습니다!')
+          console.log('회원탈퇴 완료')
+          router.push({ name: 'Home' })
+      }).catch((err => {
+        console.error(err.response.data.message)
+      }))
+    }
+
   },
 
 modules: {
