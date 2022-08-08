@@ -28,7 +28,6 @@ public class MemberController {
     @GetMapping()
     public ResponseEntity<?> getMemberInfo(HttpServletRequest request){
         String email = (String) request.getAttribute("email");
-
         MemberInfoResponseDto memberInfoResponseDto = memberService.getMemberInfo(email);
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("회원정보 조회에 성공하였습니다.",memberInfoResponseDto));
     }
