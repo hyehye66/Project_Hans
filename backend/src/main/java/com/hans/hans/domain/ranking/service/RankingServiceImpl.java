@@ -10,6 +10,7 @@ import com.hans.hans.domain.ranking.dto.RankingsResponseDto;
 import com.hans.hans.domain.ranking.entity.Ranking;
 import com.hans.hans.domain.ranking.repository.RankingRepository;
 import com.hans.hans.global.exception.NoExistMemberException;
+import com.hans.hans.global.exception.NoExistRankingListSearchByNicknameException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,11 +41,14 @@ public class RankingServiceImpl implements RankingService{
 
     @Override
     public RankingResponseByMemberDto searchRanking(String nickname, int id) {
-        Member member = memberRepository.findByNickname(nickname).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
+        Member member = memberRepository.findByNickname(nickname);
 
         Mode mode = modeRepository.findByModeSequence(id);
         Ranking ranking = rankingRepository.findRankingByMemberAndMode(member, mode);
+        if(ranking==null) throw new NoExistRankingListSearchByNicknameException("현재 검색한 닉네임의 사용자는 랭킹 리스트에 등록되어있지 않습니다.");
+
         RankingResponseByMemberDto rankingResponseByMemberDto = new RankingResponseByMemberDto(ranking);
+
         return rankingResponseByMemberDto;
     }
 
