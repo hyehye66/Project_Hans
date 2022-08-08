@@ -1,8 +1,7 @@
 package com.hans.hans.domain.ranking.controller;
 
-import com.hans.hans.domain.ranking.dto.RankingRequestDto;
 import com.hans.hans.domain.ranking.dto.RankingResponseByMemberDto;
-import com.hans.hans.domain.ranking.dto.RankingResponseDto;
+import com.hans.hans.domain.ranking.dto.RankingsResponseDto;
 import com.hans.hans.domain.ranking.service.RankingServiceImpl;
 import com.hans.hans.global.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +21,14 @@ public class RankingController {
 
     @GetMapping("/{modeId}")
     public ResponseEntity<?> getRankingListByMode(@PathVariable(name="modeId") int id, @PageableDefault(size=10)Pageable pageable) {
-        RankingResponseDto rankingResponseDto = rankingServiceImpl.getRankingListByMode(id, pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("랭킹 조회에 성공하였습니다.",rankingResponseDto));
+        RankingsResponseDto rankingsResponseDto = rankingServiceImpl.getRankingListByMode(id, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("랭킹 조회에 성공하였습니다.",rankingsResponseDto));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchRanking(String nickname, int id) {
+        RankingResponseByMemberDto rankingResponseByMemberDto = rankingServiceImpl.searchRanking(nickname, id);
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("랭킹 검색에 성공했습니다.", rankingResponseByMemberDto));
     }
 
 

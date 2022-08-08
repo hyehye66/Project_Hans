@@ -157,7 +157,7 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public RoomsResponseDto searchRoomByNickname(String nickname, Pageable pageable){
-        Member member = memberRepository.findByNickname(nickname);
+        Member member = memberRepository.findByNickname(nickname).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
         Page<Room> rooms = roomRepository.findRoomsByMember(member,pageable);
 
         RoomsResponseDto roomsResponseDto = new RoomsResponseDto(rooms);
