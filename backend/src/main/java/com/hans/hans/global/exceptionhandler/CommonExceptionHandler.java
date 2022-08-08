@@ -4,6 +4,7 @@ import com.hans.hans.global.exception.ExistNicknameException;
 import com.hans.hans.global.exception.NoExistMemberException;
 import com.hans.hans.global.exception.NoExistRoomException;
 import com.hans.hans.global.response.CommonResponse;
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -35,6 +36,11 @@ public class CommonExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<CommonResponse> handleMethodArgumentNotValidException(BindingResult bindingResult){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonResponse.createFail(bindingResult));
+    }
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<CommonResponse> handleJwtException(RuntimeException e){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.createError(e.getMessage()));
     }
 
 
