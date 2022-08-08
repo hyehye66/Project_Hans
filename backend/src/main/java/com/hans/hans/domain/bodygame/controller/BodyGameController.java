@@ -74,7 +74,7 @@ public class BodyGameController {
         return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.createSuccess("몸으로 말해요 게임방 정보 수정이 완료되었습니다.",bodyGameUpdateResponseDto));
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/{room-seq}")
     public ResponseEntity<?> leaveBodyGameRoom(HttpServletRequest request){
         String email = (String)request.getAttribute("email");
         roomService.leaveRoom(email);
