@@ -2,6 +2,7 @@ package com.hans.hans.global.jwt;
 
 import com.hans.hans.domain.member.entity.Member;
 import com.hans.hans.domain.member.repository.MemberRepository;
+import com.hans.hans.global.exception.NoMatchRefreshTokenException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.AccessLevel;
@@ -75,7 +76,7 @@ public class JwtServiceImpl implements JwtService{
         if(refreshToken.equals(refreshTokenInDBMS)){
             return true;
         }
-        throw new IllegalArgumentException();
+        throw new NoMatchRefreshTokenException("Refresh Token이 일치하지 않습니다.");
     }
 
 
