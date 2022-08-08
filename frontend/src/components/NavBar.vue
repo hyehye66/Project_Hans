@@ -48,10 +48,12 @@
       </li>
       <li><router-link :to="{name:'ChatMainView'}" >대화</router-link></li>
       <li><router-link :to="{name:'RankingView'}" >랭킹</router-link></li>
+      <li v-if="isLoggedIn"><router-link :to="{name:'MyPageView'}" >마이페이지</router-link></li>
     </ul>
   </div>
   <div class="navbar-end">
-    <button class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded" @click="isLoginOpen" style="cursor: pointer">Login</button>
+    <button v-if="!isLoggedIn" class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded" @click="isOpen" style="cursor: pointer">Login</button>
+    <button v-if="isLoggedIn" class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded" @click="logout" style="cursor: pointer">Logout</button>
   </div>
 
 
@@ -63,11 +65,14 @@
 
 <script>
 import LoginModal from '@/views/modal/components/LoginModal.vue'
-
+import { mapActions, mapGetters } from 'vuex'
 export default {
   name : 'NavBar',
   components : {
     LoginModal
+  },
+  computed: {
+    ...mapGetters(['isLoggedIn']),
   },
   data(){
     return {
@@ -75,9 +80,9 @@ export default {
     }
   },
   methods : {
-    isLoginOpen (){
-      console.log(this.loginOpen)
-      return this.loginOpen = !this.loginOpen
+    ...mapActions(['logout']),
+    isOpen (){
+      return this.open = !this.open
     }
   },
 }

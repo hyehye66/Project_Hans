@@ -9,8 +9,13 @@ const routes = [
   },
   {
     path:'/mypage',
-    name: 'MyPage',
+    name: 'MyPageView',
     component :() => import('@/views/account/MyPageView.vue'),
+  },
+  {
+    path:'/signup',
+    name: 'SignUpView',
+    component :() => import('@/views/account/SignUpView.vue'),
   },
   {
     path : '/communication',

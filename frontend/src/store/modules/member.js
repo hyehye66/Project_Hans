@@ -1,13 +1,13 @@
-// import router from "@/router/index.js";
+import router from "@/router/index.js";
+import state from "@/views/main/store/state";
 import axios from 'axios'
 
 export default {
   state: {
-      host: 'localhost:8080',
       accessToken: localStorage.getItem('accessToken') || '',
       refreshToken: localStorage.getItem('refreshToken') || '',
       authError: null,
-      msg : "디폴트",
+      email : '',
   },
   mutations: {
     LOGIN: function(state, credentials){
@@ -17,21 +17,37 @@ export default {
     SET_REFRESH_TOKEN : (state, refreshToken) => state.refreshToken = refreshToken,
     SET_AUTH_ERROR: (state, error) => state.authError = error,
     SET_MSG : (state, msg) => state.msg = msg,
+    SET_EMAIL : (state,email) => state.email = email,
   },
   getters: {
     isLoggedIn: state => !!state.accessToken,
+    authHeader: state => ({ Authorization: state.accessToken, refreshToken : state.refreshToken}),
     authError: state => state.authError,
-    msg : state => state.msg,
+    email : state => state.email,
   },
   actions: {
-    saveToken({ commit }, accessToken) {
+    saveToken({ commit }, {accessToken, refreshToken}) {
       /* 
       state.token 추가 
       localStorage에 token 추가
       */
       commit('SET_ACCESS_TOKEN', accessToken)
+      commit('SET_REFRESH_TOKEN', refreshToken)
       localStorage.setItem('accessToken',accessToken)
+      localStorage.setItem('refreshToken',refreshToken)
+      
     },
+    removeToken({ commit }) {
+      /* 
+      state.token 삭제
+      localStorage에 token 추가
+      */
+      commit('SET_ACCESS_TOKEN', '')
+      commit('SET_REFRESH_TOKEN', '')
+      localStorage.setItem('accessToken','')
+      localStorage.setItem('refreshToken','')
+    },
+
 
     // login: function({commit}, credentials){
     //   console.log('hallo')
@@ -39,27 +55,66 @@ export default {
     // },
 
 
-    login({ commit, dispatch }) {
+    login({ commit, dispatch }, useremail) {
       console.log('login')  
       axios({
-        url: '/api/google-login',
+        url: '/api/login',
         method: 'get',
-
+        params : {
+          email : useremail,
+        }
       })
         .then(res => {
-          console.log('스토어액션')
-          commit('SET_MSG',res.data)
-          console.log(res.data)
-          const accessToken = res.data.accessToken
-          dispatch('saveToken', accessToken)
-          //router.push({ name: 'DictationView' })
+          console.log('로그인완료')
+          // 토큰 저장 로직
+
+          const accessToken = res.headers.authorization
+          const refreshToken = res.headers.refreshtoken
+          dispatch('saveToken', {accessToken ,refreshToken}) 
+
+          router.push({ name: 'Home' })
         })
         .catch(err => {
+          localStorage.setItem('email',useremail)
+          console.log('회원가입안되있습니다!')
+          commit('SET_EMAIL',useremail)
           console.error(err.response.data)
+          router.push({ name: 'SignUpView' })
+          commit('SET_AUTH_ERROR', err.response.data.message)
+        })
+    },
+    signup({ commit, dispatch }, credentials) {
+      /* 
+      POST: 사용자 입력정보를 signup URL로 보내기
+        성공하면
+          응답 토큰 저장
+          현재 사용자 정보 받기
+          메인 페이지(ArticleListView)로 이동
+        실패하면
+          에러 메시지 표시
+      */
+      credentials.email = this.state.member.email
+      console.log(credentials)
+      axios({
+        url: '/api/members/sign-up',
+        method: 'post',
+        data: credentials
+      })
+        .then(res => {
+          console.log('회원가입완료')
+          // 토큰 저장 로직
+          const accessToken = res.headers.authorization
+          const refreshToken = res.headers.refreshToken
+          dispatch('saveToken', {accessToken ,refreshToken}) 
+          commit('SET_ACCESS_TOKEN',accessToken)
+          commit('SET_REFRESH_TOKEN', refreshToken)
+          router.push({ name: 'Home' })
+        })
+        .catch(err => {
+          console.error(err.response.data.message)
           commit('SET_AUTH_ERROR', err.response.data)
         })
     },
-   
 
     // login: ({commit, dispatch}) => {
     //   return new Promise((resolve, reject) => {
@@ -91,10 +146,16 @@ export default {
     //     })
     //   })
     // },
-    logout: ({commit}) => { // 로그아웃
-      commit('removeToken');
-      location.reload();
-    }
+    logout({ dispatch }) {
+      /* 
+      토큰 삭제
+      */
+          dispatch('removeToken')
+          alert('성공적으로 logout!')
+          console.log('logout완료!')
+          router.push({ name: 'Home' })
+        
+    },
   },
 
 modules: {
