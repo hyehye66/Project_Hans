@@ -55,6 +55,6 @@ public class CommonExceptionHandler {
 
     @ExceptionHandler(NotLoggedInException.class)
     public ResponseEntity<CommonResponse> handleNotLoggedInException(RuntimeException e){
-        return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createError(e.getMessage()));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.createError(e.getMessage()));
     }
 }
