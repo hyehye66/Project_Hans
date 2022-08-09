@@ -20,12 +20,13 @@ public class WordGameCreateResponseDto {
     private int problemNum;
     private Date roomDTTM;
     private boolean roomStatus;
+    String token;
 
     public void updateProblemNum(int problemNum){
         this.problemNum = problemNum;
     }
 
-    public WordGameCreateResponseDto(Room room){
+    public WordGameCreateResponseDto(Room room, String token){
         this.roomSequence = room.getRoomSequence();
         this.member = room.getMember();
         this.mode = room.getMode();

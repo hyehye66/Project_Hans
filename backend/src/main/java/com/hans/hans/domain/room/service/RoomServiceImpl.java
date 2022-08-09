@@ -271,36 +271,54 @@ public class RoomServiceImpl implements RoomService{
     public WordGameCreateResponseDto createWordGameRoom(String email, WordGameCreateRequestDto wordGameCreateRequestDto){
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
 
-        Date now = new Date();
-        String title = wordGameCreateRequestDto.getTitle();
+        OpenViduRole role = OpenViduRole.PUBLISHER;
+        String serverData = "{\"serverData\": \"" + member.getEmail() + "\"}";
+        ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
+        try {
+            Date now = new Date();
+            String title = wordGameCreateRequestDto.getTitle();
 
-        int restrictNum = wordGameCreateRequestDto.getRestrictNum();
-        int problemNum = wordGameCreateRequestDto.getProblemNum();
+            int restrictNum = wordGameCreateRequestDto.getRestrictNum();
+            int problemNum = wordGameCreateRequestDto.getProblemNum();
+            Session session = openVidu.createSession();
+            String token = session.createConnection(connectionProperties).getToken();
 
-        Room room = roomRepository.save(
-                Room.builder()
-                        .member(member)
-                        .mode(modeRepository.findByModeSequence(Modes.WORD.getModeSequence()))
-                        .title(title)
-                        .restrictNum(restrictNum)
-                        .currentNum(1)
-                        .roomDTTM(now)
-                        .roomStatus(false)
-                        .build()
-        );
+            Room room = roomRepository.save(
+                    Room.builder()
+                            .member(member)
+                            .mode(modeRepository.findByModeSequence(Modes.WORD.getModeSequence()))
+                            .title(title)
+                            .restrictNum(restrictNum)
+                            .currentNum(1)
+                            .roomDTTM(now)
+                            .roomStatus(false)
+                            .build()
+            );
 
-        roomMemberRepository.save(
-                RoomMember.builder()
-                        .member(member)
-                        .room(room)
-                        .enterDTTM(now)
-                        .build()
-        );
+            roomMemberRepository.save(
+                    RoomMember.builder()
+                            .member(member)
+                            .room(room)
+                            .token(token)
+                            .enterDTTM(now)
+                            .build()
+            );
 
-        WordGameCreateResponseDto wordGameCreateResponseDto = new WordGameCreateResponseDto(room);
-        wordGameCreateResponseDto.updateProblemNum(problemNum);
+            this.mapSessions.put(room.getRoomSequence(), session);
 
-        return wordGameCreateResponseDto;
+            WordGameCreateResponseDto wordGameCreateResponseDto = new WordGameCreateResponseDto(room, token);
+            wordGameCreateResponseDto.updateProblemNum(problemNum);
+            return wordGameCreateResponseDto;
+
+        }catch (OpenViduJavaClientException e1) {
+            // If internal error generate an error message and return it to client
+            throw new SessionCreateException("세션 만드는데 문제있음");
+        }catch (OpenViduHttpException e) {
+            //openvidu  관련 Exception
+            // If error generate an error message and return it to client
+            System.out.println("sessionCreate exception response");
+            throw new SessionCreateException("세션 만드는데 문제있음");
+        }
     }
 
     @Override
@@ -405,7 +423,6 @@ public class RoomServiceImpl implements RoomService{
             if(nextModerator.size()!=0){
                 leaveRoom.updateMemberSeq(nextModerator.get(0).getMember());
                 roomRepository.save(leaveRoom);
-
                 return;
             }
             roomRepository.delete(leaveRoom);
