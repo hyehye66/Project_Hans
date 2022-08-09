@@ -12,7 +12,10 @@
 
 <script>
 import axios from 'axios';
+<<<<<<< HEAD
+=======
 import { mapGetters } from 'vuex';
+>>>>>>> 1c8ed2f1488759b9b3e08e94a6333ec2081b0728
 // <router-link :to="{ name: 'ChatDetailView', params: { mode : mode, sessionName : room.title, isChatRoomCreate : 'false'}}" :sessionName="room.sessionId" :isChatRoomCreate="false">입장하기</router-link>
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -32,6 +35,22 @@ export default {
 		}
 	},
   methods: {
+<<<<<<< HEAD
+	getToken(){
+		this.token = this.room.token
+	},
+	joinChatRoom(){
+		axios.post(
+			`/api/conversation/rooms/`+this.room.roomSequence,
+			{auth : 
+			{
+				username: 'OPENVIDUAPP',
+				password: OPENVIDU_SERVER_SECRET
+			}})
+		.then(res => {this.$router.push({ name: 'ChatDetailView', params: { mode : this.mode, sessionName : this.room.title, token : this.room.token}})})
+		.catch(err => console.log(err,123 ))
+	}
+=======
 	
 	joinChatRoom(){
 		axios({
@@ -45,6 +64,7 @@ export default {
 	},
 	computed:{
 		...mapGetters(['authHeader'])
+>>>>>>> 1c8ed2f1488759b9b3e08e94a6333ec2081b0728
 	}
 	}
 	

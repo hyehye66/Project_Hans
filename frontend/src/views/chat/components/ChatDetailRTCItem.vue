@@ -1,7 +1,7 @@
 <template>
 <div v-if="streamManager">
-	<ov-video :stream-manager="streamManager"/>
-	<!-- <div><p>{{ clientData }}</p></div> -->
+    <ov-video :stream-manager="streamManager"/>
+    <!-- <div><p>{{ clientData }}</p></div> -->
 </div>
 </template>
 
@@ -10,28 +10,28 @@ import OvVideo from './OvVideo';
 export default {
   name: 'UserVideo',
 
-	components: {
-		OvVideo,
-	},
+    components: {
+        OvVideo,
+    },
 
-	props: {
-		streamManager: Object,
-	},
-	
-	computed: {
-		clientData () {
-			const { clientData } = this.getConnectionData();
-			
-			return clientData;
-		},
-	},
+    props: {
+        streamManager: Object,
+    },
+    
+    computed: {
+        clientData () {
+            const { clientData } = this.getConnectionData();
+            
+            return clientData;
+        },
+    },
 
-	methods: {
-		getConnectionData () {
-			const { connection } = this.streamManager.stream;
-			return JSON.parse(connection.data);
-		},
-	},
+    methods: {
+        getConnectionData () {
+            const { connection } = this.streamManager.stream;
+            return JSON.parse(connection.data);
+        },
+    },
 }
 </script>
 

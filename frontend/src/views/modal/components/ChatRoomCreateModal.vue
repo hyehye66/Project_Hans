@@ -7,7 +7,7 @@
       </div>
       <br>
       <div class="modal-body">
-		<div class="row_box">
+        <div class="row_box">
           <h6>제목 : </h6>
           <input type="text" v-model="sessionName" placeholder="방 이름을 입력해주세요" />
           <p v-if="!sessionName" style="color:red; font-size:13px; font-style:italic; margin-top:10px;">방 이름을 입력해주세요.</p>
@@ -49,14 +49,14 @@ export default {
     sessionName: '',
     myUserName: '영택임' + Math.floor(Math.random() * 100),
     mode : 'chat',
-	maxUser: [
+    maxUser: [
           { text: '2', value: 2 },
           { text: '3', value: 3 },
           { text: '4', value: 4 },
           { text: '5', value: 5 },
           { text: '6', value: 6 },]
-		}
-	},
+        }
+    },
     methods : {
     isChatCreateClose() {
       console.log(this.chatcreateopen)
@@ -64,7 +64,7 @@ export default {
     },
   
   
-	createRoom(){
+    createRoom(){
     axios(
       { url : `api/conversation/rooms`,
         method : 'post',
@@ -80,8 +80,8 @@ export default {
       
     })
     .catch(err => console.log(err,1234))
-		
-	
+        
+    
   },
 },
 computed : {...mapGetters(['authHeader'])}
