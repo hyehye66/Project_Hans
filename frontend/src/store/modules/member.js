@@ -1,5 +1,6 @@
 import router from "@/router/index.js";
-import state from "@/views/main/store/state";
+
+
 import axios from 'axios'
 
 export default {
@@ -38,7 +39,9 @@ export default {
       commit('SET_REFRESH_TOKEN', refreshToken)
       localStorage.setItem('accessToken',accessToken)
       localStorage.setItem('refreshToken',refreshToken)
-      
+
+      console.log(accessToken)
+      console.log('토큰변경완료!')
     },
     removeToken({ commit }) {
       /* 
@@ -47,6 +50,11 @@ export default {
       */
       commit('SET_ACCESS_TOKEN', '')
       commit('SET_REFRESH_TOKEN', '')
+
+      commit('SET_EMAIL','')
+      commit('SET_PROFILE','')
+      localStorage.setItem('profile','')
+      localStorage.setItem('email','')
       localStorage.setItem('accessToken','')
       localStorage.setItem('refreshToken','')
     },
@@ -59,7 +67,8 @@ export default {
 
 
     login({ commit, dispatch }, useremail) {
-      console.log('login')  
+
+      console.log('login') 
       axios({
         url: '/api/login',
         method: 'get',
@@ -70,7 +79,6 @@ export default {
         .then(res => {
           console.log('로그인완료')
           // 토큰 저장 로직
-
           const accessToken = res.headers.authorization
           const refreshToken = res.headers.refreshtoken
           dispatch('saveToken', {accessToken ,refreshToken}) 
@@ -112,7 +120,6 @@ export default {
           dispatch('saveToken', {accessToken ,refreshToken}) 
           commit('SET_ACCESS_TOKEN',accessToken)
           commit('SET_REFRESH_TOKEN', refreshToken)
-          
           router.push({ name: 'Home' })
         })
         .catch(err => {
@@ -161,21 +168,52 @@ export default {
           router.push({ name: 'Home' })
         
     },
-    fetchProfile({ commit, getters }) {
+    fetchProfile({ commit, getters, dispatch }) {
+
       /*
       GET: profile URL로 요청보내기
         성공하면
           state.profile에 저장
       */
      // if(username === )
+
+
       axios({
         url: '/api/members',
         method: 'get',
-        headers: getters.authHeader,
+        //headers: {Authorization : getters.authHeader.Authorization},
+        headers: {"Authorization" : 'asafasf'}
       })
         .then(res => {
+          console.log('sucess')
           commit('SET_PROFILE', res.data.data)
         })
+        .catch(err => {
+          console.log('에럼니당')
+          if (err.response.data.status === 'sucess'){
+            console.log('성공!!!!!!')
+          }
+          else{
+            console.log('실패!!!!!!!')
+            axios({
+              url: '/api/members',
+              method: 'get',
+              headers: getters.authHeader,
+              // headers: {"Authorization" : 'asafasf'}
+              
+            }).then(res =>{
+              console.log('이중성공!!')
+              commit('SET_PROFILE',res.data.data)
+              const accessToken = res.headers.authorization
+              const refreshToken = getters.authHeader.refreshToken
+              dispatch('saveToken', {accessToken, refreshToken})
+            }).catch(err => {
+              console.log('이중에러?')
+            })
+          }
+
+        })
+      
     },
     updateProfile({commit, getters}, {nickname, introduction} ){
       axios({
@@ -207,7 +245,6 @@ export default {
         console.error(err.response.data.message)
       }))
     }
-
   },
 
 modules: {

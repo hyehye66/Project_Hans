@@ -1,78 +1,61 @@
 <template>
-  <div class="chat-card-list py-3  grid grid-cols-3 gap-6">
-    <div v-for="room in rooms"  :key="room.roomSequence">
-      <ChatMainCardListItem v-if="room.mode.modeSequence===1" :mode="room.mode.modeName" :room="room" />  
+   <div class="bg-white p-8 rounded-lg shadow-lg relative hover:shadow-2xl transition duration-500 chat-card">
+      <h1 class="text-2xl text-gray-800 font-semibold mb-3">{{ room.title }}</h1>
+      <p class="text-gray-600 leading-6 tracking-normal">방장 : {{ room.member.nickname }}</p>
+    <p class="text-gray-600 leading-6 tracking-normal">참여인원 : {{ room.currentNum }}/{{room.restrictNum}}</p>
+      <button class="py-2 px-4 mt-8 bg-indigo-600 text-white rounded-md shadow-xl" @click="joinChatRoom" >입장하기</button>
+      <div>
+        <span class="absolute py-2 px-8 text-sm text-white top-0 right-0 bg-indigo-600 rounded-md transform translate-x-2 -translate-y-3 shadow-xl">{{ mode }}</span>
+      </div>
     </div>
-  </div>
-  <div>
-    <input v-model="idx" class="bg-primary" v-on:keyup.enter="getSession(changeIdx)">
-    {{changeIdx}}
-  </div>
 </template>
 
 <script>
 import axios from 'axios';
-import ChatMainCardListItem from './ChatMainCardListItem.vue'
 import { mapGetters } from 'vuex';
+// <router-link :to="{ name: 'ChatDetailView', params: { mode : mode, sessionName : room.title, isChatRoomCreate : 'false'}}" :sessionName="room.sessionId" :isChatRoomCreate="false">입장하기</router-link>
 
-// const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
-// const OPENVIDU_SERVER_SECRET = "MY_SECRET";
+axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-
+const OPENVIDU_SERVER_SECRET = 'hans'
 export default {
-  data () {
-    return {
-      rooms : '',
-      temp : '',
-      mode : '',
-      totalRoomPage : {},
-      getRoom : true,
-      idx : 0
-    }
-  },
-  components : {
-    ChatMainCardListItem
-  },
-  methods : {
-    // 모든 세션 데이터 받아오는 함수 
-      getSession(){
-        axios({
-          url : '/api/conversation/rooms',
-          method : 'get',
-          headers : this.authHeader
-          }
-          
-        )
-            .then(res =>{this.rooms = res.data.data.listRooms.content, console.log(this.rooms)})
-            .catch(err => {
-            console.log(err.status)
-            console.log(err,'error here')})
-      }
-			
-  
-
-  },
-  created(){
-    this.getSession()
-    console.log(this.authHeader)
-  },
-  computed:{
-    changeIdx() {
-      return this.idx
+    props : {
+        room : Object,
+        mode : String
     },
-    ...mapGetters(['authHeader'])
-  }}
-  
+    created(){
+        
+    },
+  data () {
+        return {
+            token : ''
+        }
+    },
+  methods: {
+    
+    joinChatRoom(){
+        axios({
+            url : `/api/conversation/rooms/`+this.room.roomSequence,
+            method : 'post',
+            headers : this.authHeader})
+        .then(res => {console.log(res),
+        this.$router.push({ name: 'ChatDetailView', params: { mode : this.mode, sessionName : this.room.title, token : res.data.data.token,roomSequence : this.room.roomSequence}})})
+        .catch(err => console.log(err,123 ))
+    }
+    },
+    computed:{
+        ...mapGetters(['authHeader'])
+    }
+    }
+    
+       
+    
+
 
 </script>
 
 <style scoped>
-.chat-card-list{
-  display : flex;
-  flex-direction: row ; 
-  width : 1200px;
-  height : auto;
-  flex-wrap: wrap;
-
+.chat-card {
+    width : 300px;
 }
 </style>

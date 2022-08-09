@@ -2,9 +2,8 @@ import Vuex from "vuex"
 
 const SERVER_URL = process.env.VUE_APP_SERVER_URL
 
-
+import createPersistedState from "vuex-persistedstate";
 import member from './modules/member'
-
 
 
 
@@ -23,6 +22,13 @@ export default new Vuex.Store({
       commit('CONFERENCE_ID', contents)
     },
   },
+
+  plugins: [
+    createPersistedState({
+      paths: ['member']
+    })
+  ]
+
 
 
 })
