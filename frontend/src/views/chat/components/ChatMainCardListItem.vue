@@ -32,16 +32,14 @@ export default {
 		}
 	},
   methods: {
-	getToken(){
-		this.token = this.room.token
-	},
+	
 	joinChatRoom(){
 		axios({
 			url : `/api/conversation/rooms/`+this.room.roomSequence,
 			method : 'post',
 			headers : this.authHeader})
-		.then(res => {this.getToken(),
-		this.$router.push({ name: 'ChatDetailView', params: { mode : this.mode, sessionName : this.room.title, token : this.room.token,roomSequence : this.room.roomSequence}})})
+		.then(res => {console.log(res),
+		this.$router.push({ name: 'ChatDetailView', params: { mode : this.mode, sessionName : this.room.title, token : res.data.data.token,roomSequence : this.room.roomSequence}})})
 		.catch(err => console.log(err,123 ))
 	}
 	},
