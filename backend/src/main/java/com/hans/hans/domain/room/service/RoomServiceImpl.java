@@ -110,7 +110,7 @@ public class RoomServiceImpl implements RoomService{
             throw new NoExistRoomException("존재하지 않는 방입니다.");
         }catch (OpenViduJavaClientException e) {
             // If internal error generate an error message and return it to client
-            throw new SessionCreateException("세션 들어가는데 문제가 생겼습니다.");
+            throw new SessionEnterException("세션 들어가는데 문제가 생겼습니다.");
         }catch (OpenViduHttpException e) {
             //openvidu  관련 Exception
             // If error generate an error message and return it to client
@@ -123,7 +123,7 @@ public class RoomServiceImpl implements RoomService{
                 roomRepository.delete(room);
             }
             System.out.println("sessionCreate exception response");
-            throw new SessionCreateException("세션 들어가는데 문제가 생겼습니다.");
+            throw new SessionEnterException("세션 들어가는데 문제가 생겼습니다.");
         }
     }
 
@@ -173,7 +173,7 @@ public class RoomServiceImpl implements RoomService{
             throw new NoExistRoomException("현재 입장하실 수 있는 방이 없습니다.");
         }catch (OpenViduJavaClientException e) {
             // If internal error generate an error message and return it to client
-            throw new SessionCreateException("세션 들어가는데 문제가 생겼습니다.");
+            throw new SessionEnterException("세션 들어가는데 문제가 생겼습니다.");
         }catch (OpenViduHttpException e) {
             //openvidu  관련 Exception
             // If error generate an error message and return it to client
@@ -187,7 +187,7 @@ public class RoomServiceImpl implements RoomService{
                 roomRepository.delete(room);
             }
             System.out.println("sessionCreate exception response");
-            throw new SessionCreateException("세션 들어가는데 문제가 생겼습니다.");
+            throw new SessionEnterException("세션 들어가는데 문제가 생겼습니다.");
         }
     }
 
