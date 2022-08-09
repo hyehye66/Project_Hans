@@ -39,9 +39,6 @@ export default {
       commit('SET_REFRESH_TOKEN', refreshToken)
       localStorage.setItem('accessToken',accessToken)
       localStorage.setItem('refreshToken',refreshToken)
-
-      console.log(accessToken)
-      console.log('토큰변경완료!')
     },
     removeToken({ commit }) {
       /* 
@@ -57,6 +54,12 @@ export default {
       localStorage.setItem('email','')
       localStorage.setItem('accessToken','')
       localStorage.setItem('refreshToken','')
+    },
+    
+    reissuanceToken({commit}, refreshToken){
+      console.log('토큰변경완료!')
+      commit('SET_REFRESH_TOKEN', refreshToken)
+      localStorage.setItem('refreshToken',refreshToken)
     },
 
 
@@ -128,36 +131,6 @@ export default {
         })
     },
 
-    // login: ({commit, dispatch}) => {
-    //   return new Promise((resolve, reject) => {
-    //     axios.get('/google-login').then(res => {
-    //       const accessToken = res.data.accessToken
-    //       dispatch('SET_ACCESS_TOKEN', accessToken)
-    //       resolve(res)
-    //       router.push({ name: 'DictationView' })
-    //     })
-    //     .catch(err => {
-    //       console.log(err.message)
-    //       reject(err.message)
-    //       commit('SET_AUTH_ERROR', err.response.data)
-    //     });
-    //   })
-    // },
-
-
-
-    // refreshToken: ({commit}) => { // accessToken 재요청
-    //   //accessToken 만료로 재발급 후 재요청시 비동기처리로는 제대로 처리가 안되서 promise로 처리함
-    //   return new Promise((resolve, reject) => {
-    //     axios.post('/v1/auth/certify').then(res => {
-    //       commit('refreshToken', res.data.auth_info);
-    //       resolve(res.data.auth_info);
-    //     }).catch(err => {
-    //       console.log('refreshToken error : ', err.config);
-    //       reject(err.config.data);
-    //     })
-    //   })
-    // },
     logout({ dispatch }) {
       /* 
       토큰 삭제
@@ -175,21 +148,18 @@ export default {
         성공하면
           state.profile에 저장
       */
-     // if(username === )
-
-
-      axios({
+        axios({
         url: '/api/members',
         method: 'get',
-        //headers: {Authorization : getters.authHeader.Authorization},
-        headers: {"Authorization" : 'asafasf'}
+        headers: {Authorization : getters.authHeader.Authorization},
+        //headers: {"Authorization" : 'asafasf'}
       })
         .then(res => {
           console.log('sucess')
           commit('SET_PROFILE', res.data.data)
         })
         .catch(err => {
-          console.log('에럼니당')
+          console.log('에러발생!')
           if (err.response.data.status === 'sucess'){
             console.log('성공!!!!!!')
           }
@@ -202,13 +172,12 @@ export default {
               // headers: {"Authorization" : 'asafasf'}
               
             }).then(res =>{
-              console.log('이중성공!!')
+              console.log('재발급시작!')
               commit('SET_PROFILE',res.data.data)
-              const accessToken = res.headers.authorization
               const refreshToken = getters.authHeader.refreshToken
-              dispatch('saveToken', {accessToken, refreshToken})
+              dispatch('reissuanceToken', refreshToken)
             }).catch(err => {
-              console.log('이중에러?')
+              console.log(err.response.data)
             })
           }
 
@@ -250,4 +219,3 @@ export default {
 modules: {
 },
 }
-

@@ -75,9 +75,11 @@ export default {
        headers : this.authHeader}, 
     ).
     then(res => {
+
       console.log(res)
       this.$router.push({ name: 'ChatDetailView', params: { mode : this.mode, sessionName : this.sessionName, token : res.data.data.token, roomSequence : res.data.data.roomSequence}})
       
+
     })
     .catch(err => console.log(err,1234))
         
