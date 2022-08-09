@@ -82,35 +82,37 @@ public class RoomServiceImpl implements RoomService{
     public RoomMemberResponseDto enterRoom(String email, Long roomSequence){
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
         try{
-            Room room = roomRepository.findByRoomSequence(roomSequence);
+            if(roomMemberRepository.findByMember(member)!=null){
+                Room room = roomRepository.findByRoomSequence(roomSequence);
 
-            OpenViduRole role = OpenViduRole.PUBLISHER;
-            String serverData = "{\"serverData\": \"" + member.getEmail() + "\"}";
-            ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
-            String token = this.mapSessions.get(room.getRoomSequence()).createConnection(connectionProperties).getToken();
+                OpenViduRole role = OpenViduRole.PUBLISHER;
+                String serverData = "{\"serverData\": \"" + member.getEmail() + "\"}";
+                ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
+                String token = this.mapSessions.get(room.getRoomSequence()).createConnection(connectionProperties).getToken();
 
-            Date now = new Date();
+                Date now = new Date();
 
-            room.updateCurrentNum(room.getCurrentNum()+1);
-            roomRepository.save(room);
+                room.updateCurrentNum(room.getCurrentNum()+1);
+                roomRepository.save(room);
 
-            RoomMember roomMember = roomMemberRepository.save(
-                    RoomMember.builder()
-                            .member(member)
-                            .room(room)
-                            .token(token)
-                            .enterDTTM(now)
-                            .build()
-            );
+                RoomMember roomMember = roomMemberRepository.save(
+                        RoomMember.builder()
+                                .member(member)
+                                .room(room)
+                                .token(token)
+                                .enterDTTM(now)
+                                .build()
+                );
 
-            RoomMemberResponseDto roomMemberResponseDto = new RoomMemberResponseDto(roomMember);
+                RoomMemberResponseDto roomMemberResponseDto = new RoomMemberResponseDto(roomMember);
 
-            return roomMemberResponseDto;
+                return roomMemberResponseDto;
+            }else throw new AlreadyInTheRoomException("현재 사용자는 이미 다른 방에 입장되어 있습니다.");
         }catch (NoSuchElementException e){
             throw new NoExistRoomException("존재하지 않는 방입니다.");
         }catch (OpenViduJavaClientException e) {
             // If internal error generate an error message and return it to client
-            throw new SessionEnterException("세션 들어가는데 문제가 생겼습니다.");
+            throw new SessionEnterException("세션 입장이 불가능합니다.");
         }catch (OpenViduHttpException e) {
             //openvidu  관련 Exception
             // If error generate an error message and return it to client
@@ -123,13 +125,14 @@ public class RoomServiceImpl implements RoomService{
                 roomRepository.delete(room);
             }
             System.out.println("sessionCreate exception response");
-            throw new SessionEnterException("세션 들어가는데 문제가 생겼습니다.");
+            throw new SessionEnterException("세션 입장이 불가능합니다");
         }
     }
 
     @Override
     public RoomMemberResponseDto enterRoomByRandom(String email, Modes modes){
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
+
 
         List<Room> rooms = roomRepository.findRoomsByModeAndRoomStatus(modeRepository.findByModeSequence(modes.getModeSequence()),false);
 
@@ -141,53 +144,54 @@ public class RoomServiceImpl implements RoomService{
         }
         Collections.shuffle(availableRooms);
 
+        Long enterRoomSequence = availableRooms.get(0);
+
         try{
-            Long enterRoomSequence = availableRooms.get(0);
+            if(roomMemberRepository.findByMember(member)!=null){
+                Room room = roomRepository.findByRoomSequence(enterRoomSequence);
 
-            Room room = roomRepository.findByRoomSequence(enterRoomSequence);
+                OpenViduRole role = OpenViduRole.PUBLISHER;
+                String serverData = "{\"serverData\": \"" + member.getEmail() + "\"}";
+                ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
+                String token = this.mapSessions.get(room.getRoomSequence()).createConnection(connectionProperties).getToken();
 
-            OpenViduRole role = OpenViduRole.PUBLISHER;
-            String serverData = "{\"serverData\": \"" + member.getEmail() + "\"}";
-            ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
-            String token = this.mapSessions.get(room.getRoomSequence()).createConnection(connectionProperties).getToken();
+                Date now = new Date();
 
-            Date now = new Date();
+                room.updateCurrentNum(room.getCurrentNum()+1);
+                roomRepository.save(room);
 
-            room.updateCurrentNum(room.getCurrentNum()+1);
-            roomRepository.save(room);
+                RoomMember roomMember = roomMemberRepository.save(
+                        RoomMember.builder()
+                                .member(member)
+                                .room(room)
+                                .enterDTTM(now)
+                                .build()
+                );
 
-            RoomMember roomMember = roomMemberRepository.save(
-                    RoomMember.builder()
-                            .member(member)
-                            .room(room)
-                            .enterDTTM(now)
-                            .build()
-            );
+                RoomMemberResponseDto roomMemberResponseDto = new RoomMemberResponseDto(roomMember);
 
-            RoomMemberResponseDto roomMemberResponseDto = new RoomMemberResponseDto(roomMember);
-
-            return roomMemberResponseDto;
+                return roomMemberResponseDto;
+            }else throw new AlreadyInTheRoomException("현재 사용자는 이미 다른 방에 입장되어 있습니다.");
         }catch (NoSuchElementException e){
             throw new NoExistRoomException("존재하지 않는 방입니다.");
         }catch (IndexOutOfBoundsException e){
             throw new NoExistRoomException("현재 입장하실 수 있는 방이 없습니다.");
         }catch (OpenViduJavaClientException e) {
             // If internal error generate an error message and return it to client
-            throw new SessionEnterException("세션 들어가는데 문제가 생겼습니다.");
+            throw new SessionEnterException("방 입장이 불가합니다.");
         }catch (OpenViduHttpException e) {
             //openvidu  관련 Exception
             // If error generate an error message and return it to client
             if (404 == e.getStatus()) {
                 // Invalid sessionId (user left unexpectedly). Session object is not valid
                 // anymore. Clean collections and continue as new session
-                Long enterRoomSequence = availableRooms.get(0);
                 Room room = roomRepository.findByRoomSequence(enterRoomSequence);
                 this.mapSessions.remove(room.getRoomSequence());
                 roomMemberRepository.deleteAll(roomMemberRepository.findRoomMembersByRoom(room));
                 roomRepository.delete(room);
             }
             System.out.println("sessionCreate exception response");
-            throw new SessionEnterException("세션 들어가는데 문제가 생겼습니다.");
+            throw new SessionEnterException("방 입장이 불가합니다.");
         }
     }
 
