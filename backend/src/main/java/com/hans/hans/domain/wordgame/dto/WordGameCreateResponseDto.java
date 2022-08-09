@@ -35,5 +35,6 @@ public class WordGameCreateResponseDto {
         this.currentNum = room.getCurrentNum();
         this.roomDTTM = room.getRoomDTTM();
         this.roomStatus = room.isRoomStatus();
+        this.token = token;
     }
 }

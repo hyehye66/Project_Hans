@@ -164,6 +164,7 @@ public class RoomServiceImpl implements RoomService{
                         RoomMember.builder()
                                 .member(member)
                                 .room(room)
+                                .token(token)
                                 .enterDTTM(now)
                                 .build()
                 );
@@ -329,39 +330,59 @@ public class RoomServiceImpl implements RoomService{
     public BodyGameCreateResponseDto createBodyGameRoom(String email, BodyGameCreateRequestDto bodyGameCreateRequestDto){
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
 
-        Date now = new Date();
-        String title = bodyGameCreateRequestDto.getTitle();
+        OpenViduRole role = OpenViduRole.PUBLISHER;
+        String serverData = "{\"serverData\": \"" + member.getEmail() + "\"}";
+        ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
 
-        int restrictNum = bodyGameCreateRequestDto.getRestrictNum();
-        int problemNum = bodyGameCreateRequestDto.getProblemNum();
-        int difficulty = bodyGameCreateRequestDto.getDifficulty();
-        int timeLimit = bodyGameCreateRequestDto.getTimeLimit();
+        try {
+            Date now = new Date();
+            String title = bodyGameCreateRequestDto.getTitle();
 
+            int restrictNum = bodyGameCreateRequestDto.getRestrictNum();
+            int problemNum = bodyGameCreateRequestDto.getProblemNum();
+            int difficulty = bodyGameCreateRequestDto.getDifficulty();
+            int timeLimit = bodyGameCreateRequestDto.getTimeLimit();
 
-        Room room = roomRepository.save(
-                Room.builder()
-                        .member(member)
-                        .mode(modeRepository.findByModeSequence(Modes.BODY.getModeSequence()))
-                        .title(title)
-                        .restrictNum(restrictNum)
-                        .currentNum(1)
-                        .roomDTTM(now)
-                        .roomStatus(false)
-                        .build()
-        );
+            Session session = openVidu.createSession();
+            String token = session.createConnection(connectionProperties).getToken();
 
-        roomMemberRepository.save(
-                RoomMember.builder()
-                        .member(member)
-                        .room(room)
-                        .enterDTTM(now)
-                        .build()
-        );
+            Room room = roomRepository.save(
+                    Room.builder()
+                            .member(member)
+                            .mode(modeRepository.findByModeSequence(Modes.BODY.getModeSequence()))
+                            .title(title)
+                            .restrictNum(restrictNum)
+                            .currentNum(1)
+                            .roomDTTM(now)
+                            .roomStatus(false)
+                            .build()
+            );
 
-        BodyGameCreateResponseDto bodyGameCreateResponseDto = new BodyGameCreateResponseDto(room);
-        bodyGameCreateResponseDto.updateSettings(problemNum,difficulty,timeLimit);
+            roomMemberRepository.save(
+                    RoomMember.builder()
+                            .member(member)
+                            .room(room)
+                            .token(token)
+                            .enterDTTM(now)
+                            .build()
+            );
 
-        return bodyGameCreateResponseDto;
+            this.mapSessions.put(room.getRoomSequence(), session);
+
+            BodyGameCreateResponseDto bodyGameCreateResponseDto = new BodyGameCreateResponseDto(room, token);
+            bodyGameCreateResponseDto.updateSettings(problemNum,difficulty,timeLimit);
+
+            return bodyGameCreateResponseDto;
+
+        }catch (OpenViduJavaClientException e1) {
+            // If internal error generate an error message and return it to client
+            throw new SessionCreateException("세션 만드는데 문제있음");
+        }catch (OpenViduHttpException e) {
+            //openvidu  관련 Exception
+            // If error generate an error message and return it to client
+            System.out.println("sessionCreate exception response");
+            throw new SessionCreateException("세션 만드는데 문제있음");
+        }
     }
 
     @Override

@@ -20,14 +20,14 @@ public class BodyGameCreateResponseDto {
     private int timeLimit;
     private Date roomDTTM;
     private boolean roomStatus;
-
+    String token;
     public void updateSettings(int problemNum, int difficulty, int timeLimit){
         this.problemNum = problemNum;
         this.difficulty = difficulty;
         this.timeLimit = timeLimit;
     }
 
-    public BodyGameCreateResponseDto(Room room){
+    public BodyGameCreateResponseDto(Room room, String token){
         this.roomSequence = room.getRoomSequence();
         this.member = room.getMember();
         this.mode = room.getMode();
@@ -36,5 +36,6 @@ public class BodyGameCreateResponseDto {
         this.currentNum = room.getCurrentNum();
         this.roomDTTM = room.getRoomDTTM();
         this.roomStatus = room.isRoomStatus();
+        this.token = token;
     }
 }
