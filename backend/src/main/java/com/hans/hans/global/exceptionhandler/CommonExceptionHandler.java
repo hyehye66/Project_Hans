@@ -57,4 +57,19 @@ public class CommonExceptionHandler {
     public ResponseEntity<CommonResponse> handleNotLoggedInException(RuntimeException e){
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.createError(e.getMessage()));
     }
+
+    @ExceptionHandler(AlreadyInTheRoomException.class)
+    public ResponseEntity<CommonResponse> handleAlreadyInTheRoomException(RuntimeException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonResponse.createError(e.getMessage()));
+    }
+
+    @ExceptionHandler(SessionCreateException.class)
+    public ResponseEntity<CommonResponse> handleSessionCreateException(RuntimeException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonResponse.createError(e.getMessage()));
+    }
+
+    @ExceptionHandler(SessionEnterException.class)
+    public ResponseEntity<CommonResponse> handleSessionEnterException(RuntimeException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonResponse.createError(e.getMessage()));
+    }
 }
