@@ -13,7 +13,7 @@
 <script>
 import axios from 'axios';
 import ChatMainCardListItem from './ChatMainCardListItem.vue'
-
+import { mapGetters } from 'vuex';
 
 // const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
 // const OPENVIDU_SERVER_SECRET = "MY_SECRET";
@@ -38,27 +38,32 @@ export default {
   },
   methods : {
     // 모든 세션 데이터 받아오는 함수 
-      getSession(idx){
-
-        axios.get(`api/conversation/rooms?page=${idx}`,
-          {auth: {
-                username: 'OPENVIDUAPP',
-                password: OPENVIDU_SERVER_SECRET,
-          }},)
+      getSession(){
+        axios({
+          url : '/api/conversation/rooms',
+          method : 'get',
+          headers : this.authHeader
+          }
+          
+        )
             .then(res =>{this.rooms = res.data.data.listRooms.content, console.log(this.rooms)})
-            .catch(err => console.log(err,'error here'))
+            .catch(err => {
+            console.log(err.status)
+            console.log(err,'error here')})
       }
 			
   
 
   },
   created(){
-    this.getSession(this.idx)
+    this.getSession()
+    console.log(this.authHeader)
   },
   computed:{
     changeIdx() {
       return this.idx
     },
+    ...mapGetters(['authHeader'])
   }}
   
 

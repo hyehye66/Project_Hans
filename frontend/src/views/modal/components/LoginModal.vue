@@ -1,5 +1,7 @@
 <template>
+
 <div v-if="open" class="modal"  tabindex="-1"  >
+
  
   <div class="modal-content">
       <div class="modal-header">
@@ -7,12 +9,14 @@
         <button @click="$emit('update:loginOpen', !loginOpen)" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+
         구글 로그인
 
         <!-- <div id="signin_button"></div> -->
 
           <!-- <img class = 'google-img' src="@/assets/google_logo.png" width= 50px height="auto" alt="..."   @click="googleLogin" style="cursor: pointer">  -->
            <!-- <img class = 'google-img' src="@/assets/google_logo.png" width= 50px height="auto" alt="..."  style="cursor: pointer"> -->
+
         </div>
       <div class="modal-footer">
         <button @click="$emit('update:loginOpen', !loginOpen)" type="button" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" data-bs-dismiss="modal">Close</button>        
@@ -27,12 +31,14 @@ export default {
   props :{
     loginOpen : Boolean
   },
+
       methods: {
         ...mapActions(['login']),
 
-    isClose() {
-      console.log(this.open)
-      this.$emit('update:open', false)
+
+    isLoginClose() {
+      console.log(this.loginOpen)
+      this.$emit('update:loginOpen', false)
     },
            
     //         handleCredentialResponse(response) {
@@ -56,6 +62,7 @@ export default {
     //         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
     //     }).join(''))
 
+
     // return JSON.parse(jsonPayload);
     //   },
     //     },
@@ -78,6 +85,7 @@ export default {
 
         }
   
+
 }
 </script>
 
@@ -97,9 +105,40 @@ export default {
   opacity: 100;
   
 }
-.google-img{
-  width : 50px;
-  height : auto; 
+.roomTitle{
+  text-shadow: 5px 5px 70px rgba(190, 209, 212, 0.582);
+  font-size: 70px;
+  background: linear-gradient(to bottom,#a769d6 ,#6f92d8);
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+   
+}
+.modal_content {
+  width: 38%;
+  height:58vh;
+  border-radius: 15px;
+  background: rgba(58,40,106,1);
+  position: relative;
+  margin: 0 auto;
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content:space-around;
+  padding: 10px 0 10px 0;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+.row_box {
+  width: 26vw;
+  height: 60px;
+  /* display: flex; */
+  flex-direction: row;
+  align-items: center;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: center;
 }
 .roomTitle{
   text-shadow: 5px 5px 70px rgba(190, 209, 212, 0.582);
