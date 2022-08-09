@@ -52,8 +52,10 @@
     </ul>
   </div>
   <div class="navbar-end">
+
     <button v-if="!isLoggedIn" class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded" @click="isOpen" style="cursor: pointer">Login</button>
     <button v-if="isLoggedIn" class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded" @click="logout" style="cursor: pointer">Logout</button>
+
   </div>
 
 
@@ -80,9 +82,11 @@ export default {
     }
   },
   methods : {
+
     ...mapActions(['logout']),
     isOpen (){
       return this.open = !this.open
+
     }
   },
 }

@@ -23,6 +23,7 @@
 import ChatDetailRTCItem from './components/ChatDetailRTCItem.vue'
 import { OpenVidu } from 'openvidu-browser';
 import axios from 'axios'
+import { mapGetters } from 'vuex';
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
@@ -53,12 +54,14 @@ export default {
 	this.joinSession()
   },
 
-
+  computed : {
+	...mapGetters(['authHeader'])
+  },
 
   methods : {
 	joinSession () {
 			// this.myUserName = 
-			this.mySessionId = this.$route.params.sessionName
+			this.mySessionId = this.$route.params.token.slice(39,53)
 			this.OV = new OpenVidu();
 			this.session = this.OV.initSession();
 			this.session.on('streamCreated', ({ stream }) => {
@@ -80,12 +83,18 @@ export default {
 			});
 
 			this.createPublisher()
+			
 
 			window.addEventListener('beforeunload', this.leaveSession)
 		},
 
 		leaveSession () {
 			// --- Leave the session by calling 'disconnect' method over the Session object ---
+			axios({
+				url : `/api/conversation/rooms/${this.$route.params.roomSequence}`,
+				method : 'delete',
+				headers : this.authHeader
+			})
 			if (this.session) this.session.disconnect();
 
 			this.session = undefined;
@@ -98,14 +107,12 @@ export default {
 		},
 
 		createPublisher(){
-			this.token = this.$route.params.token
-			console.log(this.token)
-			console.log(this.session)
+			console.log(this.getToken(), '잘됨')
 			this.session.connect(this.token, { clientData: this.myUserName })
 			.then(() => {
 
 						// 미디어 스트림 가져오기 
-
+						console.log('잘 되고 있는 거 같음')
 						let publisher = this.OV.initPublisher(undefined, {
 							audioSource: undefined, // The source of audio. If undefined default microphone
 							videoSource: undefined, // The source of video. If undefined default webcam
@@ -116,17 +123,18 @@ export default {
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
 							mirror: false       	// Whether to mirror your local video or not
 						});
-						console.log(publisher,1234)
+						
 						this.mainStreamManager = publisher;
 						this.publisher = publisher;
 
 						// --- Publish your stream ---
-
+						console.log(this.mainStreamManager, '이거 되면 다 되는 거임')
 						this.session.publish(this.publisher);
 					})
 					.catch(error => {
 						console.log('There was an error connecting to the session:', error.code, error.message);
-					});
+					})
+
 
 		},
 
@@ -135,8 +143,13 @@ export default {
 			this.mainStreamManager = stream;
 		},
 
-	getOpenVidu() {
-		axios.get()
+	getToken() {
+		if (this.$route.params.token) {
+			this. token = this.$route.params.token
+			return this.token
+		} else {
+			return this.token
+		}
 	}
 		
 		

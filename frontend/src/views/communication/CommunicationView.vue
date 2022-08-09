@@ -9,6 +9,7 @@
 import CommunicationRecord from './components/CommunicationRecord.vue'
 import CommunicationTab from './components/CommunicationTab.vue'
 import axios from 'axios'
+import { mapGetters } from 'vuex'
 
 
 export default {
@@ -24,11 +25,15 @@ export default {
   },
   methods : {
     getSituationItem (){
-      axios.get(
-        // 'http://localhost:8080/api/situations'
-        'https://i7d109.p.ssafy.io/api/situations'
+      axios(
+        {
+        url : '/api/situations',
+        method : 'get',
+        headers : this.authHeader
+        }
       )
       .then(res => {this.situationSentence = res.data.situations, console.log(res.data)})
+      .catch(err => console.log(err))
 
     }
   },
@@ -39,7 +44,8 @@ export default {
     fetchSituation (data) {
       this.situationSentence === data
       return this.situationSentence 
-    }
+    },
+    ...mapGetters(['authHeader'])
   }
 }
 </script>

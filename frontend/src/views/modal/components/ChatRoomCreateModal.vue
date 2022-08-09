@@ -24,7 +24,7 @@
         <br>
       </div>
       <div class="modal-footer">
-        <button class="mt-3" data-bs-dismiss="modal" type="button" cursor="pointer"  @click="createRoom" >생성하기</button>
+        <span class="mt-3 btn-animate" data-bs-dismiss="modal" type="button" cursor="pointer"  @click="createRoom" >생성하기</span>
         <span @click="$emit('update:chatcreateopen', !chatcreateopen)" type="button" class="btn-animate" data-bs-dismiss="modal">Close</span>        
       </div>
     </div>
@@ -34,15 +34,16 @@
 <script>
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
+import { mapGetters } from 'vuex';
 
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-// const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
-// const OPENVIDU_SERVER_SECRET = "MY_SECRET";
+const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
+const OPENVIDU_SERVER_SECRET = "MY_SECRET";
 
-const OPENVIDU_SERVER_URL = "https://i7d109.p.ssafy.io";
-const OPENVIDU_SERVER_SECRET = "hans";
+// const OPENVIDU_SERVER_URL = "https://i7d109.p.ssafy.io";
+// const OPENVIDU_SERVER_SECRET = "hans";
 
 export default {
   props :{
@@ -66,23 +67,29 @@ export default {
       console.log(this.chatcreateopen)
       this.$emit('update:chatcreateopen', false)
     },
-  methods : {
-    
+  
+  
 	createRoom(){
-    axios.post('/api/conversation/rooms', 
-    {auth : {
-      username : 'OPENVIDUAPP',
-      password : OPENVIDU_SERVER_SECRET
-    }},
-    {data : {
-      title : this.sessionName,
-      restrict_num : 6
-    }}).
-    then(res => this.$router.push({ name: 'ChatDetailView', params: { mode : this.mode, sessionName : this.room.title, token : this.room.token}}))
+    axios(
+      { url : `api/conversation/rooms`,
+        method : 'post',
+        data : {
+        title : this.sessionName,
+        restrict_num : 6
+       },
+       headers : this.authHeader}, 
+    ).
+    then(res => {
+      console.log(res)
+      this.$router.push({ name: 'ChatDetailView', params: { mode : this.mode, sessionName : this.sessionName, token : res.data.data.token, roomSequence : res.data.data.roomSequence}})
+      
+    })
+    .catch(err => console.log(err,1234))
 		
-	},
-  }
-}
+	
+  },
+},
+computed : {...mapGetters(['authHeader'])}
 }
 </script>
 <style scoped>
