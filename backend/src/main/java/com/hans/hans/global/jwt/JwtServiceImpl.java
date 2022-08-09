@@ -52,7 +52,7 @@ public class JwtServiceImpl implements JwtService{
                 .setHeaderParam("typ","JWT")
                 .setIssuer("Hans")
                 .setSubject(REFRESH_TOKEN_SUBJECT)
-                .setExpiration(new Date(now.getTime() + 1000 * 60L * 60L ))
+                .setExpiration(new Date(now.getTime() + 1000L * 60L * 60L * 24L * 30L * 3L ))
                 .signWith(SignatureAlgorithm.HS256,SECRET_KEY.getBytes())
                 .compact();
     }
