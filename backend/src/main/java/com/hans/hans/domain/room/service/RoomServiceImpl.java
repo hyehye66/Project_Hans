@@ -21,10 +21,7 @@ import com.hans.hans.domain.wordgame.dto.WordGameCreateResponseDto;
 import com.hans.hans.domain.wordgame.dto.WordGameUpdateRequestDto;
 import com.hans.hans.domain.wordgame.dto.WordGameUpdateResponseDto;
 import com.hans.hans.global.enumerate.Modes;
-import com.hans.hans.global.exception.NoExistMemberException;
-import com.hans.hans.global.exception.NoExistRoomException;
-import com.hans.hans.global.exception.NoExistRoomSearchByNicknameException;
-import com.hans.hans.global.exception.NoExistRoomSearchByTitleException;
+import com.hans.hans.global.exception.*;
 import io.openvidu.java.client.*;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +30,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 @Service
@@ -42,6 +40,8 @@ public class RoomServiceImpl implements RoomService{
     // Secret shared with our OpenVidu server
     private String SECRET;
     private OpenVidu openVidu;
+    private Map<Long, Session> mapSessions;
+
     private final RoomRepository roomRepository;
     private final MemberRepository memberRepository;
     private final ModeRepository modeRepository;
@@ -52,6 +52,8 @@ public class RoomServiceImpl implements RoomService{
         this.SECRET = secret;
         this.OPENVIDU_URL = openviduUrl;
         this.openVidu = new OpenVidu(OPENVIDU_URL, SECRET);
+
+        mapSessions = new ConcurrentHashMap<>();
 
         this.roomRepository=roomRepository;
         this.memberRepository=memberRepository;
@@ -81,9 +83,11 @@ public class RoomServiceImpl implements RoomService{
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
         try{
             Room room = roomRepository.findByRoomSequence(roomSequence);
+
             OpenViduRole role = OpenViduRole.PUBLISHER;
             String serverData = "{\"serverData\": \"" + member.getEmail() + "\"}";
             ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
+            String token = this.mapSessions.get(room.getRoomSequence()).createConnection(connectionProperties).getToken();
 
             Date now = new Date();
 
@@ -94,6 +98,7 @@ public class RoomServiceImpl implements RoomService{
                     RoomMember.builder()
                             .member(member)
                             .room(room)
+                            .token(token)
                             .enterDTTM(now)
                             .build()
             );
@@ -103,8 +108,23 @@ public class RoomServiceImpl implements RoomService{
             return roomMemberResponseDto;
         }catch (NoSuchElementException e){
             throw new NoExistRoomException("존재하지 않는 방입니다.");
+        }catch (OpenViduJavaClientException e) {
+            // If internal error generate an error message and return it to client
+            throw new SessionCreateException("세션 들어가는데 문제가 생겼습니다.");
+        }catch (OpenViduHttpException e) {
+            //openvidu  관련 Exception
+            // If error generate an error message and return it to client
+            if (404 == e.getStatus()) {
+                // Invalid sessionId (user left unexpectedly). Session object is not valid
+                // anymore. Clean collections and continue as new session
+                this.mapSessions.remove(roomSequence);
+                Room room = roomRepository.findByRoomSequence(roomSequence);
+                roomMemberRepository.deleteAll(roomMemberRepository.findRoomMembersByRoom(room));
+                roomRepository.delete(room);
+            }
+            System.out.println("sessionCreate exception response");
+            throw new SessionCreateException("세션 들어가는데 문제가 생겼습니다.");
         }
-
     }
 
     @Override
@@ -129,6 +149,7 @@ public class RoomServiceImpl implements RoomService{
             OpenViduRole role = OpenViduRole.PUBLISHER;
             String serverData = "{\"serverData\": \"" + member.getEmail() + "\"}";
             ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
+            String token = this.mapSessions.get(room.getRoomSequence()).createConnection(connectionProperties).getToken();
 
             Date now = new Date();
 
@@ -150,8 +171,24 @@ public class RoomServiceImpl implements RoomService{
             throw new NoExistRoomException("존재하지 않는 방입니다.");
         }catch (IndexOutOfBoundsException e){
             throw new NoExistRoomException("현재 입장하실 수 있는 방이 없습니다.");
+        }catch (OpenViduJavaClientException e) {
+            // If internal error generate an error message and return it to client
+            throw new SessionCreateException("세션 들어가는데 문제가 생겼습니다.");
+        }catch (OpenViduHttpException e) {
+            //openvidu  관련 Exception
+            // If error generate an error message and return it to client
+            if (404 == e.getStatus()) {
+                // Invalid sessionId (user left unexpectedly). Session object is not valid
+                // anymore. Clean collections and continue as new session
+                Long enterRoomSequence = availableRooms.get(0);
+                Room room = roomRepository.findByRoomSequence(enterRoomSequence);
+                this.mapSessions.remove(room.getRoomSequence());
+                roomMemberRepository.deleteAll(roomMemberRepository.findRoomMembersByRoom(room));
+                roomRepository.delete(room);
+            }
+            System.out.println("sessionCreate exception response");
+            throw new SessionCreateException("세션 들어가는데 문제가 생겼습니다.");
         }
-
     }
 
     @Override
@@ -201,7 +238,6 @@ public class RoomServiceImpl implements RoomService{
                             .currentNum(1)
                             .roomDTTM(now)
                             .roomStatus(false)
-                            .token(token)
                             .build()
             );
 
@@ -209,18 +245,25 @@ public class RoomServiceImpl implements RoomService{
                     RoomMember.builder()
                             .member(member)
                             .room(room)
+                            .token(token)
                             .enterDTTM(now)
                             .build()
             );
 
-            ConversationCreateResponseDto conversationCreateResponseDto = new ConversationCreateResponseDto(room);
+            this.mapSessions.put(room.getRoomSequence(), session);
+
+            ConversationCreateResponseDto conversationCreateResponseDto = new ConversationCreateResponseDto(room, token);
 
             return conversationCreateResponseDto;
 
-        } catch (Exception e) {
+        }catch (OpenViduJavaClientException e1) {
+            // If internal error generate an error message and return it to client
+            throw new SessionCreateException("세션 만드는데 문제있음");
+        }catch (OpenViduHttpException e) {
+            //openvidu  관련 Exception
             // If error generate an error message and return it to client
-            System.out.println("sessioncontorller exception response");
-            return null;
+            System.out.println("sessionCreate exception response");
+            throw new SessionCreateException("세션 만드는데 문제있음");
         }
     }
 
@@ -353,13 +396,9 @@ public class RoomServiceImpl implements RoomService{
             return;
         }
 
-        if (leaveRoom.getToken() != null) {
-            roomMemberRepository.delete(leaveMember);
-            leaveRoom.updateCurrentNum(leaveRoom.getCurrentNum()-1);
-            roomRepository.save(leaveRoom);
-        } else {
-            System.out.println("Problems in the app server: the TOKEN wasn't valid");
-        }
+        roomMemberRepository.delete(leaveMember);
+        leaveRoom.updateCurrentNum(leaveRoom.getCurrentNum()-1);
+        roomRepository.save(leaveRoom);
 
         if(email.equals(leaveRoom.getMember().getEmail())){
             List<RoomMember> nextModerator= roomMemberRepository.findRoomMembersByRoomOrderByEnterDTTMAsc(leaveRoom);
@@ -370,6 +409,7 @@ public class RoomServiceImpl implements RoomService{
                 return;
             }
             roomRepository.delete(leaveRoom);
+            mapSessions.remove(leaveRoom.getRoomSequence());
         }
     }
 

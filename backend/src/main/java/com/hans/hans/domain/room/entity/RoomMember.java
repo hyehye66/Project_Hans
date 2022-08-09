@@ -28,13 +28,18 @@ public class RoomMember {
     @JoinColumn(name = "ROOM_SEQ")
     private Room room;
 
+    @Column(name = "token", nullable = false)
+    private String token;
+
+
     @Column(name = "ENTER_DTTM",nullable = false)
     private Date enterDTTM;
 
     @Builder
-    public RoomMember(Member member, Room room, Date enterDTTM){
+    public RoomMember(Member member, Room room, String token,Date enterDTTM){
         this.member = member;
         this.room = room;
+        this.token = token;
         this.enterDTTM = enterDTTM;
     }
 }

@@ -21,8 +21,6 @@ public class Room {
     @Column(name = "ROOM_SEQ")
     private Long roomSequence;
 
-    @Column(name = "token", nullable = false)
-    private String token;
 
     @Column(name = "TITLE", nullable = false)
     private String title;
@@ -48,7 +46,7 @@ public class Room {
     private Mode mode;
 
     @Builder
-    public Room(Mode mode, String title, int restrictNum, int currentNum, Date roomDTTM, boolean roomStatus, Member member,String token){
+    public Room(Mode mode, String title, int restrictNum, int currentNum, Date roomDTTM, boolean roomStatus, Member member){
         this.mode = mode;
         this.title = title;
         this.restrictNum = restrictNum;
@@ -56,7 +54,6 @@ public class Room {
         this.roomDTTM = roomDTTM;
         this.roomStatus = roomStatus;
         this.member = member;
-        this.token = token;
     }
 
     public void updateRoomStatus(boolean roomStatus){

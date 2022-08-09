@@ -9,10 +9,13 @@ import java.util.Date;
 @Getter
 public class RoomMemberResponseDto {
     private Room room;
+
+    private String token;
     private Date enterDTTM;
 
     public RoomMemberResponseDto(RoomMember roomMember){
         this.room = roomMember.getRoom();
+        this.token= roomMember.getToken();
         this.enterDTTM = roomMember.getEnterDTTM();
     }
 }

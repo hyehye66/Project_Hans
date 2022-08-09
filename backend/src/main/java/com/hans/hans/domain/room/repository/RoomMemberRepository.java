@@ -10,5 +10,5 @@ import java.util.List;
 public interface RoomMemberRepository extends JpaRepository<RoomMember,Long> {
     RoomMember findByMember(Member member);
     List<RoomMember> findRoomMembersByRoomOrderByEnterDTTMAsc(Room room);
-
+    List<RoomMember> findRoomMembersByRoom(Room room);
 }

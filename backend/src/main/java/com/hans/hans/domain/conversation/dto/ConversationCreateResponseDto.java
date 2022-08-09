@@ -20,7 +20,7 @@ public class ConversationCreateResponseDto {
 
     private String token;
 
-    public ConversationCreateResponseDto(Room room){
+    public ConversationCreateResponseDto(Room room, String token){
         this.roomSequence = room.getRoomSequence();
         this.member = room.getMember();
         this.mode = room.getMode();
@@ -29,6 +29,6 @@ public class ConversationCreateResponseDto {
         this.currentNum = room.getCurrentNum();
         this.roomDTTM = room.getRoomDTTM();
         this.roomStatus = room.isRoomStatus();
-        this.token = room.getToken();
+        this.token = token;
     }
 }
