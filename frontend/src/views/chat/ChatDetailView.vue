@@ -113,10 +113,11 @@ export default {
         createPublisher(){
             console.log(this.getToken())
             this.session.connect(this.token, { clientData: this.myUserName })
+            console.log(this.token)
             .then(() => {
 
                         // 미디어 스트림 가져오기 
-                        
+                        console.log(123)
                         let publisher = this.OV.initPublisher(undefined, {
                             audioSource: undefined, // The source of audio. If undefined default microphone
                             videoSource: undefined, // The source of video. If undefined default webcam

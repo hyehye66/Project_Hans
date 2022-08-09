@@ -38,7 +38,7 @@ const routes = [
     component :() => import('@/views/words/WordsMainView.vue'),
   },
   {
-    path : '/words/detail',
+    path : '/words/detail/:mode/:sessionName',
     name : 'WordsDetailView',
     component :() => import('@/views/words/WordsDetailView.vue'),
   },

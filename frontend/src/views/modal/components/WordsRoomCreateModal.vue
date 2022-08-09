@@ -1,127 +1,98 @@
 <template>
-<!-- <div v-if="open" class="modal"  tabindex="-1" > -->
+  <div v-if="wordcreateopen" class="wordmodal bg-white"  tabindex="-1" >
   <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="staticBackdropLabel">낱말퀴즈 방 생성하기</h5>
-        <!-- x 버튼-->
-        <button @click="$emit('update:open', !open)" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title" id="staticBackdropLabel">방생성하기</h5>
+        <button @click="$emit('update:wordcreateopen', !wordcreateopen)" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <br>
       <div class="modal-body">
         <div class="row_box">
-          <h6>방 이름 : </h6>
-          <input type="text" v-model="contents.roomTitle" placeholder="방 이름을 입력해주세요" />
-          <p v-if="!contents.roomTitle" style="color:red; font-size:13px; font-style:italic; margin-top:10px;">방 이름을 입력해주세요.</p>
+          <h6>제목 : </h6>
+          <input type="text" v-model="sessionName" placeholder="방 이름을 입력해주세요" />
+          <p v-if="!sessionName" style="color:red; font-size:13px; font-style:italic; margin-top:10px;">방 이름을 입력해주세요.</p>
         </div>
         <br>
         <div class="row_box">
           최대 정원 :  
           <select name="" id="">
-            <option v-for="m in contents.maxUser" :value="m.value" :key="m.value">
+            <option v-for="m in maxUser" :value="m.value" :key="m.value">
               {{ m.text }}
             </option>
           </select>명
         </div>
         <br>
-
-        <div class="row_box">
-          문제수 : <select name="" id="">
-            <option v-for="problem in contents.problems" :value="problem.value" :key="problem.value">
-              {{ problem.text }}
-            </option>
-          </select>
-        </div>
-        <br>
       </div>
-
-      <div class="modal-footer flex">
-        <button class="mt-3" v-if="contents.roomTitle" @click="joinSession">
-        <!-- @click 추후수정 필요 -->
-        <span class='btn-animate'>START</span>
-        </button>
-        <!-- <button @click="$emit('update:open', !open)" type="button" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-3 rounded" data-bs-dismiss="modal">Close</button> -->
+      <div class="modal-footer">
+        <span class="mt-3 btn-animate" data-bs-dismiss="modal" type="button" cursor="pointer"  @click="createRoom" >생성하기</span>
+        <span @click="$emit('update:wordcreateopen', !wordcreateopen)" type="button" class="btn-animate" data-bs-dismiss="modal">Close</span>        
       </div>
     </div>
-<!-- </div> -->
+</div>
 </template>
 
 <script>
-import axios from "axios";
-const SERVER_URL = process.env.VUE_APP_SERVER_URL
+import axios from 'axios';
+
+import { mapGetters } from 'vuex';
+
+
+axios.defaults.headers.post['Content-Type'] = 'application/json';
+
 
 export default {
-  name: 'WordsRoomCreateModal',
-  data () {
-    return {
-      contents: {
-        roomTitle: '',
-        maxUser: [
-          { text: '2', value: '2' },
-          { text: '3', value: '3' },
-          { text: '4', value: '4' },
-          { text: '5', value: '5' },
-          { text: '6', value: '6' },
-        ],
-        problems: [
-          { text: '3', value: '3' },
-          { text: '4', value: '4' },
-          { text: '5', value: '5' },
-          { text: '6', value: '6' },
-          { text: '7', value: '7' },
-          { text: '8', value: '8' },
-          { text: '9', value: '9' },
-          { text: '10', value: '10' },
-        ],
-
-      }
-    }
-  },
+  name : 'WordsRoomCreateModal',
   props :{
-    open : {
-      type : Boolean,
-      require : true,
-      default : false,
-      }
+    wordcreateopen : Boolean,
   },
-  methods : {
-    isClose() {
-      console.log(this.open)
-      this.$emit('update:open', false)
+  data(){
+    return {
+    sessionName: '',
+    myUserName: '영택임' + Math.floor(Math.random() * 100),
+    mode : 'word-game',
+    maxUser: [
+          { text: '2', value: 2 },
+          { text: '3', value: 3 },
+          { text: '4', value: 4 },
+          { text: '5', value: 5 },
+          { text: '6', value: 6 },]
+        }
     },
+    methods : {
+    isWordCreateClose() {
+      console.log(this.wordcreateopen)
+      this.$emit('update:wordcreateopen', false)
+    },
+  
+  
+    createRoom(){
+    axios(
+      { url : `api/word-game/rooms`,
+        method : 'post',
+        data : {
+        title : this.sessionName,
+        restrict_num : 6,
+        problem_num : 10
+       },
+       headers : this.authHeader}, 
+    ).
+    then(res => {
 
-    room_info() {
-        this.$store.dispatch('roomInfo',this.contents)
-      },
-      joinSession() {
-        // event?
-        event.preventDefault();
-        return new Promise((resolve, reject) => {
-                axios.defaults.headers.common[
-                    "Authorization"
-                ] = `Bearer ${this.$store.state.accessToken}`;
-                axios.post(`${SERVER_URL}/conferences`, this.contents)
-                    .then((res) => {
-                        console.log('sdsdsdsd')
-                        // console.log(commit);
-                        console.log(res.data.roomId)
-                        // this.$store.dispatch('roomInfo',this.contents)
-                        this.$store.dispatch('joinSession',res.data.roomId)
-                        this.$router.push({ name: "Room" , params: {roomid: res.data.roomId }});
-                        
-                        resolve();
-                    })
-                    .catch((error) => {
-                        reject(error);
-                    })
-            })
-      },
-  }
+      console.log(res)
+      this.$router.push({ name: 'WordsDetailView', params: { mode : this.mode, sessionName : this.sessionName, token : res.data.data.token, roomSequence : res.data.data.roomSequence}})
+      
+
+    })
+    .catch(err => console.log(err,1234))
+        
+    
+  },
+},
+computed : {...mapGetters(['authHeader'])}
 }
 </script>
-
-
 <style scoped>
-/* .modal { 
+.chatmodal { 
   position: absolute;
   display : flex; 
   top: 20%;
@@ -132,8 +103,7 @@ export default {
   z-index: 90;
   visibility: visible;
   opacity: 100;
-} */
-
+}
 .roomTitle{
   text-shadow: 5px 5px 70px rgba(190, 209, 212, 0.582);
   font-size: 70px;
