@@ -23,33 +23,31 @@ public class JwtInterceptor implements HandlerInterceptor  {
         }
 
         try{
-            if(request.getHeader("Authorization")!=null){
-                String accessToken = request.getHeader("Authorization").replace("Bearer ","");
-                String refreshToken = request.getHeader("refreshToken");
-                if(jwtService.validateToken(accessToken)){
-                    String email = jwtService.getEmailFromPayload(accessToken);
-                    request.setAttribute("email",email);
-                    if(refreshToken != null) {
-                        try{
-                            if(jwtService.validateToken(refreshToken) && jwtService.compareRefreshToken(refreshToken,email)){
-                                // Access Token 재발급
-                                String newAccessToken = jwtService.createAccessToken(email);
-                                response.setHeader("Authorization","Bearer "+newAccessToken);
+            String accessToken = request.getHeader("Authorization").replace("Bearer ","");
+            String refreshToken = request.getHeader("refreshToken");
+            if(jwtService.validateToken(accessToken)){
+                String email = jwtService.getEmailFromPayload(accessToken);
+                request.setAttribute("email",email);
+                if(refreshToken != null) {
+                    try{
+                        if(jwtService.validateToken(refreshToken) && jwtService.compareRefreshToken(refreshToken,email)){
+                            // Access Token 재발급
+                            String newAccessToken = jwtService.createAccessToken(email);
+                            response.setHeader("Authorization","Bearer "+newAccessToken);
 
-                                return true;
-                            }
-                        }catch (NoMatchRefreshTokenException | JwtException e){
-                            throw new JwtException("유효하지 않은 Refresh Token 입니다.");
+                            return true;
                         }
+                    }catch (NoMatchRefreshTokenException | JwtException e){
+                        throw new JwtException("유효하지 않은 Refresh Token 입니다.");
                     }
-                    else return true;
                 }
-                throw new JwtException("유효하지 않은 Access Token 입니다.");
-            }else{
-                throw new NotLoggedInException("로그인한 사용자만 접근가능합니다.");
+                else return true;
             }
+            throw new JwtException("유효하지 않은 Access Token 입니다.");
         }catch (IllegalArgumentException | JwtException e) {
             throw new JwtException("유효하지 않은 Access Token 입니다.");
+        }catch (NullPointerException e){
+            throw new NotLoggedInException("로그인한 사용자만 접근가능합니다.");
         }
 
     }
