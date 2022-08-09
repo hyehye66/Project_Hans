@@ -34,6 +34,7 @@ public class WordGameController {
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("낱말게임방 리스트 조회에 성공하였습니다. ", roomsResponseDto));
     }
 
+
     @PostMapping()
     public ResponseEntity<?> createWordGameRoom(HttpServletRequest request, @Valid @RequestBody WordGameCreateRequestDto wordGameCreateRequestDto){
         String email = (String)request.getAttribute("email");
