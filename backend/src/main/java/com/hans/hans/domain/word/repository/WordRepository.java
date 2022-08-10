@@ -1,6 +1,6 @@
-package com.hans.hans.domain.wordgame.repository;
+package com.hans.hans.domain.word.repository;
 
-import com.hans.hans.domain.wordgame.entity.Word;
+import com.hans.hans.domain.word.entity.Word;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

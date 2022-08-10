@@ -1,6 +1,6 @@
 package com.hans.hans.domain.wordgame.dto;
 
-import com.hans.hans.domain.wordgame.entity.Word;
+import com.hans.hans.domain.word.entity.Word;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

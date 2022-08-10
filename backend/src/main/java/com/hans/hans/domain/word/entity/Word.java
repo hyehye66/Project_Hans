@@ -1,4 +1,4 @@
-package com.hans.hans.domain.wordgame.entity;
+package com.hans.hans.domain.word.entity;
 
 import lombok.AccessLevel;
 import lombok.Getter;
