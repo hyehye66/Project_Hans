@@ -36,7 +36,7 @@
                 </div>
                 <div class="icon-area" @click='muteAudio'>
                     <!-- <MicrophoneIcon style="height: 40; width: 40;"/>							 -->
-                    <div v-if='publisher.stream.audioActive'>
+                    <div v-if='!publisher.stream.audioActive'>
                         <h1>음소거제거</h1>
                         <!-- <img src="@/assets/microphone1.png" alt="mic"> -->
                     </div>
@@ -71,11 +71,12 @@
             </div>
             <!-- <br> -->
             <!-- 현재 문제 남은 시간 타이머 -->
-            <div class="problem-timer" style="width: 30%">남은 시간</div>
+            <div class="problem-timer" style="width: 30%">남은 시간: 
+            <div v-if="cnt">{{count}}</div></div>
             <!-- style="width: 40; height: 40;" -->
             <!-- 임시시작버튼 -->
-            <div class="leader-button">
-                <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
+            <div v-if="!start" class="leader-button">
+                <button @click="gameStart" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
                     START
                 </button>
             </div>
@@ -127,7 +128,7 @@ import { mapGetters } from 'vuex';
 import WordsRoomUpdateModal from '../modal/components/WordsRoomUpdateModal.vue'
 import { VideoCameraIcon, MicrophoneIcon, LogoutIcon, CogIcon, PaperAirplaneIcon } from '@heroicons/vue/outline';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
-
+import {reactive} from 'vue'
 
 
 export default {
@@ -151,9 +152,11 @@ export default {
         publisher: undefined,
         subscribers: [],
         myUserName: '영택임' + Math.floor(Math.random() * 100),
-
+        
+        count : 5,
         // 게임 시작 관련
-        start: false,
+        start: false, // 게임시작유무
+        cnt : false, // 카운트시작유무
         ready: false,
 
         // 답입력값
@@ -161,7 +164,7 @@ export default {
         answerAlert: '',
         gameStatus: 0,
         round: 0,
-
+        
         open : false,
     }
   },
@@ -219,9 +222,8 @@ export default {
                 headers : this.authHeader
             })
             
-            .then(this.$router.push({name : 'WordsMainView'}))
-            // 그 후 세션에서 나가기 
-            if (this.session) this.session.disconnect();
+            .then(() =>{
+            if(this.session) {this.session.disconnect();}
 
             this.session = undefined;
             this.mainStreamManager = undefined;
@@ -229,6 +231,10 @@ export default {
             this.subscribers = [];
             this.OV = undefined;
             window.removeEventListener('beforeunload', this.leaveSession);
+              this.$router.push({name : 'WordsMainView'})
+            })
+            // 그 후 세션에서 나가기 
+            
             // 나가는 일련의 과정이 끝나면 MainView로 라우터 이동
             
         },
@@ -300,9 +306,20 @@ export default {
     },
 
 	gameStart() {
+      this.start = true
+      this.cnt = true
+      this.countDown()
 
 		},
-
+  countDown()  {
+      setTimeout(() => { this.count = 4 }, 1000)
+      setTimeout(() => { this.count = 3 }, 2000)
+      setTimeout(() => { this.count = 2 }, 3000)
+      setTimeout(() => { this.count = 1 }, 4000)
+      setTimeout(() => { this.count = 'START!!!!'}, 4500)
+      setTimeout(() => { this.cnt=false}, 4800)
+      this.count = 5
+    },
 
 	// 정오답 확인
 	checkAnswer() {

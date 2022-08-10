@@ -15,13 +15,21 @@
         <br>
         <div class="row_box">
           최대 정원 :  
-          <select name="" id="">
-            <option v-for="m in maxUser" :value="m.value" :key="m.value">
+          <select v-model="maxUsercnt" name="" id="">
+            <option v-for="m in contents.maxUser" :value="m.value" :key="m.value">
               {{ m.text }}
             </option>
           </select>명
         </div>
         <br>
+        <div class="row_box">
+        문제수 : <select v-model="problemcnt" name="" id="">
+          <option v-for="problem in contents.problems" :value="problem.value" :key="problem.value">
+            {{ problem.text }}
+          </option>
+        </select>
+      </div>
+      <br>
       </div>
       <div class="modal-footer">
         <span class="mt-3 btn-animate" data-bs-dismiss="modal" type="button" cursor="pointer"  @click="createRoom" >생성하기</span>
@@ -50,14 +58,26 @@ export default {
     sessionName: '',
     myUserName: '영택임' + Math.floor(Math.random() * 100),
     mode : 'word-game',
+    // 방생성시 선택한 수를 백으로 넘기는 변수
+    maxUsercnt : 0,
+    problemcnt : 0 ,
+
+    contents: {
     maxUser: [
           { text: '2', value: 2 },
           { text: '3', value: 3 },
           { text: '4', value: 4 },
           { text: '5', value: 5 },
-          { text: '6', value: 6 },]
-        }
-    },
+          { text: '6', value: 6 }
+          ],
+    problems: [
+          { text: '10', value: 10 },
+          { text: '15', value: 15 },
+          { text: '20', value: 20 },
+        ],
+      }
+    }
+  },
     methods : {
     isWordCreateClose() {
       console.log(this.wordcreateopen)
@@ -67,12 +87,12 @@ export default {
   
     createRoom(){
     axios(
-      { url : `api/word-game/rooms`,
+      { url : `/api/word-game/rooms`,
         method : 'post',
         data : {
         title : this.sessionName,
-        restrict_num : 6,
-        problem_num : 10
+        restrict_num : this.maxUsercnt,
+        problem_num : this.problemcnt
        },
        headers : this.authHeader}, 
     ).

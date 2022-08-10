@@ -27,6 +27,7 @@
 <script>
 import WordsMainCardList from './components/WordsMainCardList.vue'
 import WordsRoomCreateModal from '../modal/components/WordsRoomCreateModal.vue'
+import { mapGetters } from 'vuex';
 
 export default {
   name : 'ChatMainView',
@@ -39,9 +40,18 @@ export default {
       wordcreateopen : false
     }
   },
+    computed : {
+    ...mapGetters(['isLoggedIn'])
+  },
   methods: {
     isWordCreateOpen (){
-      return this.wordcreateopen = !this.wordcreateopen
+      if (this.isLoggedIn){
+        return this.wordcreateopen = !this.wordcreateopen
+        }
+      else{
+        alert('로그인이 필요합니다!')
+        this.$router.push({ name: 'DictationView'})
+      }
     }
   }
 }
