@@ -67,6 +67,5 @@ public class WordGameRoomService {
         wordGameRoom.initWordsSequence(wordsSequence);
         //map 넣기
         wordGameRooms.put(roomSequence, wordGameRoom);
-        return ;
     }
 }
