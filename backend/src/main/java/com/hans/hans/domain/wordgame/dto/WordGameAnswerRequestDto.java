@@ -7,5 +7,5 @@ import lombok.Getter;
 public class WordGameAnswerRequestDto {
 
     @JsonProperty("question_num")
-    private int questionmNum;
+    private int questionNum;
 }

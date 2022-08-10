@@ -24,8 +24,15 @@ public class WordGameSocketController {
 
     @MessageMapping("/word-game/problem/{room_seq}")
     @SendTo("/topic/word-game/problem/{room_seq}")
-    public WordGameProblemResponseDto getProblem(@DestinationVariable("room_seq") long roomSequence, Long wordSequence) {
+    public WordGameProblemResponseDto getProblem(@DestinationVariable("room_seq") Long roomSequence, Long wordSequence) {
         return wordGameSocketService.getProblem(wordSequence);
+    }
+
+    @MessageMapping("/word-game/check/{room_seq}")
+    @SendTo("/topic/word-game/check/{room_seq}")
+    public WordGameSubmitResponseDto checkAnswer(WordGameSubmitRequestDto wordGameSubmitRequestDto, Long wordSequence, @DestinationVariable("room_seq") Long roomSequence){
+        WordGameSubmitResponseDto wordGameSubmitResponseDto = wordGameSocketService.checkAnswer(wordGameSubmitRequestDto, wordSequence,roomSequence);
+        return wordGameSubmitResponseDto;
     }
 
     @MessageMapping("/word-game/answer/{room_seq}")
