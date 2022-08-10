@@ -14,7 +14,6 @@ public class RankingResponseByMemberDto {
 
 
     public RankingResponseByMemberDto(Ranking ranking) {
-
         this.nickname = ranking.getMember().getNickname();
         this.score  = ranking.getScore();
         this.tier = ranking.getTier();
