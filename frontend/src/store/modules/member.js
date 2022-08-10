@@ -127,7 +127,7 @@ export default {
         })
         .catch(err => {
           console.error(err.response.data.message)
-          commit('SET_AUTH_ERROR', err.response.data)
+          commit('SET_AUTH_ERROR', err.response.data.message)
         })
     },
 
@@ -196,6 +196,9 @@ export default {
         router.push({
           name: 'MyPageView',
         })
+      }).catch(err =>{
+        console.log(err.response.data.message)
+        alert(err.response.data.message)
       })
     },
 
