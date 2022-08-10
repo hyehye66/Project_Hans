@@ -31,9 +31,9 @@ public class WordGameRoomService {
         return wordGameRooms.get(roomId);
     }
 
-    public WordGameRoom createWordGameRoom(String name) {
+    public WordGameRoom createWordGameRoom(Long roomSequence) {
         wordGameRoom.initWordGame();
-        wordGameRooms.put(wordGameRoom.getRoomSequence(), wordGameRoom);
+        wordGameRooms.put(roomSequence, wordGameRoom);
         return wordGameRoom;
     }
 }

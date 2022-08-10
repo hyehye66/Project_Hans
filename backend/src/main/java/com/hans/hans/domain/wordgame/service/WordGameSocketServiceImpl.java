@@ -15,18 +15,15 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class WordGameSocketServiceImpl implements WordGameSocketService {
-    private final WordGameRoom wordGameRoom;
-    Map<Long, WordGameRoom> wordGameMap = new HashMap<>();
     private final WordGameRepository wordGameRepository;
-
     private final WordRepository wordRepository;
     private final WordGameRoomService wordGameRoomService;
     private final RankingService rankingService;
 
     @Override
     public WordGameStartResponseDto initGame(long roomSequence, WordGameStartRequestDto wordGameStartRequestDto){
-        WordGameStartResponseDto wordGameStartResponseDto = wordGameRoom.initWordGame();
-        wordGameMap.put(roomSequence, wordGameRoom);
+        wordGameRoomService.createWordGameRoom(roomSequence);
+        WordGameStartResponseDto wordGameStartResponseDto = new WordGameStartResponseDto("ready");
 
         return wordGameStartResponseDto;
     }
