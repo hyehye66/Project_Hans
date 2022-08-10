@@ -5,6 +5,7 @@ import com.hans.hans.domain.wordgame.dto.*;
 import com.hans.hans.domain.wordgame.entity.Word;
 import com.hans.hans.domain.wordgame.entity.WordGameRoom;
 import com.hans.hans.domain.wordgame.repository.WordGameRepository;
+import com.hans.hans.domain.wordgame.repository.WordRepository;
 import com.hans.hans.global.enumerate.Modes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
