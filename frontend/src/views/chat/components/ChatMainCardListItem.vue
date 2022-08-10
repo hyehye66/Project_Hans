@@ -13,11 +13,11 @@
 <script>
 import axios from 'axios';
 import { mapGetters } from 'vuex';
-// <router-link :to="{ name: 'ChatDetailView', params: { mode : mode, sessionName : room.title, isChatRoomCreate : 'false'}}" :sessionName="room.sessionId" :isChatRoomCreate="false">입장하기</router-link>
+
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-const OPENVIDU_SERVER_SECRET = 'hans'
+
 export default {
     props : {
         room : Object,
