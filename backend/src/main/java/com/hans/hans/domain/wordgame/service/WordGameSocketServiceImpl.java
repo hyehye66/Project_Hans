@@ -22,7 +22,7 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
 
     @Override
     public WordGameStartResponseDto initGame(long roomSequence, WordGameStartRequestDto wordGameStartRequestDto){
-        wordGameRoomService.createWordGameRoom(roomSequence);
+        wordGameRoomService.createWordGameRoom(roomSequence, wordGameStartRequestDto.getTotalQuestion());
         WordGameStartResponseDto wordGameStartResponseDto = new WordGameStartResponseDto("ready");
 
         return wordGameStartResponseDto;

@@ -9,6 +9,7 @@ import com.hans.hans.domain.wordgame.dto.WordGameStartResponseDto;
 import com.hans.hans.domain.wordgame.repository.WordGameRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -16,6 +17,7 @@ import java.util.*;
 
 @Component
 @RequiredArgsConstructor
+
 @Getter
 public class WordGameRoom {
 
@@ -27,40 +29,22 @@ public class WordGameRoom {
     private Map<String, Long> players;
     private Map<String, Long> correctPlayers;//문제 맞춘 사람
 
-    private final RoomRepository roomRepository;
-    private final RoomMemberRepository roomMemberRepository;
-    private final WordGameRepository wordGameRepository;
-
-    public WordGameStartResponseDto initWordGame(){
+    public void initPlayers(List<String>playerNames){
         //사람 갱신
-        Room room = roomRepository.findByRoomSequence(this.roomSequence);
-        List<RoomMember> roomMembers = roomMemberRepository.findRoomMembersByRoom(room);
-        for(RoomMember roomMember :roomMembers ){
-            Member member = roomMember.getMember();
-            players.put(member.getNickname(),0L);
+        //this.players = players;
+        for(String playerName : playerNames ){
+          players.put(playerName,0l);
         }
-
         //맞은 사람 갱신
         correctPlayers = new HashMap<>();
-
-        //문제 갱신
-        List<Word> words = wordGameRepository.findAll();
-        wordsSequence = new ArrayList<>();
-
-        for(Word word : words){
-            wordsSequence.add(word.getWordSequence());
-        }
-
-        Collections.shuffle(wordsSequence);
-        wordsSequence.subList(0, totalQuestion);
-
-        WordGameStartResponseDto wordGameStartResponseDto = new WordGameStartResponseDto("ready");
-        return wordGameStartResponseDto;
     }
-
-    public void createWordGame(long roomSequence, int totalQuestion){
-        this.roomSequence = roomSequence;
-        this.totalQuestion = totalQuestion;
+    public void initWordsSequence(List<Long> wordsSequence){
+        this.wordsSequence = wordsSequence;
+    }
+    public static void createWordGame(long roomSequence, int totalQuestion){
+        WordGameRoom  room  = new WordGameRoom();
+        room.roomSequence = roomSequence;
+        room.totalQuestion = totalQuestion;
     }
 
     public void refreshCorrectPlayers(){
