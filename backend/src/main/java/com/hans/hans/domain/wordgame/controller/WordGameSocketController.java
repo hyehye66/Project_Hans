@@ -22,15 +22,15 @@ public class WordGameSocketController {
         return wordGameSocketService.initGame(roomSequence, wordGameStartRequestDto);
     }
 
-    @MessageMapping("/game/answer/{room_seq}")
-    @SendTo("/topic/game/answer/{room_seq}")
+    @MessageMapping("/word-game/answer/{room_seq}")
+    @SendTo("/topic/word-game/answer/{room_seq}")
     public void getAnswer(WordGameAnswerRequestDto wordGameAnswerRequestDto, @DestinationVariable("room_seq") Long roomSequence){
         WordGameAnswerResponseDto wordGameAnswerResponseDto = wordGameSocketService.getAnswer(wordGameAnswerRequestDto, roomSequence);
         sendingOperations.convertAndSend(wordGameAnswerResponseDto);
     }
 
-    @MessageMapping("game/result/{room_seq}")
-    @SendTo("/topic/game/result/{room_seq}")
+    @MessageMapping("word-game/result/{room_seq}")
+    @SendTo("/topic/word-game/result/{room_seq}")
     public void getResult(@DestinationVariable("room_seq") Long roomSequence){
         WordGameResultResponseDto wordGameResultResponseDto = wordGameSocketService.getResult(roomSequence);
         sendingOperations.convertAndSend(wordGameResultResponseDto);
