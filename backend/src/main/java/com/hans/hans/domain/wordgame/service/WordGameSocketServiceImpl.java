@@ -49,6 +49,8 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
                         .point(word.getDifficulty())
                         .build();
 
+        wordGameRoom.refreshCorrectPlayers();
+
         return wordGameAnswerResponseDto;
     }
 

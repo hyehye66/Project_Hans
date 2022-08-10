@@ -11,10 +11,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Component
@@ -34,10 +31,6 @@ public class WordGameRoom {
     private final RoomMemberRepository roomMemberRepository;
     private final WordGameRepository wordGameRepository;
 
-    public void createWordGame(long roomSequence, int totalQuestion){
-        this.roomSequence = roomSequence;
-        this.totalQuestion = totalQuestion;
-    }
     public WordGameStartResponseDto initWordGame(){
         //사람 갱신
         Room room = roomRepository.findByRoomSequence(this.roomSequence);
@@ -46,6 +39,9 @@ public class WordGameRoom {
             Member member = roomMember.getMember();
             players.put(member.getNickname(),0);
         }
+
+        //맞은 사람 갱신
+        correctPlayers = new HashMap<>();
 
         //문제 갱신
         List<Word> words = wordGameRepository.findAll();
@@ -60,6 +56,15 @@ public class WordGameRoom {
 
         WordGameStartResponseDto wordGameStartResponseDto = new WordGameStartResponseDto("ready");
         return wordGameStartResponseDto;
+    }
+
+    public void createWordGame(long roomSequence, int totalQuestion){
+        this.roomSequence = roomSequence;
+        this.totalQuestion = totalQuestion;
+    }
+
+    public void refreshCorrectPlayers(){
+        this.correctPlayers = new HashMap<>();
     }
 
 }
