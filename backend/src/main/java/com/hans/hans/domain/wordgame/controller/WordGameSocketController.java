@@ -35,7 +35,7 @@ public class WordGameSocketController {
         return wordGameAnswerResponseDto;
     }
 
-    @MessageMapping("word-game/result/{room_seq}")
+    @MessageMapping("/word-game/result/{room_seq}")
     @SendTo("/topic/word-game/result/{room_seq}")
     public WordGameResultResponseDto getResult(@DestinationVariable("room_seq") Long roomSequence){
         WordGameResultResponseDto wordGameResultResponseDto = wordGameSocketService.getResult(roomSequence);
