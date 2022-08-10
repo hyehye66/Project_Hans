@@ -40,10 +40,42 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
     }
 
     @Override
+    public WordGameSubmitResponseDto checkAnswer(WordGameSubmitRequestDto wordGameSubmitRequestDto, Long wordSequence, Long roomSequence){
+        Word word = wordRepository.findByWordSequence(wordSequence);
+        String answer = word.getWord();
+        String player = wordGameSubmitRequestDto.getPlayer();
+        WordGameSubmitResponseDto wordGameSubmitResponseDto;
+        if (wordGameSubmitRequestDto.getSubmit().equals(answer)){
+            WordGameRoom wordGameRoom = wordGameRoomService.findById(roomSequence);
+            //player 점수 갱신
+            Map<String, Long> players = wordGameRoom.getPlayers();
+            wordGameRoom.addPlayerPoint(players, player, word.getDifficulty());
+
+            // collectPlayers 추가
+            Map<String, Long> correctPlayers = new HashMap<>();
+            correctPlayers.put(player,word.getDifficulty());
+            wordGameRoom.addCorrectPlayers(correctPlayers);
+
+            //responseDto
+            wordGameSubmitResponseDto = WordGameSubmitResponseDto.builder()
+                    .submit(wordGameSubmitRequestDto.getSubmit())
+                    .isAnswer(true)
+                    .build();
+        } else {
+            wordGameSubmitResponseDto = WordGameSubmitResponseDto.builder()
+                    .submit(wordGameSubmitRequestDto.getSubmit())
+                    .isAnswer(false)
+                    .build();
+        }
+        return wordGameSubmitResponseDto;
+    }
+
+
+    @Override
     public WordGameAnswerResponseDto getAnswer(WordGameAnswerRequestDto wordGameAnswerRequestDto, Long roomSequence) {
         WordGameRoom wordGameRoom = wordGameRoomService.findById(roomSequence);
 
-        Word word = wordGameRepository.findByWordSequence(wordGameRoom.getWordsSequence().get(wordGameAnswerRequestDto.getQuestionmNum()));
+        Word word = wordGameRepository.findByWordSequence(wordGameRoom.getWordsSequence().get(wordGameAnswerRequestDto.getQuestionNum()));
 
         WordGameAnswerResponseDto wordGameAnswerResponseDto =
                 WordGameAnswerResponseDto.builder()

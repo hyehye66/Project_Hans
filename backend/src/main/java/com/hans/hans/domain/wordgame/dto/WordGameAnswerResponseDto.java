@@ -10,11 +10,11 @@ public class WordGameAnswerResponseDto {
 
     private Long roomSequence;
     private Map<String, Long> correctPlayers;
-    private int point;
+    private Long point;
     private String answer;
 
     @Builder
-    public WordGameAnswerResponseDto(Long roomSequence, Map<String, Long> correctPlayers, int point, String answer){
+    public WordGameAnswerResponseDto(Long roomSequence, Map<String, Long> correctPlayers, Long point, String answer){
         this.roomSequence = roomSequence;
         this.correctPlayers = correctPlayers;
         this.point = point;

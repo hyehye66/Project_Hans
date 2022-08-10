@@ -24,7 +24,7 @@ public class Word {
     private String mean;
 
     @Column(name="DIFFICULTY", nullable = false)
-    private int difficulty;
+    private Long difficulty;
 
 
 }
