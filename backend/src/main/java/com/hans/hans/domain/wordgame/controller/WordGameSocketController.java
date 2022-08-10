@@ -22,18 +22,24 @@ public class WordGameSocketController {
         return wordGameSocketService.initGame(roomSequence, wordGameStartRequestDto);
     }
 
+    @MessageMapping("/word-game/problem/{room_seq}")
+    @SendTo("/topic/word-game/problem/{room_seq}")
+    public WordGameProblemResponseDto getProblem(@DestinationVariable("room_seq") long roomSequence, Long wordSequence) {
+        return wordGameSocketService.getProblem(wordSequence);
+    }
+
     @MessageMapping("/word-game/answer/{room_seq}")
     @SendTo("/topic/word-game/answer/{room_seq}")
-    public void getAnswer(WordGameAnswerRequestDto wordGameAnswerRequestDto, @DestinationVariable("room_seq") Long roomSequence){
+    public WordGameAnswerResponseDto getAnswer(WordGameAnswerRequestDto wordGameAnswerRequestDto, @DestinationVariable("room_seq") Long roomSequence){
         WordGameAnswerResponseDto wordGameAnswerResponseDto = wordGameSocketService.getAnswer(wordGameAnswerRequestDto, roomSequence);
-        sendingOperations.convertAndSend(wordGameAnswerResponseDto);
+        return wordGameAnswerResponseDto;
     }
 
     @MessageMapping("word-game/result/{room_seq}")
     @SendTo("/topic/word-game/result/{room_seq}")
-    public void getResult(@DestinationVariable("room_seq") Long roomSequence){
+    public WordGameResultResponseDto getResult(@DestinationVariable("room_seq") Long roomSequence){
         WordGameResultResponseDto wordGameResultResponseDto = wordGameSocketService.getResult(roomSequence);
-        sendingOperations.convertAndSend(wordGameResultResponseDto);
+        return wordGameResultResponseDto;
     }
 
 }
