@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>랭크 메인</h1>
     <rank-tab />
   </div>
   

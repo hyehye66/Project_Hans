@@ -39,11 +39,11 @@
             </ul>  
             </div>
             <div v-bind:class="{'hidden': openTab !== 2, 'block': openTab === 2}">
-            <ul class="list-group" style="width: 750px" v-for="situation in situationSentence" :key="situation.situationSequence">
-              <li class="list-group-item" v-if="situation.category==='제목2'">
-                <one-dialog :sentence="situation.sentence"/>
-              </li>
-            </ul>  
+              <ul class="list-group" style="width: 750px" v-for="situation in situationSentence" :key="situation.situationSequence">
+                <li class="list-group-item" v-if="situation.category==='제목2'">
+                  <one-dialog :sentence="situation.sentence"/>
+                </li>
+              </ul>  
             </div>
             <div v-bind:class="{'hidden': openTab !== 3, 'block': openTab === 3}">
             <ul class="list-group" style="width: 750px" v-for="situation in situationSentence" :key="situation.situationSequence">
