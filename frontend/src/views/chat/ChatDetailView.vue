@@ -95,7 +95,7 @@ export default {
                 url : `/api/conversation/rooms/${this.$route.params.roomSequence}`,
                 method : 'delete',
                 headers : this.authHeader
-            })
+            }).then(this.$router.push({name : 'ChatMainView'}))
             // 그 후 세션에서 나가기 
             if (this.session) this.session.disconnect();
 
@@ -106,7 +106,7 @@ export default {
             this.OV = undefined;
             window.removeEventListener('beforeunload', this.leaveSession);
             // 나가는 일련의 과정이 끝나면 MainView로 라우터 이동
-            this.$router.push({name : 'ChatMainView'})
+            
         },
         
         // 화상 만들기

@@ -118,6 +118,8 @@
 </template>
 
 <script>
+import Stomp from 'webstomp-client'
+import SockJS from 'sockjs-client'
 import WordsDetailRTCItem from './components/WordsDetailRTCItem.vue';
 import { OpenVidu } from 'openvidu-browser';
 import axios from 'axios'
@@ -216,6 +218,8 @@ export default {
                 method : 'delete',
                 headers : this.authHeader
             })
+            
+            .then(this.$router.push({name : 'WordsMainView'}))
             // 그 후 세션에서 나가기 
             if (this.session) this.session.disconnect();
 
@@ -226,7 +230,7 @@ export default {
             this.OV = undefined;
             window.removeEventListener('beforeunload', this.leaveSession);
             // 나가는 일련의 과정이 끝나면 MainView로 라우터 이동
-            this.$router.push({name : 'WordsMainView'})
+            
         },
         
         // 화상 만들기
