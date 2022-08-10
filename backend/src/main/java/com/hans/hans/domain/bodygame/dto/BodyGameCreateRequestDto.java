@@ -18,8 +18,8 @@ public class BodyGameCreateRequestDto {
     private int restrictNum;
 
     @NotNull(message = "문제수는 필수 입력값입니다.")
-    @JsonProperty("problem_num")
-    private int problemNum;
+    @JsonProperty("total_question")
+    private int totalQuestion;
 
     @NotNull(message = "난이도는 필수 입력값입니다.")
     private int difficulty;
