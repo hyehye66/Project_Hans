@@ -1,13 +1,11 @@
 package com.hans.hans.domain.wordgame.service;
 
 
-import com.hans.hans.domain.wordgame.dto.WordGameAnswerRequestDto;
-import com.hans.hans.domain.wordgame.dto.WordGameAnswerResponseDto;
-import com.hans.hans.domain.wordgame.dto.WordGameStartRequestDto;
-import com.hans.hans.domain.wordgame.dto.WordGameStartResponseDto;
+import com.hans.hans.domain.wordgame.dto.*;
 
 public interface WordGameSocketService {
-    WordGameAnswerResponseDto getAnswer(WordGameAnswerRequestDto wordGameAnswerRequestDto, Long roomSequence);
     WordGameStartResponseDto initGame(long roomSequence, WordGameStartRequestDto wordGameStartRequestDto);
+    WordGameAnswerResponseDto getAnswer(WordGameAnswerRequestDto wordGameAnswerRequestDto, Long roomSequence);
+    WordGameResultResponseDto getResult(Long roomSequence);
 
 }
