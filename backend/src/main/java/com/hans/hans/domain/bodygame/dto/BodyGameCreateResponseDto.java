@@ -15,14 +15,14 @@ public class BodyGameCreateResponseDto {
     private String title;
     private int restrictNum;
     private int currentNum;
-    private int problemNum;
+    private int totalQuestion;
     private int difficulty;
     private int timeLimit;
     private Date roomDTTM;
     private boolean roomStatus;
     String token;
-    public void updateSettings(int problemNum, int difficulty, int timeLimit){
-        this.problemNum = problemNum;
+    public void updateSettings(int totalQuestion, int difficulty, int timeLimit){
+        this.totalQuestion = totalQuestion;
         this.difficulty = difficulty;
         this.timeLimit = timeLimit;
     }

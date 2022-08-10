@@ -17,13 +17,13 @@ public class WordGameCreateResponseDto {
     private int restrictNum;
     private int currentNum;
 
-    private int problemNum;
+    private int totalQuestion;
     private Date roomDTTM;
     private boolean roomStatus;
     String token;
 
-    public void updateProblemNum(int problemNum){
-        this.problemNum = problemNum;
+    public void updateProblemNum(int totalQuestion){
+        this.totalQuestion = totalQuestion;
     }
 
     public WordGameCreateResponseDto(Room room, String token){

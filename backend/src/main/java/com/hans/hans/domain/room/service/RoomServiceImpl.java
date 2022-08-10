@@ -284,7 +284,7 @@ public class RoomServiceImpl implements RoomService{
             String title = wordGameCreateRequestDto.getTitle();
 
             int restrictNum = wordGameCreateRequestDto.getRestrictNum();
-            int problemNum = wordGameCreateRequestDto.getProblemNum();
+            int totalQuestion = wordGameCreateRequestDto.getTotalQuestion();
             Session session = openVidu.createSession();
             String token = session.createConnection(connectionProperties).getToken();
 
@@ -312,7 +312,7 @@ public class RoomServiceImpl implements RoomService{
             this.mapSessions.put(room.getRoomSequence(), session);
 
             WordGameCreateResponseDto wordGameCreateResponseDto = new WordGameCreateResponseDto(room, token);
-            wordGameCreateResponseDto.updateProblemNum(problemNum);
+            wordGameCreateResponseDto.updateProblemNum(totalQuestion);
             return wordGameCreateResponseDto;
 
         }catch (OpenViduJavaClientException e1) {
@@ -339,7 +339,7 @@ public class RoomServiceImpl implements RoomService{
             String title = bodyGameCreateRequestDto.getTitle();
 
             int restrictNum = bodyGameCreateRequestDto.getRestrictNum();
-            int problemNum = bodyGameCreateRequestDto.getProblemNum();
+            int totalQuestion = bodyGameCreateRequestDto.getTotalQuestion();
             int difficulty = bodyGameCreateRequestDto.getDifficulty();
             int timeLimit = bodyGameCreateRequestDto.getTimeLimit();
 
@@ -370,7 +370,7 @@ public class RoomServiceImpl implements RoomService{
             this.mapSessions.put(room.getRoomSequence(), session);
 
             BodyGameCreateResponseDto bodyGameCreateResponseDto = new BodyGameCreateResponseDto(room, token);
-            bodyGameCreateResponseDto.updateSettings(problemNum,difficulty,timeLimit);
+            bodyGameCreateResponseDto.updateSettings(totalQuestion,difficulty,timeLimit);
 
             return bodyGameCreateResponseDto;
 
