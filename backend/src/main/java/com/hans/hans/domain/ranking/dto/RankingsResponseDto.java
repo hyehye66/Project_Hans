@@ -5,10 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 
+
 @Getter
 @AllArgsConstructor
 public class RankingsResponseDto {
 
-    private Page<Ranking> rankings;
+    private Page<RankingResponseDto> rankings;
 
 }

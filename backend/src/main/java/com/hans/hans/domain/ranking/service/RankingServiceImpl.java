@@ -6,15 +6,17 @@ import com.hans.hans.domain.mode.entity.Mode;
 import com.hans.hans.domain.mode.repository.ModeRepository;
 import com.hans.hans.domain.ranking.dto.RankingRequestDto;
 import com.hans.hans.domain.ranking.dto.RankingResponseByMemberDto;
+import com.hans.hans.domain.ranking.dto.RankingResponseDto;
 import com.hans.hans.domain.ranking.dto.RankingsResponseDto;
 import com.hans.hans.domain.ranking.entity.Ranking;
 import com.hans.hans.domain.ranking.repository.RankingRepository;
-import com.hans.hans.global.exception.NoExistMemberException;
 import com.hans.hans.global.exception.NoExistRankingListSearchByNicknameException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +30,9 @@ public class RankingServiceImpl implements RankingService{
     public RankingsResponseDto getRankingListByMode(int id, Pageable pageable) {
         Mode mode = modeRepository.findByModeSequence(id);
         Page<Ranking> list = rankingRepository.findRankingsByModeOrderByScoreDesc(mode, pageable);
-        RankingsResponseDto rankings = new RankingsResponseDto(list);
+        // RankingResponseDto로 변환
+        Page<RankingResponseDto> map = list.map(ranking -> new RankingResponseDto(ranking));
+        RankingsResponseDto rankings = new RankingsResponseDto(map);
         return rankings;
     }
 
