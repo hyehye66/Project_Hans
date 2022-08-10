@@ -5,7 +5,6 @@ import com.hans.hans.domain.room.service.RoomService;
 import com.hans.hans.domain.wordgame.dto.*;
 import com.hans.hans.domain.wordgame.entity.Word;
 import com.hans.hans.domain.wordgame.entity.WordGameRoom;
-import com.hans.hans.domain.wordgame.repository.WordGameRepository;
 import com.hans.hans.domain.wordgame.repository.WordRepository;
 import com.hans.hans.global.enumerate.Modes;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class WordGameSocketServiceImpl implements WordGameSocketService {
-    private final WordGameRepository wordGameRepository;
     private final WordRepository wordRepository;
     private final WordGameRoomService wordGameRoomService;
     private final RankingService rankingService;
@@ -75,7 +73,7 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
     public WordGameAnswerResponseDto getAnswer(WordGameAnswerRequestDto wordGameAnswerRequestDto, Long roomSequence) {
         WordGameRoom wordGameRoom = wordGameRoomService.findById(roomSequence);
 
-        Word word = wordGameRepository.findByWordSequence(wordGameRoom.getWordsSequence().get(wordGameAnswerRequestDto.getQuestionNum()));
+        Word word = wordRepository.findByWordSequence(wordGameRoom.getWordsSequence().get(wordGameAnswerRequestDto.getQuestionNum()));
 
         WordGameAnswerResponseDto wordGameAnswerResponseDto =
                 WordGameAnswerResponseDto.builder()

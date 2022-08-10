@@ -7,7 +7,7 @@ import com.hans.hans.domain.room.repository.RoomMemberRepository;
 import com.hans.hans.domain.room.repository.RoomRepository;
 import com.hans.hans.domain.wordgame.entity.Word;
 import com.hans.hans.domain.wordgame.entity.WordGameRoom;
-import com.hans.hans.domain.wordgame.repository.WordGameRepository;
+import com.hans.hans.domain.wordgame.repository.WordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class WordGameRoomService {
 
     private final RoomRepository roomRepository;
     private final RoomMemberRepository roomMemberRepository;
-    private final WordGameRepository wordGameRepository;
+    private final WordRepository wordRepository;
     @PostConstruct
     private void init() {
         wordGameRooms = new LinkedHashMap<>();
@@ -56,7 +56,7 @@ public class WordGameRoomService {
         wordGameRoom.initPlayers(playerNames);
 
         //문제 갱신
-        List<Word> words = wordGameRepository.findAll();
+        List<Word> words = wordRepository.findAll();
         List<Long> wordsSequence = new ArrayList<>();
 
         for(Word word : words){
