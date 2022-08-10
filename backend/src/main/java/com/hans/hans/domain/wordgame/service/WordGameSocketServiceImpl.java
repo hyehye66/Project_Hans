@@ -1,6 +1,7 @@
 package com.hans.hans.domain.wordgame.service;
 
 import com.hans.hans.domain.ranking.service.RankingService;
+import com.hans.hans.domain.room.service.RoomService;
 import com.hans.hans.domain.wordgame.dto.*;
 import com.hans.hans.domain.wordgame.entity.Word;
 import com.hans.hans.domain.wordgame.entity.WordGameRoom;
@@ -19,11 +20,14 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
     private final WordRepository wordRepository;
     private final WordGameRoomService wordGameRoomService;
     private final RankingService rankingService;
+    private final RoomService roomService;
 
     @Override
     public WordGameStartResponseDto initGame(long roomSequence, WordGameStartRequestDto wordGameStartRequestDto){
         wordGameRoomService.createWordGameRoom(roomSequence, wordGameStartRequestDto.getTotalQuestion());
         WordGameStartResponseDto wordGameStartResponseDto = new WordGameStartResponseDto("ready");
+
+        roomService.updateRoomStatus(roomSequence,true);
 
         return wordGameStartResponseDto;
     }
@@ -69,6 +73,8 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
             result.put(key,players.get(key));
             rankingService.updateRanking(key, Modes.WORD, players.get(key));
         }
+
+        roomService.updateRoomStatus(roomSequence,false);
 
         WordGameResultResponseDto wordGameResultResponseDto = new WordGameResultResponseDto(result);
 

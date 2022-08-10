@@ -455,4 +455,11 @@ public class RoomServiceImpl implements RoomService{
         }
     }
 
+    @Override
+    public void updateRoomStatus(Long roomSequence, boolean roomStatus){
+        Room room = roomRepository.findByRoomSequence(roomSequence);
+        room.updateRoomStatus(roomStatus);
+        roomRepository.save(room);
+    }
+
 }
