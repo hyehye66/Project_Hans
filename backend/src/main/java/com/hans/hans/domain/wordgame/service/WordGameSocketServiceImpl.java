@@ -4,6 +4,7 @@ import com.hans.hans.domain.wordgame.dto.*;
 import com.hans.hans.domain.wordgame.entity.Word;
 import com.hans.hans.domain.wordgame.entity.WordGameRoom;
 import com.hans.hans.domain.wordgame.repository.WordGameRepository;
+import com.hans.hans.domain.wordgame.repository.WordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,8 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
     private final WordGameRoom wordGameRoom;
     Map<Long, WordGameRoom> wordGameMap = new HashMap<>();
     private final WordGameRepository wordGameRepository;
+
+    private final WordRepository wordRepository;
     private final WordGameRoomService wordGameRoomService;
 
     @Override
@@ -23,6 +26,13 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
         wordGameMap.put(roomSequence, wordGameRoom);
 
         return wordGameStartResponseDto;
+    }
+
+    @Override
+    public WordGameProblemResponseDto getProblem(Long wordSequence){
+        Word word = wordRepository.findByWordSequence(wordSequence);
+        WordGameProblemResponseDto wordGameProblemResponseDto = new WordGameProblemResponseDto(word);
+        return wordGameProblemResponseDto;
     }
 
     @Override
