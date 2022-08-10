@@ -13,7 +13,12 @@ module.exports = {
   './src/views/chat/components/ChatMainCardListItem.vue',
   './src/views/chat/components/ChatMainCardList.vue',
   './src/views/communication/components/CommunicationList.vue',
-  './src/views/chat/ChatMainView.vue'],
+  './src/views/chat/ChatMainView.vue',
+  './src/views/words/WordsMainCardList.vue',
+  './src/views/words/WordsMainCardListItem.vue',
+  './src/views/words/WordsDetailView.vue',
+  
+],
   theme: {
     extend: {
       colors: {

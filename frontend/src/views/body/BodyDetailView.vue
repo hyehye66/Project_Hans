@@ -351,32 +351,32 @@ export default {
 			});
 		},
 
-		// 버튼에 해당하는 메서드
-		muteVideo() {
+	// 버튼에 해당하는 메서드
+	muteVideo() {
       if (this.publisher.stream.videoActive) {
         this.publisher.publishVideo(false)
       }else {
         this.publisher.publishVideo(true)
       }
     },
-		muteAudio() {
+	muteAudio() {
       if (this.publisher.stream.audioActive) {
         this.publisher.publishAudio(false)
       }else {
         this.publisher.publishAudio(true)
       }
     },    
-		isOpen (){
+	isOpen (){
       return this.open = !this.open
     },
 
-		gameStart() {
+	gameStart() {
 
 		},
 
 
-		// 정오답 확인
-		checkAnswer() {
+	// 정오답 확인
+	checkAnswer() {
 
 		},
 
@@ -386,7 +386,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 svg {
   cursor: pointer;	
 }

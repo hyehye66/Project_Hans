@@ -36,7 +36,6 @@ export default {
   methods : {
     // 모든 세션 데이터 받아오는 함수 
       getSession(){
-        console.log(this.authHeader)
         axios({
           url : '/api/conversation/rooms',
           method : 'get',
@@ -44,7 +43,7 @@ export default {
           }
           
         )
-            .then(res =>{this.rooms = res.data.data.listRooms.content, console.log(this.rooms)})
+            .then(res =>{this.rooms = res.data.data.listRooms.content})
             .catch(err => {
             console.log(err.status)
             console.log(err,'error here')})

@@ -113,7 +113,6 @@ export default {
         createPublisher(){
             console.log(this.getToken())
             this.session.connect(this.token, { clientData: this.myUserName })
-            console.log(this.token)
             .then(() => {
 
                         // 미디어 스트림 가져오기 
@@ -134,7 +133,7 @@ export default {
 
                         
                         this.session.publish(this.publisher);
-                        console.log(this.publisher)
+                        console.log(this.publisher,345)
                     })
                     .catch(error => {
                         console.log('There was an error connecting to the session:', error.code, error.message);
