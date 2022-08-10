@@ -10,6 +10,8 @@ import com.hans.hans.domain.ranking.dto.RankingResponseDto;
 import com.hans.hans.domain.ranking.dto.RankingsResponseDto;
 import com.hans.hans.domain.ranking.entity.Ranking;
 import com.hans.hans.domain.ranking.repository.RankingRepository;
+import com.hans.hans.global.enumerate.Modes;
+import com.hans.hans.global.exception.NoExistMemberException;
 import com.hans.hans.global.exception.NoExistRankingListSearchByNicknameException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -54,6 +56,18 @@ public class RankingServiceImpl implements RankingService{
         RankingResponseByMemberDto rankingResponseByMemberDto = new RankingResponseByMemberDto(ranking);
 
         return rankingResponseByMemberDto;
+    }
+
+    @Override
+    public void updateRanking(String nickname, Modes modes, Long score){
+        Member member = memberRepository.findByNickname(nickname);
+
+        Mode mode = modeRepository.findByModeSequence(modes.getModeSequence());
+
+        Ranking ranking = rankingRepository.findRankingByMemberAndMode(member, mode);
+        ranking.updateScore(score);
+
+        rankingRepository.save(ranking);
     }
 
 }

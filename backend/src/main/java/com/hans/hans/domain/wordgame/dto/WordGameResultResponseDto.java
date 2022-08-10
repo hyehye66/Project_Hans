@@ -9,5 +9,5 @@ import java.util.Map;
 @AllArgsConstructor
 public class WordGameResultResponseDto {
 
-    private Map<String,Integer> players;
+    private Map<String,Long> players;
 }

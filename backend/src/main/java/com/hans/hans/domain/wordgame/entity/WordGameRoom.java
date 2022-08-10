@@ -24,8 +24,8 @@ public class WordGameRoom {
     private List<Long> wordsSequence;//문제 번호
 
     String gameStatus;//게임 상태(게임 대기="ready", 게임 시작중="start", 정답 알려주는중="pause")//enum
-    private Map<String, Integer> players;
-    private Map<String, Integer> correctPlayers;//문제 맞춘 사람
+    private Map<String, Long> players;
+    private Map<String, Long> correctPlayers;//문제 맞춘 사람
 
     private final RoomRepository roomRepository;
     private final RoomMemberRepository roomMemberRepository;
@@ -37,7 +37,7 @@ public class WordGameRoom {
         List<RoomMember> roomMembers = roomMemberRepository.findRoomMembersByRoom(room);
         for(RoomMember roomMember :roomMembers ){
             Member member = roomMember.getMember();
-            players.put(member.getNickname(),0);
+            players.put(member.getNickname(),0L);
         }
 
         //맞은 사람 갱신
