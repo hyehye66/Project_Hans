@@ -1,10 +1,11 @@
 package com.hans.hans.domain.wordgame.service;
 
+import com.hans.hans.domain.ranking.service.RankingService;
 import com.hans.hans.domain.wordgame.dto.*;
 import com.hans.hans.domain.wordgame.entity.Word;
 import com.hans.hans.domain.wordgame.entity.WordGameRoom;
 import com.hans.hans.domain.wordgame.repository.WordGameRepository;
-import com.hans.hans.domain.wordgame.repository.WordRepository;
+import com.hans.hans.global.enumerate.Modes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
 
     private final WordRepository wordRepository;
     private final WordGameRoomService wordGameRoomService;
+    private final RankingService rankingService;
 
     @Override
     public WordGameStartResponseDto initGame(long roomSequence, WordGameStartRequestDto wordGameStartRequestDto){
@@ -57,21 +59,17 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
     @Override
     public WordGameResultResponseDto getResult(Long roomSequence){
         WordGameRoom wordGameRoom = wordGameRoomService.findById(roomSequence);
-        Map<String,Integer> players = wordGameRoom.getPlayers();
+        Map<String,Long> players = wordGameRoom.getPlayers();
 
         List<String> playersKeySet = new ArrayList<>(players.keySet());
 
-        playersKeySet.sort(new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return players.get(o1).compareTo(players.get(o2));
-            }
-        });
+        playersKeySet.sort((o1, o2) -> players.get(o2).compareTo(players.get(o1)));
 
-        Map<String,Integer> result = new HashMap<>();
+        Map<String,Long> result = new HashMap<>();
 
         for(String key: playersKeySet){
             result.put(key,players.get(key));
+            rankingService.updateRanking(key, Modes.WORD, players.get(key));
         }
 
         WordGameResultResponseDto wordGameResultResponseDto = new WordGameResultResponseDto(result);

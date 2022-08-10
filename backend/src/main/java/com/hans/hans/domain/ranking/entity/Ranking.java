@@ -43,6 +43,8 @@ public class Ranking {
         this.mode = mode;
     }
 
-
+    public void updateScore(Long score){
+        this.score = score;
+    }
 
 }

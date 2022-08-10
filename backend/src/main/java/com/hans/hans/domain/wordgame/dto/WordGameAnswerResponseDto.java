@@ -9,12 +9,12 @@ import java.util.Map;
 public class WordGameAnswerResponseDto {
 
     private Long roomSequence;
-    private Map<String, Integer> correctPlayers;
+    private Map<String, Long> correctPlayers;
     private int point;
     private String answer;
 
     @Builder
-    public WordGameAnswerResponseDto(Long roomSequence, Map<String, Integer> correctPlayers, int point, String answer){
+    public WordGameAnswerResponseDto(Long roomSequence, Map<String, Long> correctPlayers, int point, String answer){
         this.roomSequence = roomSequence;
         this.correctPlayers = correctPlayers;
         this.point = point;
