@@ -51,15 +51,6 @@ public class WordGameRoom {
         this.correctPlayers = new HashMap<>();
     }
 
-    public void createWordGame(long roomSequence, int totalQuestion){
-        this.roomSequence = roomSequence;
-        this.totalQuestion = totalQuestion;
-    }
-
-    public void refreshCorrectPlayers(){
-        this.correctPlayers = new HashMap<>();
-    }
-
     //문제 맞힌 사람 추가
     public void addCorrectPlayers(Map<String, Long> correctPlayers){
         this.correctPlayers = correctPlayers;
