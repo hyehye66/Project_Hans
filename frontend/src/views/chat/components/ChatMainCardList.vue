@@ -52,7 +52,7 @@ export default {
   
 
   },
-  created(){
+  mounted(){
     this.getSession()
     console.log(this.authHeader.Authorization)
   },
