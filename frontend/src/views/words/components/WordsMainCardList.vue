@@ -34,6 +34,7 @@ export default {
   methods : {
     // 모든 세션 데이터 받아오는 함수 
       getSession(){
+        console.log(this.authHeader)
         axios({
           url : '/api/word-game/rooms',
           method : 'get',
