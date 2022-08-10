@@ -82,7 +82,7 @@ public class RoomServiceImpl implements RoomService{
     public RoomMemberResponseDto enterRoom(String email, Long roomSequence){
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoExistMemberException("존재하는 회원정보가 없습니다."));
         try{
-            if(roomMemberRepository.findByMember(member)!=null){
+            if(roomMemberRepository.findByMember(member)==null){
                 Room room = roomRepository.findByRoomSequence(roomSequence);
 
                 OpenViduRole role = OpenViduRole.PUBLISHER;
@@ -147,7 +147,7 @@ public class RoomServiceImpl implements RoomService{
         Long enterRoomSequence = availableRooms.get(0);
 
         try{
-            if(roomMemberRepository.findByMember(member)!=null){
+            if(roomMemberRepository.findByMember(member)==null){
                 Room room = roomRepository.findByRoomSequence(enterRoomSequence);
 
                 OpenViduRole role = OpenViduRole.PUBLISHER;
