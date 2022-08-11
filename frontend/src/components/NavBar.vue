@@ -52,18 +52,17 @@
     </ul>
   </div>
   <div class="navbar-end">
-    <router-link :to="{ name: 'LoginView' }">
       <button v-if="!isLoggedIn" 
-      class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded" 
+      class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded"  @click="login"
       style="cursor: pointer">
       Login
       </button>
       <button v-if="isLoggedIn" 
-      class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded" 
+      class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded" @click="logout" 
       style="cursor: pointer">
       Logout
       </button>
-    </router-link>
+   
 
     <!-- <button v-if="!isLoggedIn" class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded" @click="isOpen" style="cursor: pointer">Login</button>
     <button v-if="isLoggedIn" class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded" @click="logout" style="cursor: pointer">Logout</button> -->
@@ -97,8 +96,8 @@ export default {
   },
   methods : {
     ...mapActions(['logout']),
-    isOpen (){
-      return this.open = !this.open
+    login (){
+      this.$router.push('/login')
 
     }
   },

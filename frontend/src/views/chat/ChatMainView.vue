@@ -27,6 +27,7 @@
 <script>
 import ChatMainCardList from './components/ChatMainCardList.vue'
 import ChatRoomCreateModal from '../modal/components/ChatRoomCreateModal.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   name : 'ChatMainView',
@@ -39,10 +40,19 @@ export default {
       chatcreateopen : false
     }
   },
+  computed : {
+    ...mapGetters(['isLoggedIn'])
+  },
   methods: {
     isChatCreateOpen (){
-      return this.chatcreateopen = !this.chatcreateopen
-    }
+      if (this.isLoggedIn){
+        return this.chatcreateopen = !this.chatcreateopen
+        }
+      else{
+        alert('로그인이 필요합니다!')
+        this.$router.push({ name: 'LoginView'})
+      }      
+    },
   }
 }
 </script>

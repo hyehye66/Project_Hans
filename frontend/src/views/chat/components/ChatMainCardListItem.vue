@@ -34,6 +34,7 @@ export default {
   methods: {
     
     joinChatRoom(){
+      if(this.isLoggedIn){
         axios({
             url : `/api/conversation/rooms/`+this.room.roomSequence,
             method : 'post',
@@ -41,10 +42,15 @@ export default {
         .then(res => {console.log(res),
         this.$router.push({ name: 'ChatDetailView', params: { mode : this.mode, sessionName : this.room.title, token : res.data.data.token,roomSequence : this.room.roomSequence}})})
         .catch(err => console.log(err,123 ))
+        }
+      else{
+        alert('로그인이 필요합니다!')
+        this.$router.push({ name: 'LoginView'})
+      }
     }
-    },
+  },
     computed:{
-        ...mapGetters(['authHeader'])
+        ...mapGetters(['authHeader', 'isLoggedIn'])
     }
     }
     
