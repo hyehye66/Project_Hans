@@ -148,6 +148,7 @@ export default {
         성공하면
           state.profile에 저장
       */
+
         axios({
         url: '/api/members',
         method: 'get',

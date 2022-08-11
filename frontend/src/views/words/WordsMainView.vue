@@ -3,6 +3,11 @@
     <p id="chat-main-title" class="d-flex justify-content-space-around py-2 px-4 mt-8">낱말퀴즈</p>
     <div class="btn-container py-4 px-4">
       <button id="word-main-create" class=" text-white font-bold py-2 px-4 rounded" @click="isWordCreateOpen" style="cursor: pointer">방 생성하기</button>
+      <button id="word-random-join" class=" text-white font-bold py-2 px-4 rounded" @click="isWordRandomClick" style="cursor: pointer">빠른 입장</button>
+      <svg @click="isHowtowordOpen" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16" style="cursor: pointer">
+        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+        <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+      </svg>
      <div>
   <div class="mb-3 xl:w-96">
     <div class="input-group relative flex flex-wrap items-stretch w-full mb-4">
@@ -20,28 +25,35 @@
     <WordsMainCardList />
 
   <WordsRoomCreateModal v-model:wordcreateopen="wordcreateopen"/>
-  
+    
 </div> 
+<div>
+  <HowToWordGameModal v-model:wordhowopen="wordhowopen"/>
+</div>
 </template>
 
 <script>
 import WordsMainCardList from './components/WordsMainCardList.vue'
 import WordsRoomCreateModal from '../modal/components/WordsRoomCreateModal.vue'
+import HowToWordGameModal from '../modal/components/HowToWordGameModal.vue'
 import { mapGetters } from 'vuex';
+import axios from 'axios';
 
 export default {
   name : 'ChatMainView',
   components : {
     WordsMainCardList,
-    WordsRoomCreateModal
+    WordsRoomCreateModal,
+    HowToWordGameModal
   },
   data (){
     return {
-      wordcreateopen : false
+      wordcreateopen : false,
+      wordhowopen : false,
     }
   },
     computed : {
-    ...mapGetters(['isLoggedIn'])
+    ...mapGetters(['isLoggedIn', 'authHeader'])
   },
   methods: {
     isWordCreateOpen (){
@@ -52,6 +64,28 @@ export default {
         alert('로그인이 필요합니다!')
         this.$router.push({ name: 'DictationView'})
       }
+    },
+    isWordRandomClick (){
+      if (!this.isLoggedIn){
+        alert('로그인이 필요합니다!')
+        this.$router.push({ name: 'DictationView'})
+      }
+      else{
+        axios({
+            url : `/api/word-game/rooms/random`,
+            method : 'post',
+            headers : this.authHeader})
+        .then(res => {
+        this.$router.push({ name: 'WordsDetailView', 
+        params: { mode : res.data.data.room.mode.modeSequence, 
+        sessionName : res.data.data.room.title, token : res.data.data.token, 
+        roomSequence : res.data.data.room.roomSequence}})})
+
+        .catch(err => alert('입장 가능한 방이 없습니다!'))
+      }
+    },
+    isHowtowordOpen(){
+      return this.wordhowopen = !this.wordhowopen
     }
   }
 }
@@ -88,6 +122,13 @@ export default {
 }
 
 #word-main-create {
+  width : 200px;
+  height : 50px;
+  padding-top : 2rem;
+  background-color: #f38e7b;
+}
+
+#word-random-join {
   width : 200px;
   height : 50px;
   padding-top : 2rem;

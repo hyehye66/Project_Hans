@@ -2,110 +2,109 @@
 <div v-if="open" class="modal" tabindex="-1" >
   <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="staticBackdropLabel">몸으로 말해요 방 설정</h5>
-        <!-- x 버튼-->
-        <button @click="$emit('update:open', !open)" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title" id="staticBackdropLabel">방생성하기</h5>
+        <button @click="$emit('update:bodycreateopen', !bodycreateopen)" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <br>
       <div class="modal-body">
         <div class="row_box">
-          <h6>방 이름 : </h6>
-          <input type="text" v-model="contents.roomTitle" placeholder="방 이름을 입력해주세요" />
-          <p v-if="!contents.roomTitle" style="color:red; font-size:13px; font-style:italic; margin-top:10px;">방 이름을 입력해주세요.</p>
+          <h6>제목 : </h6>
+          <input type="text" v-model="sessionName" placeholder="방 이름을 입력해주세요" />
+          <p v-if="!sessionName" style="color:red; font-size:13px; font-style:italic; margin-top:10px;">방 이름을 입력해주세요.</p>
         </div>
         <br>
         <div class="row_box">
           최대 정원 :  
-          <select name="" id="">
+          <select v-model="maxUsercnt" name="" id="">
             <option v-for="m in contents.maxUser" :value="m.value" :key="m.value">
               {{ m.text }}
             </option>
           </select>명
         </div>
         <br>
-        
         <div class="row_box">
-          난이도 : 
-          <select name="" id="">
-            <option v-for="l in contents.level" :value="l.value" :key="l.value">
-              {{ l.text }}
-            </option>
-          </select>
-        </div>
-        <br>
-
-        <div class="row_box">
-          문제수 : <select name="" id="">
-            <option v-for="problem in contents.problems" :value="problem.value" :key="problem.value">
-              {{ problem.text }}
-            </option>
-          </select>
-        </div>
-        <br>
-
-        <div class="row_box">
-          제한시간 : 
-          <select name="" id="">
-            <option v-for="t in contents.timeLimit" :value="t.value" :key="t.value">
-              {{ t.text }}
-            </option>
-          </select>초
-        <!-- 제한시간 <input type="text" v-model="contents.timeLimit" minlength="15" maxlength="60" /> 초 -->
-        <!-- 폰트 색&크기&기울임 issue!!! -->
-        <!-- <p class="text-red text-xs italic">한 문제당 15초 이상 1분 이하 가능합니다.</p> -->
-        </div>
-        <br>
+        문제수 : <select v-model="problemcnt" name="" id="">
+          <option v-for="problem in contents.problems" :value="problem.value" :key="problem.value">
+            {{ problem.text }}
+          </option>
+        </select>
+      </div>
+      <br>
+<div class="row_box">
+        난이도 : <select v-model="levelcnt" name="" id="">
+          <option v-for="lev in contents.level" :value="lev.value" :key="lev.value">
+            {{ lev.text }}
+          </option>
+        </select>
+      </div>
+      <br>
+<div class="row_box">
+        제한시간 : <select v-model="timecnt" name="" id="">
+          <option v-for="time in contents.timeLimit" :value="time.value" :key="time.value">
+            {{ time.text }}
+          </option>
+        </select>
+      </div>
+      <br>
       </div>
       <div class="modal-footer flex">
-        <button class="mt-3" v-if="contents.roomTitle" @click="joinSession">
-        <!-- onclick 수정해야 함 -->
-        <span class='btn-animate'>완료</span>
-        </button>
-        <!-- <button @click="$emit('update:open', !open)" type="button" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-3 rounded" data-bs-dismiss="modal">Close</button> -->
-      </div>
+      <button class="mt-3" v-if="sessionName" @click="joinSession">
+      <!-- @click 추후수정 필요 -->
+      <span class='btn-animate' @click="updateRoom">완료</span>
+      </button>
+      <!-- <button @click="$emit('update:open', !open)" type="button" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-3 rounded" data-bs-dismiss="modal">Close</button> -->
     </div>
+  </div>
 </div>
 </template>
 
 <script>
 import axios from "axios";
+import { mapGetters } from 'vuex';
+
 const SERVER_URL = process.env.VUE_APP_SERVER_URL
+
 
 export default {
   name: 'BodyRoomUpdateModal',
+  
   data () {
     return {
-      contents: {
+    maxUsercnt : 0,
+    problemcnt : 0 ,
+    levelcnt : 0,
+    timecnt : 0,	
+    contents: {
         roomTitle: '',
         maxUser: [
-          { text: '2', value: '2' },
-          { text: '3', value: '3' },
-          { text: '4', value: '4' },
-          { text: '5', value: '5' },
-          { text: '6', value: '6' },
+          { text: '2', value: 2 },
+          { text: '3', value: 3 },
+          { text: '4', value: 4 },
+          { text: '5', value: 5 },
+          { text: '6', value: 6 },
         ],
         level: [
-          { text: '1', value: '1' },
-          { text: '2', value: '2' },
-          { text: '3', value: '3' },
-          { text: '4', value: '4' },
-          { text: '5', value: '5' },        
+          { text: '1', value: 1 },
+          { text: '2', value: 2 },
+          { text: '3', value: 3 },
+          { text: '4', value: 4 },
+          { text: '5', value: 5 },        
         ],
         problems: [
-          { text: '3', value: '3' },
-          { text: '4', value: '4' },
-          { text: '5', value: '5' },
-          { text: '6', value: '6' },
-          { text: '7', value: '7' },
-          { text: '8', value: '8' },
-          { text: '9', value: '9' },
-          { text: '10', value: '10' },
+          { text: '3', value: 3 },
+          { text: '4', value: 4 },
+          { text: '5', value: 5 },
+          { text: '6', value: 6 },
+          { text: '7', value: 7 },
+          { text: '8', value: 8 },
+          { text: '9', value: 9 },
+          { text: '10', value: 10 },
         ],
         timeLimit: [
-          { text: '15', value: '15' },
-          { text: '30', value: '30' },
-          { text: '45', value: '45' },
-          { text: '60', value: '60' },
+          { text: '15', value: 15 },
+          { text: '30', value: 30 },
+          { text: '45', value: 45 },
+          { text: '60', value: 60 },
         ],
 
       }
@@ -118,11 +117,33 @@ export default {
       default : false,
       }
   },
+computed : {
+    ...mapGetters(['authHeader'])},
   methods : {
     isClose() {
       console.log(this.open)
       this.$emit('update:open', false)
     },
+    updateRoom(){
+    axios(
+      { url : `/api/word-game/rooms/${this.$route.params.roomSequence}`,
+        method : 'put',
+        data : {
+        title : this.sessionName,
+        restrict_num : this.maxUsercnt,
+        problem_num : this.problemcnt
+       },
+       headers : this.authHeader
+       })
+    .then(res => {
+      alert('방설정 변경완료!')
+      this.isClose()
+
+    })
+    .catch(err => console.log(err))
+        
+    
+  },
 
     // room_info() {
     //     this.$store.dispatch('roomInfo',this.contents)

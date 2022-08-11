@@ -8,7 +8,7 @@
       <br>
       <div class="modal-body">
         <div class="row_box">
-          <h6>제목 : </h6>
+          <h6>방 이름 : </h6>
           <input type="text" v-model="sessionName" placeholder="방 이름을 입력해주세요" />
           <p v-if="!sessionName" style="color:red; font-size:13px; font-style:italic; margin-top:10px;">방 이름을 입력해주세요.</p>
         </div>
@@ -112,7 +112,7 @@ computed : {...mapGetters(['authHeader'])}
 }
 </script>
 <style scoped>
-.chatmodal { 
+.wordmodal { 
   position: absolute;
   display : flex; 
   top: 20%;
