@@ -56,6 +56,9 @@
         </div>
 
         <div id="session-body-right" class="col-md-5">
+          <button class="btn btn-primary" @click="getProblem(problemNum)">문제 줄 거임</button>
+          <button class="btn btn-primary" @click="sendCorrect"> 정답 줄거임</button>
+          <button class="btn btn-primary" @click="sendResult">결과 줄거임</button>
             <!-- 랭크 -->
             <h1>랭크</h1>
             <div class="rank col-md-12">
@@ -76,7 +79,7 @@
             <!-- style="width: 40; height: 40;" -->
             <!-- 임시시작버튼 -->
             <div v-if="!start" class="leader-button">
-                <button @click="gameStart" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
+                <button @click="sendStart(this.$route.params.roomSequence)" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
                     START
                 </button>
             </div>
@@ -99,9 +102,9 @@
             </div> -->
 
                 <div class="answer-send">
-                    <input type="text" name="" id="answer-sheet" v-model="answerSheet" size="30"
-                    placeholder="답을 입력해주세요." @keyup.enter="checkAnswer" />
-                    <PaperAirplaneIcon style="height: 35; width: 35;" @click="checkAnswer" />					
+                    <input type="text" name="" id="answer-sheet" v-model="answer" size="30"
+                    placeholder="답을 입력해주세요." @keyup.enter="sendAnswer" />
+                    <PaperAirplaneIcon style="height: 35; width: 35;" @click="sendAnswer" />					
                 </div>
                 <!-- 정오답 알림 메시지 -->
                 <div class="check-answer">
@@ -127,7 +130,11 @@ import { mapGetters, mapActions } from 'vuex';
 import WordsRoomUpdateModal from '../modal/components/WordsRoomUpdateModal.vue'
 import { VideoCameraIcon, MicrophoneIcon, LogoutIcon, CogIcon, PaperAirplaneIcon } from '@heroicons/vue/outline';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
+import Stomp from 'webstomp-client'
+import SockJS from 'sockjs-client'
 
+// stomp url
+const serverUrl = "https://i7d109.p.ssafy.io/ws/game"
 
 
 export default {
@@ -150,7 +157,6 @@ export default {
         mainStreamManager: undefined,
         publisher: undefined,
         subscribers: [],
-        myUserName: '영택임' + Math.floor(Math.random() * 100),
         
         count : 5,
         // 게임 시작 관련
@@ -165,20 +171,31 @@ export default {
         round: 0,
         
         open : false,
+
+        problem : '',
+        answer : '',
+        difficulty : '',
+        answerList : [],
+        isConnect : false,
+        stompClient : {},
+        status : null,
+        problemNum : 1,
+        temp : ''
     }
   },
   
   created(){
     this.joinSession(),
-    this.socketCreate()
+    this.socketStart(),
+    console.log(this.profile)
   },
 
   computed : {
-    ...mapGetters(['authHeader'])
+    ...mapGetters(['authHeader','profile'])
   },
 //this.$route.params.token.slice(39,53)
   methods : {
-    ...mapActions(['socketCreate']),
+    
     // 오픈비두 세션에 들어가기,created에 실행
     joinSession () {
             // 세션의 id는 토큰에서 잘라서 활용 
@@ -216,7 +233,7 @@ export default {
         // 방 나가기
         leaveSession () {
             // 일단 axios로 스프링 서버의 방에서 나가기
-            console.log(this.$route.params.roomSequence)
+
             axios({
                 url : `/api/word-game/rooms/${this.$route.params.roomSequence}`,
                 method : 'delete',
@@ -243,8 +260,6 @@ export default {
         
         // 화상 만들기
         createPublisher(){
-            console.log(this.getToken())
-			console.log(this.token)
             this.session.connect(this.token,{ clientData: this.myUserName })
             .then(() => {
 
@@ -322,12 +337,74 @@ export default {
       setTimeout(() => { this.cnt=false}, 4800)
       this.count = 5
     },
-
-	// 정오답 확인
-	checkAnswer() {
-
-		},     
-  }} 
+  
+  // stomp 시작
+  socketStart(){
+      let socket = new SockJS(serverUrl)
+      this.stompClient = Stomp.over(socket)
+      console.log('소켓 연결하는 중')
+      this.stompClient.connect({}, frame => {
+          console.log(frame, '연결 성공!')
+          this.stompClient.subscribe(`/topic/word-game/${this.$route.params.roomSequence}`, 
+          res => {
+              console.log(res)
+              const response = JSON.parse(res.body)
+              console.log(Object.keys(response)[0])
+              let key = Object.keys(response)[0]
+              if (key ==="gameStatus"){
+                  this.status = true
+              } else if (key === 'problem') {
+                  this.problem = response.problem
+              } else if (key === 'roomSequence') {
+                  this.answer = response.answer
+              } else if (key === 'players') {
+                  this.difficulty = response.points
+              }
+          })
+            
+      },
+      )
+    },
+  sendStart(roomSequence){
+    console.log('보낼거임')
+    this.start = true
+    this.cnt = true
+    this.countDown()
+    const gameStatus = {
+        total_question : 10
+    }
+    this.stompClient.send(`/game/word-game/${roomSequence}`, JSON.stringify(gameStatus), {}) 
+  },
+   getProblem(problemNum){
+      this.stompClient.send(
+          `/game/word-game/room/${this.$route.params.roomSequence}/problem/${problemNum}`, undefined, {}
+      )
+  },
+  sendAnswer(){
+    console.log(this.profile.nickname)
+    const foranswer = {
+        player : this.profile.nickname,
+        submit : this.answer
+    }
+    const submit = JSON.stringify(foranswer)
+    this.stompClient.send(
+        `/game/word-game/check/${this.$route.params.roomSequence}`, submit, {}
+    )},
+  sendCorrect(){
+            const questionNum = {question_num : 1} 
+            this.stompClient.send(`/game/word-game/answer/${this.$route.params.roomSequence}`,
+            JSON.stringify(questionNum), {}
+            )
+        },
+  sendResult(){
+    this.stompClient.send(
+        `/game/word-game/result/${this.$route.params.roomSequence}`,
+        undefined,
+        {}
+      )
+  }
+  }
+  } 
 
 </script>
 
