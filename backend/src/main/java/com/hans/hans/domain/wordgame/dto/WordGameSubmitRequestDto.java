@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class WordGameSubmitRequestDto {
-
     private String player;
     private String submit;
+    int problemNum;
 }
