@@ -143,15 +143,15 @@ export default {
   },  
   methods: {    
     ...mapActions(['fetchProfile']),
-    // updateMypage () {
-    //   this.$router.push('/mypage/change');
-    // },
+    updateMypage () {
+      this.$router.push('/mypage/change');
+    },
   },
   created() {
     this.fetchProfile()
   },
   mounted() {
-      this.onePick = this.avatarList[0];
+      
   },
 }
 </script>

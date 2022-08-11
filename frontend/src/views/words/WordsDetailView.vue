@@ -119,16 +119,15 @@
 </template>
 
 <script>
-import Stomp from 'webstomp-client'
-import SockJS from 'sockjs-client'
+
 import WordsDetailRTCItem from './components/WordsDetailRTCItem.vue';
 import { OpenVidu } from 'openvidu-browser';
 import axios from 'axios'
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import WordsRoomUpdateModal from '../modal/components/WordsRoomUpdateModal.vue'
 import { VideoCameraIcon, MicrophoneIcon, LogoutIcon, CogIcon, PaperAirplaneIcon } from '@heroicons/vue/outline';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
-import {reactive} from 'vue'
+
 
 
 export default {
@@ -170,7 +169,8 @@ export default {
   },
   
   created(){
-    this.joinSession()
+    this.joinSession(),
+    this.socketCreate()
   },
 
   computed : {
@@ -178,6 +178,7 @@ export default {
   },
 //this.$route.params.token.slice(39,53)
   methods : {
+    ...mapActions(['socketCreate']),
     // 오픈비두 세션에 들어가기,created에 실행
     joinSession () {
             // 세션의 id는 토큰에서 잘라서 활용 
@@ -221,9 +222,10 @@ export default {
                 method : 'delete',
                 headers : this.authHeader
             })
-            
+
             .then(() =>{
             if(this.session) {this.session.disconnect();}
+
 
             this.session = undefined;
             this.mainStreamManager = undefined;
