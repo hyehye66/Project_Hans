@@ -29,6 +29,7 @@ public class BodyGameRoomServiceImpl implements BodyGameRoomService {
     private final RoomMemberRepository roomMemberRepository;
     private final WordRepository wordRepository;
 
+    @Override
     public void createBodyGameRoom(Long roomSequence, BodyGameStartRequestDto bodyGameStartRequestDto){
         //방번호, 문제, 난이도 설정
         bodyGameRoom.createBodyGame(roomSequence,bodyGameStartRequestDto);

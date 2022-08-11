@@ -1,6 +1,8 @@
 package com.hans.hans.domain.wordgame.entity;
 
 
+import com.hans.hans.domain.wordgame.dto.WordGameSubmitRequestDto;
+import com.hans.hans.domain.wordgame.dto.WordGameSubmitResponseDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -16,7 +18,7 @@ public class WordGameRoom {
 
     private long roomSequence;//방번호
     private int totalQuestion;//문제수
-    private List<Long> wordsSequence;//문제 번호
+    private List<Long> wordsSequence;//문제 번호 1,3,8,42,13
 
     String gameStatus;//게임 상태(게임 대기="ready", 게임 시작중="start", 정답 알려주는중="pause")//enum
     private Map<String, Long> players;
@@ -24,20 +26,26 @@ public class WordGameRoom {
 
     public void initPlayers(List<String>playerNames){
         //사람 갱신
-        //this.players = players;
+        players = new HashMap<>();
         for(String playerName : playerNames ){
-          players.put(playerName,0l);
+          players.put(playerName,Long.valueOf(0));
         }
         //맞은 사람 갱신
         correctPlayers = new HashMap<>();
+
     }
     public void initWordsSequence(List<Long> wordsSequence){
         this.wordsSequence = wordsSequence;
     }
-    public static void createWordGame(long roomSequence, int totalQuestion){
+    public static WordGameRoom createWordGame(long roomSequence, int totalQuestion){
         WordGameRoom  room  = new WordGameRoom();
         room.roomSequence = roomSequence;
         room.totalQuestion = totalQuestion;
+        return room;
+    }
+
+    public long getWordNum(int problemNum){
+        return wordsSequence.get(problemNum-1);
     }
 
     public void refreshCorrectPlayers(){
@@ -56,6 +64,5 @@ public class WordGameRoom {
                 players.put(key, players.get(key) + point);
             }
         }
-
     }
 }

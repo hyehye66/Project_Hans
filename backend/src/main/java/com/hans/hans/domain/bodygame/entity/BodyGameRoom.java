@@ -24,7 +24,7 @@ public class BodyGameRoom {
 
     public void initPlayers(List<String>playerNames){
         //사람 갱신
-        //this.players = players;
+        players = new HashMap<>();
         for(String playerName : playerNames ){
             players.put(playerName,0l);
         }
