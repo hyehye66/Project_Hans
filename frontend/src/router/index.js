@@ -28,11 +28,6 @@ const routes = [
     component :() => import('@/views/account/LoginView.vue'),
   },
   {
-    path:'/square',
-    name: 'SquareTest',
-    component :() => import('@/views/account/SquareTest.vue'),
-  },
-  {
     path : '/communication',
     name : 'CommunicationView',
     component :() => import('@/views/communication/CommunicationView.vue'),
