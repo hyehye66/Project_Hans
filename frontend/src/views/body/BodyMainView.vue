@@ -62,13 +62,13 @@ export default {
         }
       else{
         alert('로그인이 필요합니다!')
-        this.$router.push({ name: 'DictationView'})
+        this.$router.push({ name: 'LoginView'})
       }
     },
     isBodyRandomClick (){
       if (!this.isLoggedIn){
         alert('로그인이 필요합니다!')
-        this.$router.push({ name: 'DictationView'})
+        this.$router.push({ name: 'LoginView'})
       }
       else{
         axios({

@@ -198,8 +198,13 @@ export default {
           name: 'MyPageView',
         })
       }).catch(err =>{
-        console.log(err.response.data.message)
-        alert(err.response.data.message)
+        console.log(err.response.data.status)   
+        if(err.response.data.status === 'ERROR'){
+          alert("이미 존재하는 닉네임입니다!")
+        }
+        else{
+          alert("닉네임은 필수 입력 값입니다!")
+        }
       })
     },
 
