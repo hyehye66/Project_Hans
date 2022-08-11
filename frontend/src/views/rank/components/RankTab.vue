@@ -65,11 +65,6 @@
             </div>
 
 
-
-
-
-
-
               <!-- 기존 리스트 -->
               <!-- <ul class="title-list-group" style="width: 750px">
                 <li class="title-list-group-items">
@@ -132,6 +127,11 @@
                 </li>
               </ul> -->
             
+
+
+
+
+
 
             
             <div v-bind:class="{'hidden': openTab !== 2, 'block': openTab === 2}">
@@ -200,23 +200,6 @@
                 </table>
               </div>
             </div>
-
-
-
-
-
-
-              <!-- <ul class="list-group" style="width: 750px" v-for="rankData in rankDataList" :key="rankData.rankingSequence">
-                <li class="list-group-item">
-                  <rank-items :rankingSequence="rankData.rankingSequence"/>
-                  <rank-items :nickname="rankData.nickname"/>
-                  <rank-items :score="rankData.score" />            
-                  <rank-items :tier="rankData.tier" />
-                </li>
-              </ul>  
-            </div> -->
-                
-
           </div>
         </div>
       </div>

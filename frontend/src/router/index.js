@@ -23,6 +23,16 @@ const routes = [
     component :() => import('@/views/account/SignUpView.vue'),
   },
   {
+    path:'/login',
+    name: 'LoginView',
+    component :() => import('@/views/account/LoginView.vue'),
+  },
+  {
+    path:'/square',
+    name: 'SquareTest',
+    component :() => import('@/views/account/SquareTest.vue'),
+  },
+  {
     path : '/communication',
     name : 'CommunicationView',
     component :() => import('@/views/communication/CommunicationView.vue'),
