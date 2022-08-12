@@ -79,7 +79,8 @@ export default {
         this.$router.push({ name: 'WordsDetailView', 
         params: { mode : res.data.data.room.mode.modeSequence, 
         sessionName : res.data.data.room.title, token : res.data.data.token, 
-        roomSequence : res.data.data.room.roomSequence}})})
+        roomSequence : res.data.data.room.roomSequence,
+        problemIdx : res.data.data.room}})})
 
         .catch(err => alert('입장 가능한 방이 없습니다!'))
       }
