@@ -10,8 +10,6 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class BodyGameStartRequestDto {
     @JsonProperty("total_question")
-    @NotBlank(message = "총 문제수는 필수 입력값입니다.")
     private int totalQuestion;
-    @NotBlank(message = "난이도는 필수 입력값입니다.")
     private Long difficulty;
 }

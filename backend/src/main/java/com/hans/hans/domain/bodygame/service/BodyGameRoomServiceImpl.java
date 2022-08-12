@@ -13,26 +13,27 @@ import com.hans.hans.domain.word.repository.WordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.PostConstruct;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class BodyGameRoomServiceImpl implements BodyGameRoomService {
 
     private Map<Long, BodyGameRoom> bodyGameRooms;
-    private final BodyGameRoom bodyGameRoom;
-
     private final RoomRepository roomRepository;
     private final RoomMemberRepository roomMemberRepository;
     private final WordRepository wordRepository;
 
+    @PostConstruct
+    private void init() {
+        bodyGameRooms = new LinkedHashMap<>();
+    }
+
     @Override
     public void createBodyGameRoom(Long roomSequence, BodyGameStartRequestDto bodyGameStartRequestDto){
         //방번호, 문제, 난이도 설정
-        bodyGameRoom.createBodyGame(roomSequence,bodyGameStartRequestDto);
+        BodyGameRoom bodyGameRoom = BodyGameRoom.createBodyGame(roomSequence,bodyGameStartRequestDto);
         //플레이어 넣기
         Room room = roomRepository.findByRoomSequence(roomSequence);
 

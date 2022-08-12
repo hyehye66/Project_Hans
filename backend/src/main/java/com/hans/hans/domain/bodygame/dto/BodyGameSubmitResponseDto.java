@@ -2,13 +2,11 @@ package com.hans.hans.domain.bodygame.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.List;
+import org.json.simple.JSONObject;
 
 @Getter
 @AllArgsConstructor
-public class BodyGameStartResponseDto {
+public class BodyGameSubmitResponseDto {
+    private JSONObject correctPlayers;
 
-    private List<String> players;
-    private String gameStatus;
 }

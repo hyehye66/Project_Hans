@@ -6,15 +6,14 @@ import com.hans.hans.domain.ranking.service.RankingService;
 import com.hans.hans.domain.room.service.RoomService;
 import com.hans.hans.domain.word.entity.Word;
 import com.hans.hans.domain.word.repository.WordRepository;
+import com.hans.hans.domain.wordgame.dto.WordGameSubmitResponseDto;
+import com.hans.hans.domain.wordgame.entity.WordGameRoom;
 import com.hans.hans.global.enumerate.Modes;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -29,28 +28,68 @@ public class BodyGameSocketServiceImpl implements BodyGameSocketService {
     @Override
     public BodyGameStartResponseDto initGame(Long roomSequence, BodyGameStartRequestDto bodyGameStartRequestDto){
         bodyGameRoomService.createBodyGameRoom(roomSequence,bodyGameStartRequestDto);
-        BodyGameStartResponseDto bodyGameStartResponseDto = new BodyGameStartResponseDto("ready");
+
+        BodyGameRoom bodyGameRoom = bodyGameRoomService.findById(roomSequence);
+        List<String> players = new ArrayList<>(bodyGameRoom.getPlayers().keySet());
+
+        BodyGameStartResponseDto bodyGameStartResponseDto = new BodyGameStartResponseDto(players,"ready");
+
+        roomService.updateRoomStatus(roomSequence,true);
+
         return bodyGameStartResponseDto;
     }
 
     @Override
-    public BodyGameProblemResponseDto getProblem(Long wordSequence){
+    public BodyGameProblemResponseDto getProblem(Long roomSequence, int problemNum){
+        BodyGameRoom bodyGameRoom = bodyGameRoomService.findById(roomSequence);
+
+        Long wordSequence = bodyGameRoom.getWordsSequence().get(problemNum-1);
+
         Word word = wordRepository.findByWordSequence(wordSequence);
         BodyGameProblemResponseDto bodyGameProblemResponseDto = new BodyGameProblemResponseDto(word);
+
         return bodyGameProblemResponseDto;
+    }
+
+    @Override
+    public BodyGameSubmitResponseDto submit (BodyGameSubmitRequestDto bodyGameSubmitRequestDto, Long roomSequence){
+
+        String player = bodyGameSubmitRequestDto.getPlayer();
+        String submit = bodyGameSubmitRequestDto.getSubmit();
+        int problemNum = bodyGameSubmitRequestDto.getProblemNum()-1;
+        int time = bodyGameSubmitRequestDto.getTime();
+
+        BodyGameRoom bodyGameRoom = bodyGameRoomService.findById(roomSequence);
+        Long wordSequence = bodyGameRoom.getWordsSequence().get(problemNum);
+
+        String answer = wordRepository.findByWordSequence(wordSequence).getWord();
+        Long difficulty = wordRepository.findByWordSequence(wordSequence).getDifficulty();
+
+        if(answer.equals(submit)) {
+            Long score = time + difficulty;
+            bodyGameRoom.updateCorrectPlayers(player, score);
+            bodyGameRoom.updatePlayersScore(player, score);
+        }
+
+        JSONObject jsonObject = new JSONObject(bodyGameRoom.getCorrectPlayers());
+        BodyGameSubmitResponseDto bodyGameSubmitResponseDto = new BodyGameSubmitResponseDto(jsonObject);
+
+        return bodyGameSubmitResponseDto;
     }
 
     @Override
     public BodyGameAnswerResponseDto getAnswer(BodyGameAnswerRequestDto bodyGameAnswerRequestDto, Long roomSequence) {
         BodyGameRoom bodyGameRoom = bodyGameRoomService.findById(roomSequence);
 
-        Word word = wordRepository.findByWordSequence(bodyGameRoom.getWordsSequence().get(bodyGameAnswerRequestDto.getQuestionNum()));
+        int problemNum = bodyGameAnswerRequestDto.getQuestionNum()-1;
 
-        JSONObject json = new JSONObject(bodyGameRoom.getCorrectPlayers());
+        Word word = wordRepository.findByWordSequence(bodyGameRoom.getWordsSequence().get(problemNum));
+
+        JSONObject jsonObject = new JSONObject(bodyGameRoom.getCorrectPlayers());
 
         BodyGameAnswerResponseDto bodyGameAnswerResponseDto =
                 BodyGameAnswerResponseDto.builder()
-                        .correctPlayers(json)
+                        .correctPlayers(jsonObject)
                         .roomSequence(bodyGameRoom.getRoomSequence())
                         .answer(word.getWord())
                         .point(word.getDifficulty())
@@ -79,9 +118,8 @@ public class BodyGameSocketServiceImpl implements BodyGameSocketService {
 
         roomService.updateRoomStatus(roomSequence,false);
 
-        JSONObject json = new JSONObject(result);
-
-        BodyGameResultResponseDto bodyGameResultResponseDto = new BodyGameResultResponseDto(json);
+        JSONObject jsonObject = new JSONObject(result);
+        BodyGameResultResponseDto bodyGameResultResponseDto = new BodyGameResultResponseDto(jsonObject);
 
         return bodyGameResultResponseDto;
     }
