@@ -81,11 +81,13 @@ export default {
       })
         .then(res => {
           console.log('로그인완료')
+          console.log(res.headers)
+
           // 토큰 저장 로직
           const accessToken = res.headers.authorization
           const refreshToken = res.headers.refreshtoken
           dispatch('saveToken', {accessToken ,refreshToken}) 
-
+          dispatch('fetchProfile')
           router.push({ name: 'Home' })
         })
         .catch(err => {
@@ -108,7 +110,6 @@ export default {
           에러 메시지 표시
       */
       credentials.email = this.state.member.email
-      console.log(credentials)
       axios({
         url: '/api/members/sign-up',
         method: 'post',
@@ -119,10 +120,11 @@ export default {
           alert('회원가입 되었습니다!')
           // 토큰 저장 로직
           const accessToken = res.headers.authorization
-          const refreshToken = res.headers.refreshToken
-          dispatch('saveToken', {accessToken ,refreshToken}) 
+          const refreshToken = res.headers.refreshtoken
+          dispatch('saveToken', {accessToken , refreshToken}) 
           commit('SET_ACCESS_TOKEN',accessToken)
           commit('SET_REFRESH_TOKEN', refreshToken)
+          dispatch('fetchProfile')
           router.push({ name: 'Home' })
         })
         .catch(err => {
@@ -148,7 +150,6 @@ export default {
         성공하면
           state.profile에 저장
       */
-
         axios({
         url: '/api/members',
         method: 'get',
@@ -158,6 +159,7 @@ export default {
         .then(res => {
           console.log('sucess')
           commit('SET_PROFILE', res.data.data)
+
         })
         .catch(err => {
           console.log('에러발생!')
@@ -175,6 +177,7 @@ export default {
             }).then(res =>{
               console.log('재발급시작!')
               commit('SET_PROFILE',res.data.data)
+
               const refreshToken = getters.authHeader.refreshToken
               dispatch('reissuanceToken', refreshToken)
             }).catch(err => {
@@ -193,6 +196,7 @@ export default {
         data : {nickname, introduction},
       }).then(res => {
         commit('SET_PROFILE', res.data.data)
+
         alert('회원정보 수정완료!')
         router.push({
           name: 'MyPageView',

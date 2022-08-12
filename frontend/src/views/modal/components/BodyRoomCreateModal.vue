@@ -129,9 +129,9 @@ export default {
         data : {
         title : this.sessionName,
         restrict_num : this.maxUsercnt,
-        problem_num : this.problemcnt,
-       difficulty	: this.levelcnt,
-      timeLimit :  this.timecnt
+        total_question : this.problemcnt,
+        difficulty	: this.levelcnt,
+        timeLimit :  this.timecnt
        },
        headers : this.authHeader}, 
     ).

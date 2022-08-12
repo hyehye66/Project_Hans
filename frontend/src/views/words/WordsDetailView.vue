@@ -25,8 +25,9 @@
         </div>
         <div id="session-body-left" class="col-md-6">
             <!-- 메인화면 -->
-            <div id="main-video">
-                <WordsDetailRTCItem :stream-manager="mainStreamManager"/>
+            <div id="problem-box">
+                <WordsTimer></WordsTimer>
+                <div v-if="!cnt">문제는 : {{ problem }} </div>
             </div>
             <!-- 캠,마이크,나가기,설정 -->
             <div class="cam-buttons">
@@ -79,7 +80,7 @@
             <!-- style="width: 40; height: 40;" -->
             <!-- 임시시작버튼 -->
             <div v-if="!start" class="leader-button">
-                <button @click="sendStart(this.$route.params.roomSequence)" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
+                <button @click="countDown" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
                     START
                 </button>
             </div>
@@ -102,7 +103,7 @@
             </div> -->
 
                 <div class="answer-send">
-                    <input type="text" name="" id="answer-sheet" v-model="answer" size="30"
+                    <input type="text" name="" id="answer-sheet" v-model="temp" size="30"
                     placeholder="답을 입력해주세요." @keyup.enter="sendAnswer" />
                     <PaperAirplaneIcon style="height: 35; width: 35;" @click="sendAnswer" />					
                 </div>
@@ -132,6 +133,9 @@ import { VideoCameraIcon, MicrophoneIcon, LogoutIcon, CogIcon, PaperAirplaneIcon
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
+import WordsTimer from './components/WordsTimer.vue';
+
+
 
 // stomp url
 const serverUrl = "https://i7d109.p.ssafy.io/ws/game"
@@ -142,13 +146,13 @@ export default {
   components : {
     WordsDetailRTCItem,
     WordsRoomUpdateModal,
-
     VideoCameraIcon,
     //MicrophoneIcon,
     LogoutIcon,
     CogIcon,
     PaperAirplaneIcon,
-  },
+    WordsTimer,
+},
   data () {
     return {
         mySessionId: '',
@@ -187,7 +191,8 @@ export default {
   created(){
     this.joinSession(),
     this.socketStart(),
-    console.log(this.profile)
+    console.log(this.profile,123)
+    console.log(this.$route.params)
   },
 
   computed : {
@@ -207,6 +212,7 @@ export default {
 
             this.session.on('streamCreated', ({ stream }) => {
                 const subscriber = this.session.subscribe(stream);
+                console.log(subscriber, 1234)
                 this.subscribers.push(subscriber);
             });
 
@@ -249,6 +255,7 @@ export default {
             this.publisher = undefined;
             this.subscribers = [];
             this.OV = undefined;
+            this.stompClient.disconnect()
             window.removeEventListener('beforeunload', this.leaveSession);
               this.$router.push({name : 'WordsMainView'})
             })
@@ -259,41 +266,39 @@ export default {
         },
         
         // 화상 만들기
-        createPublisher(){
-            this.session.connect(this.token,{ clientData: this.myUserName })
-            .then(() => {
+    createPublisher(){
+        this.session.connect(this.token,{ clientData: this.profile })
+        .then(() => {
 
-                        // 미디어 스트림 가져오기 
-                        
-                        let publisher = this.OV.initPublisher(undefined, {
-                            audioSource: undefined, // The source of audio. If undefined default microphone
-                            videoSource: undefined, // The source of video. If undefined default webcam
-                            publishAudio: true,      // Whether you want to start publishing with your audio unmuted or not
-                            publishVideo: true,      // Whether you want to start publishing with your video enabled or not
-                            resolution: '640x480',  // The resolution of your video
-                            frameRate: 30,            // The frame rate of your video
-                            insertMode: 'APPEND',    // How the video is inserted in the target element 'video-container'
-                            mirror: false           // Whether to mirror your local video or not
-                        });
-                        
-                        this.mainStreamManager = publisher;
-                        this.publisher = publisher;
+                    // 미디어 스트림 가져오기 
+                    
+          let publisher = this.OV.initPublisher(undefined, {
+              audioSource: undefined, // The source of audio. If undefined default microphone
+              videoSource: undefined, // The source of video. If undefined default webcam
+              publishAudio: true,      // Whether you want to start publishing with your audio unmuted or not
+              publishVideo: true,      // Whether you want to start publishing with your video enabled or not
+              resolution: '640x480',  // The resolution of your video
+              frameRate: 30,            // The frame rate of your video
+              insertMode: 'APPEND',    // How the video is inserted in the target element 'video-container'
+              mirror: false           // Whether to mirror your local video or not
+          });
+          
+          this.mainStreamManager = publisher;
+          this.publisher = publisher;
 
-                        
-                        this.session.publish(this.publisher);
-                        console.log(this.publisher)
-                    })
-                    .catch(error => {
-                        console.log('There was an error connecting to the session:', error.code, error.message);
-                    })
+          
+          this.session.publish(this.publisher);
+          console.log(this.publisher)
+      })
+      .catch(error => {
+          console.log('There was an error connecting to the session:', error.code, error.message);
+      })
+    },
 
-
-        },
-
-        updateMainVideoStreamManager (stream) {
-            if (this.mainStreamManager === stream) return;
-            this.mainStreamManager = stream;
-        },
+    updateMainVideoStreamManager (stream) {
+        if (this.mainStreamManager === stream) return;
+        this.mainStreamManager = stream;
+    },
 
     getToken() {
         if (this.$route.params.token) {
@@ -329,6 +334,7 @@ export default {
 
 		},
   countDown()  {
+      this.sendStart()
       setTimeout(() => { this.count = 4 }, 1000)
       setTimeout(() => { this.count = 3 }, 2000)
       setTimeout(() => { this.count = 2 }, 3000)
@@ -336,10 +342,15 @@ export default {
       setTimeout(() => { this.count = 'START!!!!'}, 4500)
       setTimeout(() => { this.cnt=false}, 4800)
       this.count = 5
+      setTimeout(() => { this.getProblem() }, 3500)
     },
   
   // stomp 시작
+  // 필요한 거 제한 시간, 방장, 제한 문제수,난이도 (word-game의 경우 제한 시간 필요 없음)
+  // 게임 시작 -> 5초 카운트 전에 문제 받아옴 ->  
+  // 다 맞추거나 or 시간이 다 지나가면 3초 카운트 
   socketStart(){
+      this.cnt = true
       let socket = new SockJS(serverUrl)
       this.stompClient = Stomp.over(socket)
       console.log('소켓 연결하는 중')
@@ -365,36 +376,37 @@ export default {
       },
       )
     },
-  sendStart(roomSequence){
+  sendStart(){
     console.log('보낼거임')
     this.start = true
     this.cnt = true
-    this.countDown()
     const gameStatus = {
         total_question : 10
     }
-    this.stompClient.send(`/game/word-game/${roomSequence}`, JSON.stringify(gameStatus), {}) 
+    this.stompClient.send(`/game/word-game/${this.$route.params.roomSequence}`, JSON.stringify(gameStatus), {})
   },
-   getProblem(problemNum){
+   getProblem(){
       this.stompClient.send(
-          `/game/word-game/room/${this.$route.params.roomSequence}/problem/${problemNum}`, undefined, {}
+          `/game/word-game/room/${this.$route.params.roomSequence}/problem/${this.problemNum}`, undefined, {}
       )
+      
   },
   sendAnswer(){
     console.log(this.profile.nickname)
     const foranswer = {
         player : this.profile.nickname,
-        submit : this.answer
+        submit : this.temp
     }
     const submit = JSON.stringify(foranswer)
     this.stompClient.send(
         `/game/word-game/check/${this.$route.params.roomSequence}`, submit, {}
     )},
   sendCorrect(){
-            const questionNum = {question_num : 1} 
+            const questionNum = {question_num : this.problemNum} 
             this.stompClient.send(`/game/word-game/answer/${this.$route.params.roomSequence}`,
             JSON.stringify(questionNum), {}
             )
+            this.problemNum++
         },
   sendResult(){
     this.stompClient.send(

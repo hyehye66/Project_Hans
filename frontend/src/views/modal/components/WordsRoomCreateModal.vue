@@ -92,16 +92,16 @@ export default {
         data : {
         title : this.sessionName,
         restrict_num : this.maxUsercnt,
-        problem_num : this.problemcnt
+        total_question : this.problemcnt
        },
        headers : this.authHeader}, 
     ).
     then(res => {
-
       console.log(res)
-      this.$router.push({ name: 'WordsDetailView', params: { mode : this.mode, sessionName : this.sessionName, token : res.data.data.token, roomSequence : res.data.data.roomSequence}})
-      
-
+      this.$router.push({ name: 'WordsDetailView', 
+      params: { mode : this.mode, sessionName : this.sessionName, 
+      token : res.data.data.token, roomSequence : res.data.data.roomSequence, 
+      room : this.room}})
     })
     .catch(err => console.log(err,1234))
         
