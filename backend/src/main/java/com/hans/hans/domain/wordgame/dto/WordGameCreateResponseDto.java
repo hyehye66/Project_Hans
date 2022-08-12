@@ -20,7 +20,7 @@ public class WordGameCreateResponseDto {
     private int totalQuestion;
     private Date roomDTTM;
     private boolean roomStatus;
-    String token;
+    private String token;
 
     public void updateProblemNum(int totalQuestion){
         this.totalQuestion = totalQuestion;

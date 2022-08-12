@@ -11,6 +11,6 @@ import java.util.Map;
 @AllArgsConstructor
 public class WordGameResultResponseDto {
 
-    List<String> players;
-    List<Long> points;
+    private List<String> players;
+    private List<Long> points;
 }
