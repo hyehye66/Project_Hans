@@ -9,14 +9,12 @@ import com.hans.hans.domain.word.entity.Word;
 import com.hans.hans.domain.wordgame.entity.WordGameRoom;
 import com.hans.hans.domain.word.repository.WordRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class WordGameRoomService {
 
