@@ -1,18 +1,13 @@
 package com.hans.hans.domain.wordgame.entity;
 
-
-import com.hans.hans.domain.wordgame.dto.WordGameSubmitRequestDto;
-import com.hans.hans.domain.wordgame.dto.WordGameSubmitResponseDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 @Component
 @RequiredArgsConstructor
-
 @Getter
 public class WordGameRoom {
 
