@@ -8,6 +8,7 @@ import com.hans.hans.domain.wordgame.entity.WordGameRoom;
 import com.hans.hans.domain.word.repository.WordRepository;
 import com.hans.hans.global.enumerate.Modes;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -44,7 +45,6 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
         WordGameProblemResponseDto wordGameProblemResponseDto = new WordGameProblemResponseDto(word);
 
         return wordGameProblemResponseDto;
-
     }
 
     @Override
@@ -55,26 +55,19 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
 
         WordGameRoom wordGameRoom = wordGameRoomService.findById(roomSequence);
         Long wordSequence = wordGameRoom.getWordsSequence().get(problemNum);
-        Map<String, Long> players = wordGameRoom.getPlayers();
-
-        Set<String> correctPlayers = wordGameRoom.getCorrectPlayers();
-        int cntCorrectPlayers = correctPlayers.size();
 
         String answer = wordRepository.findByWordSequence(wordSequence).getWord();
         Long difficulty = wordRepository.findByWordSequence(wordSequence).getDifficulty();
 
-        if(answer.equals(submit)){
-            correctPlayers.add(player);
-            if(cntCorrectPlayers!=correctPlayers.size()){
-                Long prevPoint = players.get(player);
-                players.put(player, prevPoint + difficulty);
-            }
+        if(answer.equals(submit)) {
+            wordGameRoom.updateCorrectPlayers(player);
+            wordGameRoom.updatePlayersScore(player, difficulty);
         }
 
-        wordGameRoom.updateCorrectPlayers(correctPlayers);
-        WordGameSubmitResponseDto wordGameSubmitResponseDto = new WordGameSubmitResponseDto(correctPlayers);
+        WordGameSubmitResponseDto wordGameSubmitResponseDto = new WordGameSubmitResponseDto(wordGameRoom.getCorrectPlayers());
 
         return wordGameSubmitResponseDto;
+
     }
 
 
@@ -101,8 +94,6 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
     public WordGameResultResponseDto getResult(Long roomSequence){
         WordGameRoom wordGameRoom = wordGameRoomService.findById(roomSequence);
         Map<String,Long> players = wordGameRoom.getPlayers();
-        List<String>playerList = new ArrayList<>();
-        List<Long>points = new ArrayList<>();
 
         List<String> playersKeySet = new ArrayList<>(players.keySet());
 
@@ -113,13 +104,12 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
         for(String key: playersKeySet){
             result.put(key,players.get(key));
             rankingService.updateRanking(key, Modes.WORD, players.get(key));
-            playerList.add(key);
-            points.add(players.get(key));
         }
 
         roomService.updateRoomStatus(roomSequence,false);
 
-        WordGameResultResponseDto wordGameResultResponseDto = new WordGameResultResponseDto(playerList,points);
+        JSONObject jsonObject = new JSONObject(result);
+        WordGameResultResponseDto wordGameResultResponseDto = new WordGameResultResponseDto(jsonObject);
 
         return wordGameResultResponseDto;
     }

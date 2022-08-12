@@ -3,19 +3,18 @@ package com.hans.hans.domain.wordgame.dto;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 public class WordGameAnswerResponseDto {
 
     private Long roomSequence;
-    private Set<String> correctPlayers;
+    private List<String> correctPlayers;
     private Long point;
     private String answer;
 
     @Builder
-    public WordGameAnswerResponseDto(Long roomSequence, Set<String> correctPlayers, Long point, String answer){
+    public WordGameAnswerResponseDto(Long roomSequence, List<String> correctPlayers, Long point, String answer){
         this.roomSequence = roomSequence;
         this.correctPlayers = correctPlayers;
         this.point = point;
