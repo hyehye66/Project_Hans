@@ -22,8 +22,12 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
 
     @Override
     public WordGameStartResponseDto initGame(long roomSequence, WordGameStartRequestDto wordGameStartRequestDto){
-        wordGameRoomService.createWordGameRoom(roomSequence, wordGameStartRequestDto.getTotalQuestion());//
-        WordGameStartResponseDto wordGameStartResponseDto = new WordGameStartResponseDto("ready");
+        wordGameRoomService.createWordGameRoom(roomSequence, wordGameStartRequestDto.getTotalQuestion());
+
+        WordGameRoom wordGameRoom = wordGameRoomService.findById(roomSequence);
+        List<String> players = new ArrayList<>(wordGameRoom.getPlayers().keySet());
+
+        WordGameStartResponseDto wordGameStartResponseDto = new WordGameStartResponseDto(players,"ready");
 
         roomService.updateRoomStatus(roomSequence,true);
 
@@ -32,18 +36,45 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
 
     @Override
     public WordGameProblemResponseDto getProblem(Long roomSequence , int problemNum){
-        long wordSequence = wordGameRoomService.findWordSequence(roomSequence,problemNum);
+        WordGameRoom wordGameRoom = wordGameRoomService.findById(roomSequence);
+
+        Long wordSequence = wordGameRoom.getWordsSequence().get(problemNum-1);
+
         Word word = wordRepository.findByWordSequence(wordSequence);
         WordGameProblemResponseDto wordGameProblemResponseDto = new WordGameProblemResponseDto(word);
+
         return wordGameProblemResponseDto;
+
     }
 
     @Override
     public WordGameSubmitResponseDto submit (WordGameSubmitRequestDto wordGameSubmitRequestDto, Long roomSequence){
-        //문제 주어지면 비교
-        WordGameSubmitResponseDto answer = wordGameRoomService.submit (wordGameSubmitRequestDto, roomSequence);
+        String player = wordGameSubmitRequestDto.getPlayer();
+        String submit = wordGameSubmitRequestDto.getSubmit();
+        int problemNum = wordGameSubmitRequestDto.getProblemNum();
 
-        return answer;
+        WordGameRoom wordGameRoom = wordGameRoomService.findById(roomSequence);
+        Long wordSequence = wordGameRoom.getWordsSequence().get(problemNum);
+        Map<String, Long> players = wordGameRoom.getPlayers();
+
+        Set<String> correctPlayers = wordGameRoom.getCorrectPlayers();
+        int cntCorrectPlayers = correctPlayers.size();
+
+        String answer = wordRepository.findByWordSequence(wordSequence).getWord();
+        Long difficulty = wordRepository.findByWordSequence(wordSequence).getDifficulty();
+
+        if(answer.equals(submit)){
+            correctPlayers.add(player);
+            if(cntCorrectPlayers!=correctPlayers.size()){
+                Long prevPoint = players.get(player);
+                players.put(player, prevPoint + difficulty);
+            }
+        }
+
+        wordGameRoom.updateCorrectPlayers(correctPlayers);
+        WordGameSubmitResponseDto wordGameSubmitResponseDto = new WordGameSubmitResponseDto(correctPlayers);
+
+        return wordGameSubmitResponseDto;
     }
 
 
@@ -61,7 +92,7 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
                         .point(word.getDifficulty())
                         .build();
 
-        wordGameRoom.refreshCorrectPlayers();
+        wordGameRoom.resetCorrectPlayers();
 
         return wordGameAnswerResponseDto;
     }

@@ -4,17 +4,18 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Map;
+import java.util.Set;
 
 @Getter
 public class WordGameAnswerResponseDto {
 
     private Long roomSequence;
-    private Map<String, Long> correctPlayers;
+    private Set<String> correctPlayers;
     private Long point;
     private String answer;
 
     @Builder
-    public WordGameAnswerResponseDto(Long roomSequence, Map<String, Long> correctPlayers, Long point, String answer){
+    public WordGameAnswerResponseDto(Long roomSequence, Set<String> correctPlayers, Long point, String answer){
         this.roomSequence = roomSequence;
         this.correctPlayers = correctPlayers;
         this.point = point;
