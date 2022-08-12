@@ -27,7 +27,7 @@ public class BodyGameSocketServiceImpl implements BodyGameSocketService {
 
 
     @Override
-    public BodyGameStartResponseDto initGame(long roomSequence, BodyGameStartRequestDto bodyGameStartRequestDto){
+    public BodyGameStartResponseDto initGame(Long roomSequence, BodyGameStartRequestDto bodyGameStartRequestDto){
         bodyGameRoomService.createBodyGameRoom(roomSequence,bodyGameStartRequestDto);
         BodyGameStartResponseDto bodyGameStartResponseDto = new BodyGameStartResponseDto("ready");
         return bodyGameStartResponseDto;

@@ -22,7 +22,7 @@ public class BodyGameUpdateRequestDto {
     private int problemNum;
 
     @NotNull(message = "난이도는 필수 입력값입니다.")
-    private int difficulty;
+    private Long difficulty;
 
     @NotNull(message = "제한시간은 필수 입력값입니다.")
     @JsonProperty("time_limit")

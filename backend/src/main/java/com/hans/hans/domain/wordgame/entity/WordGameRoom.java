@@ -11,7 +11,7 @@ import java.util.*;
 @Getter
 public class WordGameRoom {
 
-    private long roomSequence;//방번호
+    private Long roomSequence;//방번호
     private int totalQuestion;//문제수
     private List<Long> wordsSequence;//문제 번호 1,3,8,42,13
     private Map<String, Long> players;
@@ -30,7 +30,7 @@ public class WordGameRoom {
     public void initWordsSequence(List<Long> wordsSequence){
         this.wordsSequence = wordsSequence;
     }
-    public static WordGameRoom createWordGame(long roomSequence, int totalQuestion){
+    public static WordGameRoom createWordGame(Long roomSequence, int totalQuestion){
         WordGameRoom  room  = new WordGameRoom();
         room.roomSequence = roomSequence;
         room.totalQuestion = totalQuestion;

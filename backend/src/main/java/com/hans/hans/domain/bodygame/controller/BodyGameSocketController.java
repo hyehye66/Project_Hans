@@ -16,7 +16,7 @@ public class BodyGameSocketController {
 
     @MessageMapping("/body-game/{room_seq}")
     @SendTo("/topic/body-game/{room_seq}")
-    public BodyGameStartResponseDto initGame(@DestinationVariable("room_seq") long roomSequence, BodyGameStartRequestDto bodyGameStartRequestDto) {
+    public BodyGameStartResponseDto initGame(@DestinationVariable("room_seq") Long roomSequence, BodyGameStartRequestDto bodyGameStartRequestDto) {
         return bodyGameSocketService.initGame(roomSequence, bodyGameStartRequestDto);
     }
 

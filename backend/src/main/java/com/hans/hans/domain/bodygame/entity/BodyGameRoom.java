@@ -14,9 +14,9 @@ import java.util.Map;
 @Getter
 public class BodyGameRoom {
 
-    private long roomSequence;//방번호
+    private Long roomSequence;//방번호
     private int totalQuestion;//문제수
-    private int difficulty;
+    private Long difficulty;
     private List<Long> wordsSequence;//문제 번호
     String gameStatus;//게임 상태(게임 대기="ready", 게임 시작중="start", 정답 알려주는중="pause")//enum
     private Map<String, Long> players;
@@ -36,7 +36,7 @@ public class BodyGameRoom {
         this.wordsSequence = wordsSequence;
     }
 
-    public static void createBodyGame(long roomSequence, BodyGameStartRequestDto bodyGameStartRequestDto){
+    public static void createBodyGame(Long roomSequence, BodyGameStartRequestDto bodyGameStartRequestDto){
         BodyGameRoom room  = new BodyGameRoom();
         room.roomSequence = roomSequence;
         room.totalQuestion = bodyGameStartRequestDto.getTotalQuestion();

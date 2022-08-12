@@ -340,7 +340,7 @@ public class RoomServiceImpl implements RoomService{
 
             int restrictNum = bodyGameCreateRequestDto.getRestrictNum();
             int totalQuestion = bodyGameCreateRequestDto.getTotalQuestion();
-            int difficulty = bodyGameCreateRequestDto.getDifficulty();
+            Long difficulty = bodyGameCreateRequestDto.getDifficulty();
             int timeLimit = bodyGameCreateRequestDto.getTimeLimit();
 
             Session session = openVidu.createSession();
@@ -415,7 +415,7 @@ public class RoomServiceImpl implements RoomService{
         room.updateRoomTitleAndRestricNum(bodyGameUpdateRequestDto.getTitle(), bodyGameUpdateRequestDto.getRestrictNum());
 
         int problemNum = bodyGameUpdateRequestDto.getProblemNum();
-        int difficulty = bodyGameUpdateRequestDto.getDifficulty();
+        Long difficulty = bodyGameUpdateRequestDto.getDifficulty();
         int timeLimit = bodyGameUpdateRequestDto.getTimeLimit();
 
         BodyGameUpdateResponseDto bodyGameUpdateResponseDto = new BodyGameUpdateResponseDto(roomRepository.save(room));

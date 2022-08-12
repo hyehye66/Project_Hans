@@ -16,7 +16,7 @@ public class WordGameSocketController {
 
     @MessageMapping("/word-game/{room_seq}")
     @SendTo("/topic/word-game/{room_seq}")
-    public WordGameStartResponseDto initGame(@DestinationVariable("room_seq") long roomSequence, WordGameStartRequestDto wordGameStartRequestDto) {
+    public WordGameStartResponseDto initGame(@DestinationVariable("room_seq") Long roomSequence, WordGameStartRequestDto wordGameStartRequestDto) {
         System.out.println("서버쪽 받았음!");
         return wordGameSocketService.initGame(roomSequence, wordGameStartRequestDto);
     }
