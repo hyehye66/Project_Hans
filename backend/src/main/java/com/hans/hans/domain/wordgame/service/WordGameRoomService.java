@@ -6,8 +6,6 @@ import com.hans.hans.domain.room.entity.RoomMember;
 import com.hans.hans.domain.room.repository.RoomMemberRepository;
 import com.hans.hans.domain.room.repository.RoomRepository;
 import com.hans.hans.domain.word.entity.Word;
-import com.hans.hans.domain.wordgame.dto.WordGameSubmitRequestDto;
-import com.hans.hans.domain.wordgame.dto.WordGameSubmitResponseDto;
 import com.hans.hans.domain.wordgame.entity.WordGameRoom;
 import com.hans.hans.domain.word.repository.WordRepository;
 import lombok.RequiredArgsConstructor;
@@ -55,7 +53,7 @@ public class WordGameRoomService {
             Member member = roomMember.getMember();
             playerNames.add(member.getNickname());
         }
-        wordGameRoom.initPlayers(playerNames);//
+        wordGameRoom.initPlayers(playerNames);
 
         //문제 갱신
         List<Word> words = wordRepository.findAll();
@@ -78,46 +76,5 @@ public class WordGameRoomService {
         System.out.println();
 
     }
-    public long findWordSequence(Long roomSequence , int problemNum){
-        wordGameRoom = wordGameRooms.get(roomSequence);
-        //room 에 problemNum 을 넘겨서 wordSequence 받기
-        long wordNum = wordGameRoom.getWordNum(problemNum);
-        return wordNum;
-    }
-    public WordGameSubmitResponseDto submit (WordGameSubmitRequestDto wordGameSubmitRequestDto, Long roomSequence){
-        //request 들
-        String player = wordGameSubmitRequestDto.getPlayer();
-        String submit = wordGameSubmitRequestDto.getSubmit();
-        int problemNum = wordGameSubmitRequestDto.getProblemNum();
 
-        //room 의 정보들 가져오기
-        wordGameRoom = wordGameRooms.get(roomSequence);
-        Long wordSequence = wordGameRoom.getWordsSequence().get(problemNum);
-        Map<String, Long>players = wordGameRoom.getPlayers();
-        Map<String,Long>correctPlayers = wordGameRoom.getCorrectPlayers();
-
-        //DB에서 정보 가져 오기
-        String answer = wordRepository.findByWordSequence(wordSequence).getWord();
-        Long difficulty = wordRepository.findByWordSequence(wordSequence).getDifficulty();
-        //정답자가 아니고 맞았다면 점수 갱신 하고 return
-        //정답자 아니라면
-        if(!correctPlayers.containsKey(correctPlayers)) {
-            //맞았다면
-            if (answer.equals(submit)) {
-                correctPlayers.put(player, difficulty);
-                Long prevPoint = players.get(player);
-                players.put(player, prevPoint + difficulty);
-            }
-        }
-        List<String>correctPlayerList = new ArrayList<>();
-        List<Long>points = new ArrayList<>();
-        for( String key : correctPlayers.keySet() ){
-            correctPlayerList.add(key);
-            points.add(players.get(key));
-        }
-        return WordGameSubmitResponseDto.builder()
-                .players(correctPlayerList)
-                .points(points)
-                .build();
-    }
 }
