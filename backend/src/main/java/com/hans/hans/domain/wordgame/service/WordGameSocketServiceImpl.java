@@ -21,7 +21,7 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
     private final RoomService roomService;
 
     @Override
-    public WordGameStartResponseDto initGame(long roomSequence, WordGameStartRequestDto wordGameStartRequestDto){
+    public WordGameStartResponseDto initGame(Long roomSequence, WordGameStartRequestDto wordGameStartRequestDto){
         wordGameRoomService.createWordGameRoom(roomSequence, wordGameStartRequestDto.getTotalQuestion());
 
         WordGameRoom wordGameRoom = wordGameRoomService.findById(roomSequence);
@@ -51,7 +51,7 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
     public WordGameSubmitResponseDto submit (WordGameSubmitRequestDto wordGameSubmitRequestDto, Long roomSequence){
         String player = wordGameSubmitRequestDto.getPlayer();
         String submit = wordGameSubmitRequestDto.getSubmit();
-        int problemNum = wordGameSubmitRequestDto.getProblemNum();
+        int problemNum = wordGameSubmitRequestDto.getProblemNum()-1;
 
         WordGameRoom wordGameRoom = wordGameRoomService.findById(roomSequence);
         Long wordSequence = wordGameRoom.getWordsSequence().get(problemNum);
