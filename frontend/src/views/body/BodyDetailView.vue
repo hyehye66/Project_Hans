@@ -321,10 +321,7 @@ export default {
       this.count = 5
     },
 
-	// 정오답 확인
-	checkAnswer() {
-
-		},     
+ 
   }} 
 
 </script>

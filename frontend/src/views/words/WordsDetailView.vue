@@ -1,5 +1,4 @@
 <template>
-
     <div id="session">
         <div id="session-header">
             <div class="back-title">
@@ -26,7 +25,7 @@
         <div id="session-body-left" class="col-md-6">
             <!-- 메인화면 -->
             <div id="problem-box">
-                <WordsTimer></WordsTimer>
+                <div>게임 시간 : {{this.$store.state.games.TimerStr}} 초</div> 
                 <div v-if="!cnt">문제는 : {{ problem }} </div>
             </div>
             <!-- 캠,마이크,나가기,설정 -->
@@ -80,7 +79,7 @@
             <!-- style="width: 40; height: 40;" -->
             <!-- 임시시작버튼 -->
             <div v-if="!start" class="leader-button">
-                <button @click="countDown" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
+                <button @click="sendStart" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
                     START
                 </button>
             </div>
@@ -131,7 +130,7 @@ import { VideoCameraIcon, MicrophoneIcon, LogoutIcon, CogIcon, PaperAirplaneIcon
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
-import WordsTimer from './components/WordsTimer.vue';
+
 
 
 
@@ -149,7 +148,6 @@ export default {
     LogoutIcon,
     CogIcon,
     PaperAirplaneIcon,
-    WordsTimer,
 },
   data () {
     return {
@@ -186,7 +184,8 @@ export default {
         temp : '',
         currentRank : {},
         trigger : true,
-        playerLen : 0
+        playerLen : 0,
+        isAll : false
     }
   },
   
@@ -200,7 +199,7 @@ export default {
   },
 //this.$route.params.token.slice(39,53)
   methods : {
-    
+    ...mapActions(['timerStart']),
     // 오픈비두 세션에 들어가기,created에 실행
     joinSession () {
             // 세션의 id는 토큰에서 잘라서 활용 
@@ -239,7 +238,9 @@ export default {
         // 방 나가기
         leaveSession () {
             // 일단 axios로 스프링 서버의 방에서 나가기
-
+            if (this.stompClient) {this.stompClient.disconnect()}
+            this.stompClient = null;
+            
             axios({
                 url : `/api/word-game/rooms/${this.$route.params.roomSequence}`,
                 method : 'delete',
@@ -255,7 +256,6 @@ export default {
             this.publisher = undefined;
             this.subscribers = [];
             this.OV = undefined;
-            this.stompClient.disconnect()
             window.removeEventListener('beforeunload', this.leaveSession);
               this.$router.push({name : 'WordsMainView'})
             })
@@ -327,29 +327,16 @@ export default {
       return this.open = !this.open
     },
 
-	gameStart() {
-      this.start = true
-      this.cnt = true
-      this.countDown()
-
-		},
-  countDown()  {
-      this.sendStart()
-      setTimeout(() => { this.count = 4 }, 1000)
-      setTimeout(() => { this.count = 3 }, 2000)
-      setTimeout(() => { this.count = 2 }, 3000)
-      setTimeout(() => { this.count = 1 }, 4000)
-      setTimeout(() => { this.count = 'START!!!!'}, 4500)
-      setTimeout(() => { this.cnt=false}, 4800)
-      this.count = 5
-      setTimeout(() => { this.getProblem() }, 3500)
-    },
+// setTimeout(() => { this.timerStart(8) }, 5000)     
+// setTimeout(() => { this.$store.state.games.TimerChk = true}, 8000)
   threecountDown(){
     this.cnt = true
     setTimeout(() => {this.threecount = 3}, 1000)
     setTimeout(() => {this.threecount = 2}, 2000)
     setTimeout(() => {this.threecount = 1}, 3000)
-    setTimeout(() => { this.cnt=false }, 3100)
+    setTimeout(() => {this.threecount = 'start!'}, 4000)
+    setTimeout(() => { this.cnt=false }, 4500)
+    setTimeout(() => { this.timerStart(5) }, 4500)
     this.threecount = 3
     setTimeout(() => { this.getProblem() }, 1500)
   },
@@ -376,12 +363,11 @@ export default {
                   this.problem = response.problem
               } else if (key[0] === 'roomSequence') {
                   this.answer = response.answer
+                  this.answerList= []
               } else if (key[0] === 'players') {
                   this.difficulty = response.points
               } else if (key[0] == 'correctPlayers') {
-                console.log(response.correctPlayers, '받아와짐?')
                 this.answerList = response.correctPlayers
-                console.log(this.answerList.length,this.playerLen)
               }
           })
             
@@ -415,10 +401,24 @@ export default {
   },
   async setCorrect(){
     const result = await this.problemTrigger()
-    console.log(result)
-    if (!result || this.answerList.length == this.playerLen){
+    
+    if (!result) {
+      this.$store.state.games.TimerChk = true
       this.sendCorrect()
-    }
+    } 
+  },
+  allCorrect(){
+    setInterval(() => {
+      if (this.answerList.length == this.playerLen){
+        // this.$store.state.games.TimerChk = true
+        this.sendCorrect()
+        this.isAll = false
+        console.log('이전')
+        clearInterval()
+        console.log('이후')
+        
+      }
+    }, 1000)
   },
 
   sendAnswer(){
@@ -433,13 +433,12 @@ export default {
     )},
 
   sendCorrect(){
-        console.log(123)
-        
         const questionNum = {question_num : this.problemNum} 
         this.stompClient.send(`/game/word-game/answer/${this.$route.params.roomSequence}`,
         JSON.stringify(questionNum), {}
         )
         this.problemNum++
+        console.log(this.problemNum, '몇개 불러오는거임?')
         if (this.problemNum <= 10){
           console.log('결과까지!')
           setTimeout(() => {this.threecountDown()}, 3000)

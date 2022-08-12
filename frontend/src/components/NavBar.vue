@@ -49,6 +49,7 @@
       <li><router-link :to="{name:'ChatMainView'}" >대화</router-link></li>
       <li><router-link :to="{name:'RankingView'}" >랭킹</router-link></li>
       <li v-if="isLoggedIn"><router-link :to="{name:'MyPageView'}" >마이페이지</router-link></li>
+      <li v-if="isLoggedIn"> {{profile.nickname}} 님 환영합니다</li>
     </ul>
   </div>
   <div class="navbar-end">
@@ -87,7 +88,7 @@ export default {
     LoginModal
   },
   computed: {
-    ...mapGetters(['isLoggedIn']),
+    ...mapGetters(['isLoggedIn','profile']),
   },
   data(){
     return {
