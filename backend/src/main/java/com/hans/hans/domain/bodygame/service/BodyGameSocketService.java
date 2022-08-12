@@ -1,13 +1,11 @@
 package com.hans.hans.domain.bodygame.service;
 
-import com.hans.hans.domain.bodygame.dto.BodyGameStartRequestDto;
-import com.hans.hans.domain.bodygame.dto.BodyGameStartResponseDto;
-import com.hans.hans.domain.bodygame.dto.BodyGameProblemResponseDto;
+import com.hans.hans.domain.bodygame.dto.*;
 
 public interface BodyGameSocketService {
 
-    public BodyGameStartResponseDto initGame(long roomSequence, BodyGameStartRequestDto bodyGameStartRequestDto);
+    BodyGameStartResponseDto initGame(long roomSequence, BodyGameStartRequestDto bodyGameStartRequestDto);
     BodyGameProblemResponseDto getProblem(Long wordSequence);
-
-
+    BodyGameAnswerResponseDto getAnswer(BodyGameAnswerRequestDto bodyGameAnswerRequestDto, Long roomSequence);
+    BodyGameResultResponseDto getResult(Long roomSequence);
 }

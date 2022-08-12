@@ -43,4 +43,7 @@ public class BodyGameRoom {
         room.difficulty = bodyGameStartRequestDto.getDifficulty();
     }
 
+    public void refreshCorrectPlayers(){
+        this.correctPlayers = new HashMap<>();
+    }
 }

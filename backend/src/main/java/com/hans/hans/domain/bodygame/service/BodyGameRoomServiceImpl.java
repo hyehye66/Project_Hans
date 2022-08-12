@@ -57,4 +57,8 @@ public class BodyGameRoomServiceImpl implements BodyGameRoomService {
         bodyGameRooms.put(roomSequence, bodyGameRoom);
 
     }
+
+    @Override
+    public BodyGameRoom findById(Long roomId) { return bodyGameRooms.get(roomId);}
+
 }

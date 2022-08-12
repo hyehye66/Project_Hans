@@ -5,4 +5,6 @@ import com.hans.hans.domain.bodygame.entity.BodyGameRoom;
 
 public interface BodyGameRoomService {
     public void createBodyGameRoom(Long roomSequence, BodyGameStartRequestDto bodyGameStartRequestDto);
+    BodyGameRoom findById(Long roomId);
+
 }

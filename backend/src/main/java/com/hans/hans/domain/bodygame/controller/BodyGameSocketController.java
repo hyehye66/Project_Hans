@@ -1,8 +1,6 @@
 package com.hans.hans.domain.bodygame.controller;
 
-import com.hans.hans.domain.bodygame.dto.BodyGameProblemResponseDto;
-import com.hans.hans.domain.bodygame.dto.BodyGameStartRequestDto;
-import com.hans.hans.domain.bodygame.dto.BodyGameStartResponseDto;
+import com.hans.hans.domain.bodygame.dto.*;
 import com.hans.hans.domain.bodygame.service.BodyGameSocketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -28,7 +26,18 @@ public class BodyGameSocketController {
         return bodyGameSocketService.getProblem(wordSequence);
     }
 
+    @MessageMapping("/body-game/answer/{room_seq}")
+    @SendTo("/topic/body-game/{room_seq}")
+    public BodyGameAnswerResponseDto getAnswer(BodyGameAnswerRequestDto bodyGameAnswerRequestDto, @DestinationVariable("room_seq") Long roomSequence){
+        BodyGameAnswerResponseDto bodyGameAnswerResponseDto = bodyGameSocketService.getAnswer(bodyGameAnswerRequestDto, roomSequence);
+        return bodyGameAnswerResponseDto;
+    }
 
-
+    @MessageMapping("/body-game/result/{room_seq}")
+    @SendTo("/topic/body-game/{room_seq}")
+    public BodyGameResultResponseDto getResult(@DestinationVariable("room_seq") Long roomSequence){
+        BodyGameResultResponseDto bodyGameResultResponseDto = bodyGameSocketService.getResult(roomSequence);
+        return bodyGameResultResponseDto;
+    }
 
 }
