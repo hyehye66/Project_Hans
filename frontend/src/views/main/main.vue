@@ -30,8 +30,7 @@ import LoginDialog from './components/login-dialog'
 import MainHeader from './components/main-header'
 import MainSidebar from './components/main-sidebar'
 import MainFooter from './components/main-footer'
-import Stomp from 'webstomp-client'
-import SockJS from 'sockjs-client'
+
 export default {
   name: 'MainView',
   components: {
@@ -53,13 +52,8 @@ export default {
       this.loginDialogOpen = false
     },
     async socketCreate(){
-        let socket = await SockJS("https://i7d109.p.ssafy.io/ws/game")
-        this.stompClient = Stomp.over(socket)
-        console.log('소켓 연결하는 중')
-        this.stompClient.connect({}, ()=> {
-            console.log('연결성공')
-            this.isConnect = true
-        })
+
+    
     },
   },
   create(){
