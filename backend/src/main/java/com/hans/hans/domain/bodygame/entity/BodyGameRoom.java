@@ -26,7 +26,7 @@ public class BodyGameRoom {
         //사람 갱신
         players = new HashMap<>();
         for(String playerName : playerNames ){
-            players.put(playerName,0l);
+            players.put(playerName,0L);
         }
         //맞은 사람 갱신
         correctPlayers = new HashMap<>();
@@ -36,14 +36,22 @@ public class BodyGameRoom {
         this.wordsSequence = wordsSequence;
     }
 
-    public static void createBodyGame(Long roomSequence, BodyGameStartRequestDto bodyGameStartRequestDto){
+    public static BodyGameRoom createBodyGame(Long roomSequence, BodyGameStartRequestDto bodyGameStartRequestDto){
         BodyGameRoom room  = new BodyGameRoom();
         room.roomSequence = roomSequence;
         room.totalQuestion = bodyGameStartRequestDto.getTotalQuestion();
         room.difficulty = bodyGameStartRequestDto.getDifficulty();
+        return room;
     }
 
     public void refreshCorrectPlayers(){
         this.correctPlayers = new HashMap<>();
+    }
+    public void updatePlayersScore(String player, Long score){
+        this.players.put(player,players.get(player)+score);
+    }
+
+    public void updateCorrectPlayers(String player, Long score){
+        this.correctPlayers.put(player,players.get(player)+score);
     }
 }
