@@ -12,7 +12,7 @@
             <div class="total-time">
         <!--  h-30 w-40 p-2 border-2 border-gray-400 bg-gray-200 -->
             <div class="h-full w-full bg-gray-400">
-                    <h1>총 진행시간</h1>
+                    <h1>총 진행시간 {{ trigger }} </h1>
                 </div>
             </div>
         </div>
@@ -76,7 +76,7 @@
             <!-- <br> -->
             <!-- 현재 문제 남은 시간 타이머 -->
             <div class="problem-timer" style="width: 30%">남은 시간: 
-            <div v-if="cnt">{{count}}</div></div>
+            <div v-if="cnt">{{threecount}}</div></div>
             <!-- style="width: 40; height: 40;" -->
             <!-- 임시시작버튼 -->
             <div v-if="!start" class="leader-button">
@@ -108,9 +108,7 @@
                     <PaperAirplaneIcon style="height: 35; width: 35;" @click="sendAnswer" />					
                 </div>
                 <!-- 정오답 알림 메시지 -->
-                <div class="check-answer">
-                    <input type="text" v-model="answerAlert" size="30" />
-                </div>
+                
 
         </div>
     </div>
@@ -139,7 +137,7 @@ import WordsTimer from './components/WordsTimer.vue';
 
 // stomp url
 const serverUrl = "https://i7d109.p.ssafy.io/ws/game"
-
+const maxProblem = 111
 
 export default {
   name : 'WordsDetailView',
@@ -163,6 +161,7 @@ export default {
         subscribers: [],
         
         count : 5,
+        threecount : 3,
         // 게임 시작 관련
         start: false, // 게임시작유무
         cnt : false, // 카운트시작유무
@@ -184,15 +183,16 @@ export default {
         stompClient : {},
         status : null,
         problemNum : 1,
-        temp : ''
+        temp : '',
+        currentRank : {},
+        trigger : true,
+        playerLen : 0
     }
   },
   
   created(){
     this.joinSession(),
-    this.socketStart(),
-    console.log(this.profile,123)
-    console.log(this.$route.params)
+    this.socketStart()
   },
 
   computed : {
@@ -344,7 +344,15 @@ export default {
       this.count = 5
       setTimeout(() => { this.getProblem() }, 3500)
     },
-  
+  threecountDown(){
+    this.cnt = true
+    setTimeout(() => {this.threecount = 3}, 1000)
+    setTimeout(() => {this.threecount = 2}, 2000)
+    setTimeout(() => {this.threecount = 1}, 3000)
+    setTimeout(() => { this.cnt=false }, 3100)
+    this.threecount = 3
+    setTimeout(() => { this.getProblem() }, 1500)
+  },
   // stomp 시작
   // 필요한 거 제한 시간, 방장, 제한 문제수,난이도 (word-game의 경우 제한 시간 필요 없음)
   // 게임 시작 -> 5초 카운트 전에 문제 받아옴 ->  
@@ -354,22 +362,26 @@ export default {
       let socket = new SockJS(serverUrl)
       this.stompClient = Stomp.over(socket)
       console.log('소켓 연결하는 중')
+      console.log(this.answerList)
       this.stompClient.connect({}, frame => {
           console.log(frame, '연결 성공!')
           this.stompClient.subscribe(`/topic/word-game/${this.$route.params.roomSequence}`, 
           res => {
-              console.log(res)
               const response = JSON.parse(res.body)
-              console.log(Object.keys(response)[0])
-              let key = Object.keys(response)[0]
-              if (key ==="gameStatus"){
+              let key = Object.keys(response) 
+              if ("gameStatus" === key[1]){
                   this.status = true
-              } else if (key === 'problem') {
+                  this.playerLen = response.players.length
+              } else if (key[0] === 'problem') {
                   this.problem = response.problem
-              } else if (key === 'roomSequence') {
+              } else if (key[0] === 'roomSequence') {
                   this.answer = response.answer
-              } else if (key === 'players') {
+              } else if (key[0] === 'players') {
                   this.difficulty = response.points
+              } else if (key[0] == 'correctPlayers') {
+                console.log(response.correctPlayers, '받아와짐?')
+                this.answerList = response.correctPlayers
+                console.log(this.answerList.length,this.playerLen)
               }
           })
             
@@ -384,37 +396,66 @@ export default {
         total_question : 10
     }
     this.stompClient.send(`/game/word-game/${this.$route.params.roomSequence}`, JSON.stringify(gameStatus), {})
+    this.threecountDown()
   },
+
    getProblem(){
+      this.trigger = true
       this.stompClient.send(
           `/game/word-game/room/${this.$route.params.roomSequence}/problem/${this.problemNum}`, undefined, {}
       )
+      this.setCorrect()
       
+      },
+      
+  problemTrigger(){
+    return new Promise(resolve => 
+    setTimeout(() => {this.trigger = false; resolve(this.trigger)}, 15000)
+    )
   },
+  async setCorrect(){
+    const result = await this.problemTrigger()
+    console.log(result)
+    if (!result || this.answerList.length == this.playerLen){
+      this.sendCorrect()
+    }
+  },
+
   sendAnswer(){
-    console.log(this.profile.nickname)
     const foranswer = {
         player : this.profile.nickname,
-        submit : this.temp
+        submit : this.temp,
+        problem_num : this.problemNum
     }
     const submit = JSON.stringify(foranswer)
     this.stompClient.send(
         `/game/word-game/check/${this.$route.params.roomSequence}`, submit, {}
     )},
+
   sendCorrect(){
-            const questionNum = {question_num : this.problemNum} 
-            this.stompClient.send(`/game/word-game/answer/${this.$route.params.roomSequence}`,
-            JSON.stringify(questionNum), {}
-            )
-            this.problemNum++
-        },
+        console.log(123)
+        
+        const questionNum = {question_num : this.problemNum} 
+        this.stompClient.send(`/game/word-game/answer/${this.$route.params.roomSequence}`,
+        JSON.stringify(questionNum), {}
+        )
+        this.problemNum++
+        if (this.problemNum <= 10){
+          console.log('결과까지!')
+          setTimeout(() => {this.threecountDown()}, 3000)
+        } else if (this.problemNum > 10) {
+          this.sendResult()
+        }
+    },
+
   sendResult(){
     this.stompClient.send(
         `/game/word-game/result/${this.$route.params.roomSequence}`,
         undefined,
         {}
       )
-  }
+  },
+  
   }
   } 
 
