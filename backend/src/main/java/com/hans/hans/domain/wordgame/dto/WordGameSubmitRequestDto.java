@@ -6,5 +6,5 @@ import lombok.Getter;
 public class WordGameSubmitRequestDto {
     private String player;
     private String submit;
-    int problemNum;
+    private int problemNum;
 }

@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 public class WordGameStartRequestDto {
     @JsonProperty("total_question")
-    int totalQuestion;
+    private int totalQuestion;
 
 }
