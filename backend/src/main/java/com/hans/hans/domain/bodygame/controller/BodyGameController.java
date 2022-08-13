@@ -28,7 +28,7 @@ public class BodyGameController {
     private final RoomService roomService;
 
     @GetMapping()
-    public ResponseEntity<?> getBodyGameRooms(@PageableDefault(size = 6) Pageable pageable){
+    public ResponseEntity<?> getBodyGameRooms(@PageableDefault(size = 8) Pageable pageable){
         RoomsResponseDto roomsResponseDto = roomService.getRooms(RoomGetRequestDto.builder().modeSequence(Modes.BODY.getModeSequence()).build(), pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("몸으로 말해요 게임방 리스트 조회에 성공하였습니다. ", roomsResponseDto));

@@ -27,7 +27,7 @@ public class ConversationController {
     private final RoomService roomService;
 
     @GetMapping()
-    public ResponseEntity<?> getConversationRooms(@PageableDefault(size = 6) Pageable pageable){
+    public ResponseEntity<?> getConversationRooms(@PageableDefault(size = 8) Pageable pageable){
         RoomsResponseDto roomsResponseDto = roomService.getRooms(RoomGetRequestDto.builder().modeSequence(Modes.TALK.getModeSequence()).build(), pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("대화방 리스트 조회에 성공하였습니다. ", roomsResponseDto));

@@ -28,7 +28,7 @@ public class WordGameController {
     private final RoomService roomService;
 
     @GetMapping()
-    public ResponseEntity<?> getWordGameRooms(@PageableDefault(size = 6) Pageable pageable){
+    public ResponseEntity<?> getWordGameRooms(@PageableDefault(size = 8) Pageable pageable){
         RoomsResponseDto roomsResponseDto = roomService.getRooms(RoomGetRequestDto.builder().modeSequence(Modes.WORD.getModeSequence()).build(), pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("낱말게임방 리스트 조회에 성공하였습니다. ", roomsResponseDto));
