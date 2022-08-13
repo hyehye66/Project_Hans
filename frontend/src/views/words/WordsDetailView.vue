@@ -136,7 +136,7 @@ import SockJS from 'sockjs-client'
 
 // stomp url
 const serverUrl = "https://i7d109.p.ssafy.io/ws/game"
-const maxProblem = 111
+
 
 export default {
   name : 'WordsDetailView',
@@ -192,6 +192,7 @@ export default {
   created(){
     this.joinSession(),
     this.socketStart()
+    console.log(this.$route.params)
   },
 
   computed : {
@@ -385,18 +386,20 @@ export default {
     this.threecountDown()
   },
 
-   getProblem(){
-      this.trigger = true
-      this.stompClient.send(
-          `/game/word-game/room/${this.$route.params.roomSequence}/problem/${this.problemNum}`, undefined, {}
-      )
-      this.setCorrect()
-      
-      },
+  getProblem(){
+    this.trigger = true
+    this.stompClient.send(
+        `/game/word-game/room/${this.$route.params.roomSequence}/problem/${this.problemNum}`, undefined, {}
+    )
+    this.setCorrect()
+    
+    },
       
   problemTrigger(){
     return new Promise(resolve => 
+
     setTimeout(() => {this.trigger = false; resolve(this.trigger)}, 15000)
+
     )
   },
   async setCorrect(){
@@ -420,6 +423,7 @@ export default {
       }
     }, 1000)
   },
+ 
 
   sendAnswer(){
     const foranswer = {
