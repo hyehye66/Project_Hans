@@ -65,7 +65,11 @@ public class RankingServiceImpl implements RankingService{
         Mode mode = modeRepository.findByModeSequence(modes.getModeSequence());
 
         Ranking ranking = rankingRepository.findRankingByMemberAndMode(member, mode);
-        ranking.updateScore(score);
+
+        Long newScore = score + ranking.getScore();
+
+        ranking.updateScore(newScore);
+        ranking.updateTier(newScore);
 
         rankingRepository.save(ranking);
     }

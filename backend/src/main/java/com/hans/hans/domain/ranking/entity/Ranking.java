@@ -47,4 +47,16 @@ public class Ranking {
         this.score = score;
     }
 
+    public void updateTier(Long score) {
+        if (score >= 1000L) {
+            this.tier = "Dia";
+        } else if (score >= 500L) {
+            this.tier = "Gold";
+        } else if (score >= 100L) {
+            this.tier = "Silver";
+        } else {
+            this.tier = "Bronze";
+        }
+    }
+
 }
