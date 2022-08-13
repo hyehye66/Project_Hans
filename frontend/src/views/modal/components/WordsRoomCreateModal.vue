@@ -97,11 +97,11 @@ export default {
        headers : this.authHeader}, 
     ).
     then(res => {
-      console.log(res.data.data)
+      
       this.$router.push({ name: 'WordsDetailView', 
       params: { mode : this.mode, sessionName : this.sessionName, 
       token : res.data.data.token, roomSequence : res.data.data.roomSequence,
-      problemIdx : res.data.data.totalQuestion 
+      problemIdx : this.problemcnt
       }})
     })
     .catch(err => console.log(err,1234))

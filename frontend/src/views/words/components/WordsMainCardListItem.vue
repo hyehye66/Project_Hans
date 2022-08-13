@@ -39,7 +39,7 @@ export default {
             url : `/api/word-game/rooms/`+this.room.roomSequence,
             method : 'post',
             headers : this.authHeader})
-        .then(res => {console.log(res),
+        .then(res => {console.log(res.data.data),
         this.$router.push({ name: 'WordsDetailView', 
         params: { mode : this.mode, sessionName : this.room.title, 
         token : res.data.data.token,roomSequence : this.room.roomSequence,

@@ -11,10 +11,14 @@
             <div id="video-container" class="col-md-6">
                 <ChatDetailRTCItem :stream-manager="publisher" @click="updateMainVideoStreamManager()"/>
                 <ChatDetailRTCItem v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager()"/>
+                <input v-model="myChat" type="text" @keyup.enter="startChatting"/>
             </div>
-        </div>
+            <ul v-for="idx in chattingList" :key="idx">
+                <li>{{idx}}</li>
+  
+            </ul>
     </div>
-
+</div>
   
 
 </template>
@@ -42,7 +46,9 @@ export default {
         mainStreamManager: undefined,
         publisher: undefined,
         subscribers: [],
-        myUserName: '영택임' + Math.floor(Math.random() * 100)
+        myUserName: '영택임' + Math.floor(Math.random() * 100),
+        myChat : '',
+        chattingList : []
     }
   },
   
@@ -51,7 +57,7 @@ export default {
   },
 
   computed : {
-    ...mapGetters(['authHeader'])
+    ...mapGetters(['authHeader','profile'])
   },
 //this.$route.params.token.slice(39,53)
   methods : {
@@ -116,7 +122,6 @@ export default {
             .then(() => {
 
                         // 미디어 스트림 가져오기 
-                        console.log(123)
                         let publisher = this.OV.initPublisher(undefined, {
                             audioSource: undefined, // The source of audio. If undefined default microphone
                             videoSource: undefined, // The source of video. If undefined default webcam
@@ -130,10 +135,10 @@ export default {
                         
                         this.mainStreamManager = publisher;
                         this.publisher = publisher;
-
-                        
                         this.session.publish(this.publisher);
-                        console.log(this.publisher,345)
+                        this.session.on('signal', (event) => {
+                            this.chattingList.push(event.data)
+                        });
                     })
                     .catch(error => {
                         console.log('There was an error connecting to the session:', error.code, error.message);
@@ -154,7 +159,21 @@ export default {
         } else {
             return this.token
         }
-    }
+    },
+    startChatting(){
+        this.session.signal({
+            data: `${this.profile.nickname} : ${this.myChat}`,  // Any string (optional)
+            to: [],                     // Array of Connection objects (optional. Broadcast to everyone if empty)
+            type: 'my-chat'             // The type of message (optional)
+            })
+    .then(() => {
+        console.log('Message successfully sent');
+        this.myChat = ''
+    })
+    .catch(error => {
+        console.error(error);
+    });
+    },
         
         
   }} 
