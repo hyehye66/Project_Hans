@@ -109,79 +109,79 @@
 
   <div id="body-detail-session-body-right" class="col-md-5">
     <!-- 랭크 -->
-    <div class="body-detail-rank col-md-12">
-    <!--  shadow-md py-60 px-50 -->						
-      <!-- <ul>
-        <li>김민철 1</li>
-        <li>김지현 2</li>
-        <li>김지현 2</li>
-        <li>김지현 2</li>
-        <li>김지현 2</li>
-        <li>김지현 2</li>
-      </ul> -->
-
-      <div class="overflow-x-auto">
-        <table class="table table-zebra w-full">
-          <h1>실시간 순위</h1>
-          <!-- head -->
-          <thead>
-            <tr>
-              <th></th>
-              <th>Name</th>
-              <th>Job</th>
-              <th>Favorite Color</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- row 1 -->
-            <tr class="hover">
-              <th>1</th>
-              <td>Cy Ganderton</td>
-              <td>Quality Control Specialist</td>
-              <td>Blue</td>
-            </tr>
-            <!-- row 2 -->
-            <tr class="hover">
-              <th>2</th>
-              <td>Hart Hagerty</td>
-              <td>Desktop Support Technician</td>
-              <td>Purple</td>
-            </tr>
-            <!-- row 3 -->
-            <tr class="hover">
-              <th>3</th>
-              <td>Brice Swyre</td>
-              <td>Tax Accountant</td>
-              <td>Red</td>
-            </tr>
-            <!-- row 4 -->
-            <tr class="hover">
-              <th>4</th>
-              <td>Brice Swyre</td>
-              <td>Tax Accountant</td>
-              <td>Red</td>
-            </tr>
-            <!-- row 5 -->
-            <tr class="hover">
-              <th>5</th>
-              <td>Brice Swyre</td>
-              <td>Tax Accountant</td>
-              <td>Red</td>
-            </tr>
-            <!-- row 6 -->
-            <tr class="hover">
-              <th>6</th>
-              <td>Brice Swyre</td>
-              <td>Tax Accountant</td>
-              <td>Red</td>
-            </tr>
-          </tbody>
-        </table>
+    <div class="card" id="body-right-card">
+      <div class="card-header">
+        실시간 순위
       </div>
+      <div class="card-body">
+        <!-- <h5 class="card-title">Special title treatment</h5>
+        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+        <a href="#" class="btn btn-primary">Go somewhere</a> -->
+        <div class="body-detail-rank">
+          <!--  shadow-md py-60 px-50 -->						
+            <!-- <ul>
+              <li>김민철 1</li>
+              <li>김지현 2</li>
+              <li>김지현 2</li>
+              <li>김지현 2</li>
+              <li>김지현 2</li>
+              <li>김지현 2</li>
+            </ul> -->
 
-
-
+          <div class="overflow-x-auto">
+            <table class="table table-zebra w-full" id="rank-table">
+              <!-- head -->
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Nickname</th>
+                  <th>Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- row 1 -->
+                <tr class="hover">
+                  <th>1</th>
+                  <td>Cy Ganderton</td>
+                  <td>Quality Control Specialist</td>
+                </tr>
+                <!-- row 2 -->
+                <tr class="hover">
+                  <th>2</th>
+                  <td>Hart Hagerty</td>
+                  <td>Desktop Support Technician</td>
+                </tr>
+                <!-- row 3 -->
+                <tr class="hover">
+                  <th>3</th>
+                  <td>Brice Swyre</td>
+                  <td>Desktop Support Technician</td>
+                </tr>
+                <!-- row 4 -->
+                <tr class="hover">
+                  <th>4</th>
+                  <td>Brice Swyre</td>
+                  <td>Tax Accountant</td>
+                </tr>
+                <!-- row 5 -->
+                <tr class="hover">
+                  <th>5</th>
+                  <td>Brice Swyre</td>
+                  <td>Tax Accountant</td>
+                </tr>
+                <!-- row 6 -->
+                <tr class="hover">
+                  <th>6</th>
+                  <td>Brice Swyre</td>
+                  <td>Tax Accountant</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
+    
     <!-- <br> -->
 
     <!-- 현재 문제 남은 시간 타이머 -->
@@ -194,7 +194,9 @@
     
     <!-- 시작버튼 & 현재 문제 남은 시간 타이머 -->
     <div v-if="!start" class="body-detail-leader-button">
-      <button @click="gameStart" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
+      <button id="start-btn" @click="gameStart" 
+      class="bg-transparent hover:bg-yellow-500 text-yellow-700 font-semibold hover:text-white 
+      py-2 px-2 border border-yellow-500 hover:border-transparent rounded-full">
         START
       </button>
     </div>
@@ -536,20 +538,37 @@ export default {
 <style>
 svg {
   cursor: pointer;
+  color: #ffff;
   /* width: 40;
   height: 40;  */
 }
 
 .body-detail-bg-img {
   margin: auto;
-  background-image: url("@/assets/bubble1.png");
-  background-size: cover;
+  /* background-image: url("@/assets/12.png"); */
+  /* background-size: cover; */
+  width: 100vw;
+  height: 100vh;
+  /* position: absolute; */
+  position: relative;
+  z-index: 1;
+  /* background-color: transparent; */
+
+}
+
+.body-detail-bg-img::after {
+  margin: auto;
   width: 100vw;
   height: 100vh;
   position: absolute;
-  background-color: transparent;
-  /* background: transparent; */
-
+  top: 0;
+  left: 0;
+  z-index: -1;
+  opacity: 0.6;
+  content: "";
+  background: url("@/assets/12.png");
+  background-size: cover;
+  
 }
 
 #join + #session {
@@ -621,6 +640,8 @@ svg {
   justify-content : center;
 	align-items : center;
 
+  color: #ffff;
+
 }
 
 .body-detail-total-time {
@@ -632,6 +653,8 @@ svg {
   
   justify-content : center;
 	align-items : center;
+
+  color: #ffff;
 
 }
 
@@ -717,6 +740,8 @@ video {
 
   justify-content: center;
   align-items: center;
+
+  border-radius: 10% 10% 10% 10%;
 }
 
 #body-detail-main-video p {
@@ -739,12 +764,17 @@ user-video {
 }
 
 #body-detail-main-video {
-  width: 70%;
+  width: 73%;
   display: flex;
   justify-content: center;
   align-items: center;
 
   background-color: transparent;
+  
+  border: 0.5rem;
+  border-style: solid;
+  border-radius: 10% 10% 10% 10%;
+  border-color: white;
 
 }
 
@@ -829,30 +859,45 @@ img {
 
 
 #body-detail-session-body-right {
+  /* padding-left: 3%;  
+  padding-right: 3%;  
+  padding-top: 1%;   */
   margin-right: 3%;
   padding-top: 1%;
   padding-right: 5%;
   display: flex;
   flex-direction: column;
   float: right;
-  /* padding-top: 5px; */
-  margin-top: 10px;
   justify-content: center;
   align-self: center;    
 
   background-color: transparent;
 }
 
+#body-right-card {
+  /* background-color: transparent;
+  border-color: #ffff; */
+  background-color: rgba(60, 60, 60, 0.26 );
+  color: #ffff;
+  border: none;
+}
+
 .body-detail-rank {
-  border: thick double #32a1ce;
   /* padding-left: 1%; */
-  padding-right: 3%;
   /* width: 20rem; */
-  height: auto;
   /* text-align: center; */
-  justify-content: center;
   /* margin: auto; */
+
+
+  /* border: thick double #32a1ce;
+  padding-right: 3%; */
+  height: auto;
+  justify-content: center;
   font-size: 1rem;
+}
+
+#rank-table {
+  color: #ffff;
 }
 
 
@@ -895,5 +940,10 @@ img {
 	align-items : center;
     
 }
+
+
+
+
+
 
 </style>
