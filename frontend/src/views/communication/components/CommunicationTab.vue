@@ -33,35 +33,35 @@
           <div class="tab-content tab-space">
             <div v-bind:class="{'hidden': openTab !== 1, 'block': openTab === 1}">
             <ul class="list-group" style="width: 750px" v-for="situation in situationSentence" :key="situation.situationSequence">
-              <li class="list-group-item" v-if="situation.category==='제목1'">
+              <li class="list-group-item" v-if="situation.category==='shopping'">
                 <one-dialog :sentence="situation.sentence"/>
               </li>
             </ul>  
             </div>
             <div v-bind:class="{'hidden': openTab !== 2, 'block': openTab === 2}">
               <ul class="list-group" style="width: 750px" v-for="situation in situationSentence" :key="situation.situationSequence">
-                <li class="list-group-item" v-if="situation.category==='제목2'">
+                <li class="list-group-item" v-if="situation.category==='hospital'">
                   <one-dialog :sentence="situation.sentence"/>
                 </li>
               </ul>  
             </div>
             <div v-bind:class="{'hidden': openTab !== 3, 'block': openTab === 3}">
             <ul class="list-group" style="width: 750px" v-for="situation in situationSentence" :key="situation.situationSequence">
-              <li class="list-group-item" v-if="situation.category==='제목3'">
+              <li class="list-group-item" v-if="situation.category==='restaurant'">
                 <one-dialog :sentence="situation.sentence"/>
               </li>
             </ul>  
             </div>
             <div v-bind:class="{'hidden': openTab !== 4, 'block': openTab === 4}">
             <ul class="list-group" style="width: 750px" v-for="situation in situationSentence" :key="situation.situationSequence">
-              <li class="list-group-item" v-if="situation.category==='제목4'">
+              <li class="list-group-item" v-if="situation.category==='travel'">
                 <one-dialog :sentence="situation.sentence"/>
               </li>
             </ul>  
             </div>
             <div v-bind:class="{'hidden': openTab !== 5, 'block': openTab === 5}">
             <ul class="list-group" style="width: 750px" v-for="situation in situationSentence" :key="situation.situationSequence">
-              <li class="list-group-item" v-if="situation.category==='제목5'">
+              <li class="list-group-item" v-if="situation.category==='call'">
                 <one-dialog :sentence="situation.sentence"/>
               </li>
             </ul>  

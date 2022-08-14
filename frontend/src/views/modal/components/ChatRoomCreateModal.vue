@@ -77,7 +77,7 @@ export default {
     then(res => {
 
       console.log(res)
-      this.$router.push({ name: 'ChatDetailView', params: { mode : this.mode, sessionName : this.sessionName, token : res.data.data.token, roomSequence : res.data.data.roomSequence}})
+      this.$router.push({ name: 'ChatDetailView', params: { mode : this.mode, sessionName : this.sessionName, token : res.data.data.token, roomSequence : res.data.data.roomSequence,restrict_num : res.data.data.restrictNum}})
       
 
     })
@@ -86,7 +86,7 @@ export default {
     
   },
 },
-computed : {...mapGetters(['authHeader'])}
+computed : {...mapGetters(['authHeader','profile'])}
 }
 </script>
 <style scoped>
