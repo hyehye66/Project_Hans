@@ -43,7 +43,10 @@
     <!-- 메인화면 -->
     <div id="body-detail-main-video">
     <!-- col-md-8 -->
-      <user-video :stream-manager="mainStreamManager"/>
+      <user-video :stream-manager="mainStreamManager" v-if="!answerTime"/>
+      <p v-if="answerTime"> 정답은 : {{answer}}</p>
+      <p v-if="answerTime"> 맞춘 사람 : {{answerList}}</p>
+      <p v-if="answerTime"> 점수는 : {{point}}</p>
     </div>
     <!-- 캠,마이크,나가기,설정 -->
     <div class="cam-buttons">
@@ -96,9 +99,11 @@
 
     <!-- 정답 적는 란 -->
     <div class="body-detail-answer-send">
-      <input type="text" name="" id="body-detail-answer-sheet" v-model="answerSheet" size="30"
-      placeholder="답을 입력해주세요." @keyup.enter="checkAnswer" />
-      <PaperAirplaneIcon style="height: 35; width: 35;" @click="checkAnswer" />					
+      <div v-if="!cnt">게임 시간 : {{this.$store.state.games.TimerStr}} 초</div> 
+      <div v-if="!cnt">문제는 : {{ problem }} </div>
+      <input type="text" name="" id="body-detail-answer-sheet" v-model="temp" size="30"
+      placeholder="답을 입력해주세요." @keyup.enter="sendAnswer" v-if="!isCorrect"/>
+      <PaperAirplaneIcon style="height: 35; width: 35;" @click="sendAnswer" v-if="!isCorrect"/>					
     </div>
     <!-- 정오답 알림 메시지 -->
     <div class="body-detail-check-answer">
@@ -194,15 +199,14 @@
     
     <!-- 시작버튼 & 현재 문제 남은 시간 타이머 -->
     <div v-if="!start" class="body-detail-leader-button">
-      <button id="start-btn" @click="gameStart" 
+      <button id="start-btn" @click="sendStart" 
       class="bg-transparent hover:bg-yellow-500 text-yellow-700 font-semibold hover:text-white 
       py-2 px-2 border border-yellow-500 hover:border-transparent rounded-full">
         START
       </button>
     </div>
-    <div v-else class="body-detail-leader-button">
-      남은 시간:
-      <div v-if="cnt">{{count}}</div>
+    <div v-if="cnt" class="body-detail-leader-button">
+      남은 시간: {{threecount}}
     </div>
       
       <!-- 시작버튼자리 -->
@@ -238,11 +242,11 @@ import SockJS from 'sockjs-client'
 import UserVideo from './components/UserVideo.vue';
 import { OpenVidu } from 'openvidu-browser';
 import axios from 'axios'
-import { mapGetters } from 'vuex';
+import { mapGetters,mapActions } from 'vuex';
 import BodyRoomUpdateModal from '../modal/components/BodyRoomUpdateModal.vue'
 import { VideoCameraIcon, MicrophoneIcon, LogoutIcon, CogIcon, PaperAirplaneIcon } from '@heroicons/vue/outline';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
-import {reactive} from 'vue'
+
 const serverUrl = "https://i7d109.p.ssafy.io/ws/game"
 
 
@@ -267,7 +271,7 @@ export default {
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      myUserName: '영택임' + Math.floor(Math.random() * 100),
+      myUserName: ``,
       
       count : 5,
       // 게임 시작 관련
@@ -296,11 +300,16 @@ export default {
       trigger : true,
       playerLen : 0,
       isAll : false,
+      isCorrect : false,
+      answerTime : false,
+      threecount : 3,
+      point : 0
     }
   },
   
   created(){
-    this.joinSession()
+    this.joinSession(),
+    this.socketStart()
   },
 
   computed : {
@@ -308,12 +317,13 @@ export default {
   },
 //this.$route.params.token.slice(39,53)
   methods : {
+    ...mapActions(['timerStart']),
     // 오픈비두 세션에 들어가기,created에 실행
     joinSession () {
       // 세션의 id는 토큰에서 잘라서 활용 
       this.getToken()
       this.mySessionId = this.token
-      this.mySessionId
+      this.myUserName = this.profile.nickname
       this.OV = new OpenVidu();
       this.session = this.OV.initSession();
 
@@ -344,30 +354,36 @@ export default {
 
   // 방 나가기
   leaveSession () {
-      // 일단 axios로 스프링 서버의 방에서 나가기
-      console.log(this.$route.params.roomSequence)
-      axios({
-          url : `/api/word-game/rooms/${this.$route.params.roomSequence}`,
-          method : 'delete',
-          headers : this.authHeader
-      })
-      
-      .then(() =>{
-      if(this.session) {this.session.disconnect();}
+            
+            // 우리 소켓 통신 연결 해제 
+            if (this.stompClient) {this.stompClient.disconnect()}
+            this.stompClient = null;
+            // 타이머 강제 종료
+           this.$store.state.games.TimerChk = true
+           // axios로 스프링 서버의 방에서 나가기
+            axios({
+                url : `/api/word-game/rooms/${this.$route.params.roomSequence}`,
+                method : 'delete',
+                headers : this.authHeader
+            })
 
-      this.session = undefined;
-      this.mainStreamManager = undefined;
-      this.publisher = undefined;
-      this.subscribers = [];
-      this.OV = undefined;
-      window.removeEventListener('beforeunload', this.leaveSession);
-        this.$router.push({name : 'BodyMainView'})
-      })
-      // 그 후 세션에서 나가기 
-      
-      // 나가는 일련의 과정이 끝나면 MainView로 라우터 이동
-      
-  },
+            .then(() =>{
+            if(this.session) {this.session.disconnect();}
+
+
+            this.session = undefined;
+            this.mainStreamManager = undefined;
+            this.publisher = undefined;
+            this.subscribers = [];
+            this.OV = undefined;
+            window.removeEventListener('beforeunload', this.leaveSession);
+              this.$router.push({name : 'WordsMainView'})
+            })
+            // 그 후 세션에서 나가기 
+            
+            // 나가는 일련의 과정이 끝나면 MainView로 라우터 이동
+            
+        },
   
   // 화상 만들기
   createPublisher(){
@@ -389,7 +405,7 @@ export default {
         
         this.mainStreamManager = publisher;
         this.publisher = publisher;
-
+        console.log(this.mainStreamManager, '뭘받아오냐?')
         
         this.session.publish(this.publisher);
         console.log(this.publisher)
@@ -439,32 +455,6 @@ export default {
       this.countDown()
 
     },
-  countDown()  {
-      setTimeout(() => { this.count = 4 }, 1000)
-      setTimeout(() => { this.count = 3 }, 2000)
-      setTimeout(() => { this.count = 2 }, 3000)
-      setTimeout(() => { this.count = 1 }, 4000)
-      setTimeout(() => { this.count = 'START!!!!'}, 4500)
-      setTimeout(() => { this.cnt=false}, 4800)
-      this.count = 5
-    },
-  socketCreate(){
-      let socket = new SockJS(serverUrl)    
-      this.stompClient = Stomp.over(socket)
-      console.log('소켓 연결하는 중')
-      this.stompClient.connect({}, frame => {
-          console.log(frame, '연결 성공!')
-          this.stompClient.subscribe(`/topic/body-game/${this.number}`, 
-          res => {
-              console.log(res,1234)
-              const response = JSON.parse(res.body)
-              console.log(Object.keys(response)[0])
-          })
-          
-      },
-      )
-      
-  },
   threecountDown(){
     this.cnt = true
     setTimeout(() => {this.threecount = 3}, 1000)
@@ -472,10 +462,64 @@ export default {
     setTimeout(() => {this.threecount = 1}, 3000)
     setTimeout(() => {this.threecount = 'start!'}, 4000)
     setTimeout(() => { this.cnt=false }, 4500)
-    setTimeout(() => { this.timerStart(5) }, 4500)
+    setTimeout(() => { this.timerStart(15) }, 4500)
     this.threecount = 3
     setTimeout(() => { this.getProblem() }, 1500)
   },
+  // stomp 시작
+  // 필요한 거 제한 시간, 방장, 제한 문제수,난이도 (word-game의 경우 제한 시간 필요 없음)
+  // 게임 시작 -> 5초 카운트 전에 문제 받아옴 ->  
+  // 다 맞추거나 or 시간이 다 지나가면 3초 카운트 
+  socketStart(){
+      this.cnt = true
+      let socket = new SockJS(serverUrl)
+      this.stompClient = Stomp.over(socket)
+      console.log('소켓 연결하는 중')
+      console.log(this.answerList)
+      this.stompClient.connect({}, frame => {
+          console.log(frame, '연결 성공!')
+          this.stompClient.subscribe(`/topic/word-game/${this.$route.params.roomSequence}`, 
+          res => {
+              const response = JSON.parse(res.body)
+              let key = Object.keys(response) 
+              if ("gameStatus" === key[1]){
+                  this.status = true
+                  this.playerLen = response.players.length
+                  for (let i of response.players) {
+                    this.currentRank[`${i}`] = 0
+                  }
+                  console.log(this.currentRank)
+              } else if (key[0] === 'problem') {
+                  this.problem = response.problem
+              } else if (key[0] === 'roomSequence') {
+                  this.answer = response.answer
+                  this.answerList = response.correctPlayers
+                  console.log(this.answerList, '진짜 안먹?')
+                  this.answerTime = true
+                  this.point = response.point
+                  console.log(response)
+                  for (let i of this.answerList) {
+                    this.currentRank[`${i}`] += response.point
+                  }
+                  console.log(this.currentRank)
+                  this.answerList= []
+                  this.isCorrect = false
+              } else if (key[0] === 'players') {
+                  this.difficulty = response.points
+              } else if (key[0] == 'correctPlayers') {
+                this.answerList = response.correctPlayers
+                for(let i of this.answerList){
+                  if (i === this.profile.nickname){
+                    this.isCorrect = true
+                    break
+                  }
+                }
+              }
+          })
+            
+      },
+      )
+    },
   sendStart(){
     console.log('보낼거임')
     this.start = true
@@ -483,18 +527,49 @@ export default {
     const gameStatus = {
         total_question : 10
     }
-    this.stompClient.send(`/game/body-game/${this.$route.params.roomSequence}`, JSON.stringify(gameStatus), {})
+    this.stompClient.send(`/game/word-game/${this.$route.params.roomSequence}`, JSON.stringify(gameStatus), {})
     this.threecountDown()
   },
 
   getProblem(){
+    this.answerTime = false
     this.trigger = true
     this.stompClient.send(
-        `/game/body-game/room/${this.$route.params.roomSequence}/problem/${this.problemNum}`, undefined, {}
+        `/game/word-game/room/${this.$route.params.roomSequence}/problem/${this.problemNum}`, undefined, {}
     )
     this.setCorrect()
     
     },
+      
+  problemTrigger(){
+    return new Promise(resolve => 
+
+    setTimeout(() => {this.trigger = false; resolve(this.trigger)}, 15000)
+
+    )
+  },
+  async setCorrect(){
+    const result = await this.problemTrigger()
+    await this.allCorrect()
+    if (!result) {
+      // this.$store.state.games.TimerChk = true
+      this.sendCorrect()
+      // 근데 이게 먹힌다구?
+    } 
+    // if (result2) {console.log('!!')}
+  },
+  allCorrect(){
+    let interval = setInterval(() => {
+      if (this.answerList.length == this.playerLen){
+        this.$store.state.games.TimerChk = true
+        this.sendCorrect()
+        clearInterval(interval)
+      }
+      console.log(this.answerList, '첫문제되냐')
+    }, 1000)
+  },
+ 
+
   sendAnswer(){
     const foranswer = {
         player : this.profile.nickname,
@@ -503,11 +578,14 @@ export default {
     }
     const submit = JSON.stringify(foranswer)
     this.stompClient.send(
-        `/game/body-game/submit/${this.$route.params.roomSequence}`, submit, {}
-    )},
+        `/game/word-game/check/${this.$route.params.roomSequence}`, submit, {}
+    )
+    this.temp = ''
+    },
+
   sendCorrect(){
         const questionNum = {question_num : this.problemNum} 
-        this.stompClient.send(`/game/body-game/answer/${this.$route.params.roomSequence}`,
+        this.stompClient.send(`/game/word-game/answer/${this.$route.params.roomSequence}`,
         JSON.stringify(questionNum), {}
         )
         this.problemNum++
@@ -522,7 +600,7 @@ export default {
 
   sendResult(){
     this.stompClient.send(
-        `/game/body-game/result/${this.$route.params.roomSequence}`,
+        `/game/word-game/result/${this.$route.params.roomSequence}`,
         undefined,
         {}
       )

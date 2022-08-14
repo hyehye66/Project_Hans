@@ -40,7 +40,7 @@ export default {
             method : 'post',
             headers : this.authHeader})
         .then(res => {console.log(res),
-        this.$router.push({ name: 'ChatDetailView', params: { mode : this.mode, sessionName : this.room.title, token : res.data.data.token,roomSequence : this.room.roomSequence}})})
+        this.$router.push({ name: 'ChatDetailView', params: { mode : this.mode, sessionName : this.room.title, token : res.data.data.token,roomSequence : this.room.roomSequence,restrict_num : res.data.data.restrictNum}})})
         .catch(err => console.log(err,123 ))
         }
       else{

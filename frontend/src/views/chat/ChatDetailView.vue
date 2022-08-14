@@ -9,13 +9,14 @@
                 <ChatDetailRTCItem :stream-manager="mainStreamManager"/>
             </div>
             <div id="video-container" class="col-md-6">
-                <ChatDetailRTCItem :stream-manager="publisher" @click="updateMainVideoStreamManager()"/>
-                <ChatDetailRTCItem v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager()"/>
+
+                <ChatDetailRTCItem :stream-manager="publisher" @click="updateMainVideoStreamManager"/>
+                <ChatDetailRTCItem v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager"/>
+
                 <input v-model="myChat" type="text" @keyup.enter="startChatting"/>
             </div>
             <ul v-for="idx in chattingList" :key="idx">
                 <li>{{idx}}</li>
-  
             </ul>
     </div>
 </div>

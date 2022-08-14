@@ -32,7 +32,7 @@ export default {
         headers : this.authHeader
         }
       )
-      .then(res => {this.situationSentence = res.data.situations, console.log(res.data)})
+      .then(res => {this.situationSentence = res.data.data.situations, console.log(this.situationSentence)})
       .catch(err => console.log(err))
 
     }

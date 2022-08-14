@@ -1,7 +1,7 @@
 <template>
   <div class="chat-card-list py-3  grid grid-cols-3 gap-6">
     <div v-for="room in rooms"  :key="room.roomSequence">
-      <ChatMainCardListItem v-if="room.mode.modeSequence===1" :mode="room.mode.modeName" :room="room" />  
+      <ChatMainCardListItem v-if="room.mode.modeSequence===1" :mode="room.mode.modeName" :room="room" :max_user="room.restrictNum" :current_user="room.currentNum"/>  
     </div>
   </div>
   <div>
@@ -43,7 +43,7 @@ export default {
           }
           
         )
-            .then(res =>{this.rooms = res.data.data.listRooms.content})
+            .then(res =>{this.rooms = res.data.data.listRooms.content,console.log(this.rooms)})
             .catch(err => {
             console.log(err.status)
             console.log(err,'error here')})
