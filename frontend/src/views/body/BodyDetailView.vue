@@ -1,127 +1,239 @@
 <template>
-
-    <div id="session">
-        <div id="session-header">
-            <div class="back-title">
-                <svg class="w-6 h-6" id="buttonLeaveSession" @click="leaveSession" value="Leave session" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z">
-                    </path>
-                </svg>
-            </div>
-            <h1 id="session-title">{{ this.$route.params.sessionName }}</h1>
-            <div class="total-time">
-        <!--  h-30 w-40 p-2 border-2 border-gray-400 bg-gray-200 -->
-            <div class="h-full w-full bg-gray-400">
-                    <h1>총 진행시간</h1>
-                </div>
-            </div>
-        </div>
-        <div id="session-header2" style="width: 100%;">
-            <!-- 방안사람들 -->
-            <div id="video-container" class="col-lg12">
-                <BodyDetailRTCItem :stream-manager="publisher" @click.enter="updateMainVideoStreamManager(publisher)"/>
-                <BodyDetailRTCItem v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
-            </div>
-        </div>
-        <div id="session-body-left" class="col-md-6">
-            <!-- 메인화면 -->
-            <div id="main-video">
-                <BodyDetailRTCItem :stream-manager="mainStreamManager"/>
-            </div>
-            <!-- 캠,마이크,나가기,설정 -->
-            <div class="cam-buttons">
-                <!-- style="height: 100%" -->
-                <div class="icon-area" @click='muteVideo'>
-                    <VideoCameraIcon style="height: 40; width: 40;" />
-                </div>
-                <div class="icon-area" @click='muteAudio'>
-                    <!-- <MicrophoneIcon style="height: 40; width: 40;"/>							 -->
-                    <div v-if='!publisher.stream.audioActive'>
-                        <h1>음소거제거</h1>
-                        <!-- <img src="@/assets/microphone1.png" alt="mic"> -->
-                    </div>
-                    <div v-else>
-                        <h1>음소거</h1>
-                        <!-- <img src="@/assets/microphone2.png" alt="mic"> -->
-                    </div>
-                </div>
-                <div class="icon-area" @click="leaveSession">
-                    <LogoutIcon style="height: 40; width: 40;"/>
-                </div>
-                <!-- 설정모달창 띄우는 방법 생각하기 -->
-                <div class="icon-area" @click="isOpen">
-                    <CogIcon style="height: 40; width: 40;"/>
-                </div>
-            </div>
-        </div>
-
-        <div id="session-body-right" class="col-md-5">
-            <!-- 랭크 -->
-            <h1>랭크</h1>
-            <div class="rank col-md-12">
-            <!--  shadow-md py-60 px-50 -->						
-                <ul>
-                    <li>김민철 1</li>
-                    <li>김지현 2</li>
-                    <li>김지현 2</li>
-                    <li>김지현 2</li>
-                    <li>김지현 2</li>
-                    <li>김지현 2</li>
-                </ul>
-            </div>
-            <!-- <br> -->
-            <!-- 현재 문제 남은 시간 타이머 -->
-            <div class="problem-timer" style="width: 30%">남은 시간: 
-            <div v-if="cnt">{{count}}</div></div>
-            <!-- style="width: 40; height: 40;" -->
-            <!-- 임시시작버튼 -->
-            <div v-if="!start" class="leader-button">
-                <button @click="gameStart" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
-                    START
-                </button>
-            </div>
-            
-            <!-- 시작버튼자리 -->
-            <!-- <div v-if="!start && !ready">
-                <div class="start-box"> -->
-                    <!-- 방장만 스타트 버튼 보이기 -->
-                    <!-- <div v-if='myUserNick === roominfo.ownerNicknames'>
-                        <button @click="gameStart"
-                        class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
-                            START
-                        </button>
-                    </div> -->
-                    <!-- 방장 아닌 사람은 준비중 -->
-                    <!-- <div v-else>
-                            <p>준비중</p>
-                    </div>
-                </div>
-            </div> -->
-
-                <div class="answer-send">
-                    <input type="text" name="" id="answer-sheet" v-model="answerSheet" size="30"
-                    placeholder="답을 입력해주세요." @keyup.enter="checkAnswer" />
-                    <PaperAirplaneIcon style="height: 35; width: 35;" @click="checkAnswer" />					
-                </div>
-                <!-- 정오답 알림 메시지 -->
-                <div class="check-answer">
-                    <input type="text" v-model="answerAlert" size="30" />
-                </div>
-
-        </div>
+<div class="body-detail-bg-img">
+<div id="session">
+  <div id="body-detail-session-header">
+    <div class="body-detail-back-title">
+      <!-- 뒤로가기 -->
+      <!-- <div class="back-icon"> -->
+        <svg id="body-detail-buttonLeaveSession" @click="leaveSession" value="Leave session" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z">
+          </path>
+        </svg>
+      <!-- </div> -->
+      <!-- 방제목 -->
+      <div class="body-detail-session-title">
+        <h1>{{ this.$route.params.sessionName }}</h1>
+      </div>      
     </div>
-		
+    
+
+    <div class="body-detail-total-time">
+    <!--  h-30 w-40 p-2 border-2 border-gray-400 bg-gray-200 -->
+      <!-- <div class="h-full w-full bg-gray-400"> -->
+        <h1>총 진행시간</h1>
+      <!-- </div> -->
+    </div>
+  </div>
+
+  <div id="body-detail-session-header2" style="width: 100%;">
+    <!-- 방안사람들 -->
+    <div id="body-detail-video-container" class="col-lg-12">
+      <user-video :stream-manager="publisher" @click.enter="updateMainVideoStreamManager(publisher)"/>
+      <user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
+      <!-- <div class="my-screen">
+        <BodyDetailRTCItem :stream-manager="publisher" @click.enter="updateMainVideoStreamManager(publisher)"/>
+      </div>
+      <div class="others-screen">
+        <BodyDetailRTCItem v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
+      </div> -->
+    </div>
+  </div>
+
+  <div id="body-detail-session-body-left" class="col-md-5">
+    <!-- 메인화면 -->
+    <div id="body-detail-main-video">
+    <!-- col-md-8 -->
+      <user-video :stream-manager="mainStreamManager"/>
+    </div>
+    <!-- 캠,마이크,나가기,설정 -->
+    <div class="cam-buttons">
+    <!-- style="height: 100%" -->
+       <!-- 캠 -->
+      <span class="body-detail-icon-area" @click='muteVideo'>
+        <!-- <VideoCameraIcon style="height: 50%; width: 50%;" /> -->
+        <div v-if='publisher.stream.videoActive'>
+          <svg xmlns="http://www.w3.org/2000/svg" style="height: 50%; width: 50%;" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+          </svg>
+        </div>
+        <div v-else>
+          <svg xmlns="http://www.w3.org/2000/svg" style="height: 50%; width: 50%;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>          
+        </div>
+
+        
 
 
-	<BodyRoomUpdateModal v-model:open="open" />
-  
+
+      </span>
+      <!-- 마이크 -->
+      <span class="body-detail-icon-area" @click='muteAudio'>
+        <!-- <MicrophoneIcon style="height: 40; width: 40;"/>							 -->
+        <div v-if='!publisher.stream.audioActive'>
+          <!-- <h1>음소거제거</h1> -->
+          <svg xmlns="http://www.w3.org/2000/svg" style="height: 50%; width: 50%;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+          </svg>                
+        </div>
+        <div v-else>
+          <!-- <h1>음소거</h1> -->
+          <svg xmlns="http://www.w3.org/2000/svg" style="height: 50%; width: 50%;" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd" />
+          </svg>           
+          <!-- <img src="@/assets/microphone2.png" alt="mic"> -->
+        </div>
+      </span>
+      <!-- 나가기 -->
+      <span class="body-detail-icon-area" @click="leaveSession">
+          <LogoutIcon style="height: 50%; width: 50%;"/>
+      </span>
+      <!-- 설정 -->
+      <span class="body-detail-icon-area" @click="isOpen">
+          <CogIcon style="height: 50%; width: 50%;"/>
+      </span>
+    </div>
+
+    <!-- 정답 적는 란 -->
+    <div class="body-detail-answer-send">
+      <input type="text" name="" id="body-detail-answer-sheet" v-model="answerSheet" size="30"
+      placeholder="답을 입력해주세요." @keyup.enter="checkAnswer" />
+      <PaperAirplaneIcon style="height: 35; width: 35;" @click="checkAnswer" />					
+    </div>
+    <!-- 정오답 알림 메시지 -->
+    <div class="body-detail-check-answer">
+        <input type="text" v-model="answerAlert" size="30" style="border: none; background: transparent;" />
+    </div>
+
+  </div>
+
+  <div id="body-detail-session-body-right" class="col-md-5">
+    <!-- 랭크 -->
+    <div class="body-detail-rank col-md-12">
+    <!--  shadow-md py-60 px-50 -->						
+      <!-- <ul>
+        <li>김민철 1</li>
+        <li>김지현 2</li>
+        <li>김지현 2</li>
+        <li>김지현 2</li>
+        <li>김지현 2</li>
+        <li>김지현 2</li>
+      </ul> -->
+
+      <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+          <h1>실시간 순위</h1>
+          <!-- head -->
+          <thead>
+            <tr>
+              <th></th>
+              <th>Name</th>
+              <th>Job</th>
+              <th>Favorite Color</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- row 1 -->
+            <tr class="hover">
+              <th>1</th>
+              <td>Cy Ganderton</td>
+              <td>Quality Control Specialist</td>
+              <td>Blue</td>
+            </tr>
+            <!-- row 2 -->
+            <tr class="hover">
+              <th>2</th>
+              <td>Hart Hagerty</td>
+              <td>Desktop Support Technician</td>
+              <td>Purple</td>
+            </tr>
+            <!-- row 3 -->
+            <tr class="hover">
+              <th>3</th>
+              <td>Brice Swyre</td>
+              <td>Tax Accountant</td>
+              <td>Red</td>
+            </tr>
+            <!-- row 4 -->
+            <tr class="hover">
+              <th>4</th>
+              <td>Brice Swyre</td>
+              <td>Tax Accountant</td>
+              <td>Red</td>
+            </tr>
+            <!-- row 5 -->
+            <tr class="hover">
+              <th>5</th>
+              <td>Brice Swyre</td>
+              <td>Tax Accountant</td>
+              <td>Red</td>
+            </tr>
+            <!-- row 6 -->
+            <tr class="hover">
+              <th>6</th>
+              <td>Brice Swyre</td>
+              <td>Tax Accountant</td>
+              <td>Red</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+
+    </div>
+    <!-- <br> -->
+
+    <!-- 현재 문제 남은 시간 타이머 -->
+    <!-- <div class="body-detail-problem-timer" > -->
+    <!-- style="width: 30%" -->
+    <!-- style="width: 40; height: 40;" -->
+      <!-- 남은 시간:awegfads
+      <div v-if="cnt">{{count}}</div>
+    </div> -->
+    
+    <!-- 시작버튼 & 현재 문제 남은 시간 타이머 -->
+    <div v-if="!start" class="body-detail-leader-button">
+      <button @click="gameStart" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
+        START
+      </button>
+    </div>
+    <div v-else class="body-detail-leader-button">
+      남은 시간:
+      <div v-if="cnt">{{count}}</div>
+    </div>
+      
+      <!-- 시작버튼자리 -->
+      <!-- <div v-if="!start && !ready">
+          <div class="start-box"> -->
+              <!-- 방장만 스타트 버튼 보이기 -->
+              <!-- <div v-if='myUserNick === roominfo.ownerNicknames'>
+                  <button @click="gameStart"
+                  class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
+                      START
+                  </button>
+              </div> -->
+              <!-- 방장 아닌 사람은 준비중 -->
+              <!-- <div v-else>
+                      <p>준비중</p>
+              </div>
+          </div>
+      </div> -->
+    
+    
+  </div>
+</div>
+</div>
+
+<BodyRoomUpdateModal v-model:open="open" />  
 
 </template>
 
 <script>
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
-import BodyDetailRTCItem from './components/BodyDetailRTCItem.vue';
+// import BodyDetailRTCItem from './components/BodyDetailRTCItem.vue';
+import UserVideo from './components/UserVideo.vue';
 import { OpenVidu } from 'openvidu-browser';
 import axios from 'axios'
 import { mapGetters } from 'vuex';
@@ -129,43 +241,59 @@ import BodyRoomUpdateModal from '../modal/components/BodyRoomUpdateModal.vue'
 import { VideoCameraIcon, MicrophoneIcon, LogoutIcon, CogIcon, PaperAirplaneIcon } from '@heroicons/vue/outline';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 import {reactive} from 'vue'
+const serverUrl = "https://i7d109.p.ssafy.io/ws/game"
 
 
 export default {
   name : 'BodyDetailView',
   components : {
-    BodyDetailRTCItem,
+    // BodyDetailRTCItem,
+    UserVideo,
     BodyRoomUpdateModal,
 
-    VideoCameraIcon,
-    //MicrophoneIcon,
+    // VideoCameraIcon,
+    // MicrophoneIcon,
     LogoutIcon,
     CogIcon,
     PaperAirplaneIcon,
   },
   data () {
     return {
-        mySessionId: '',
-        OV: undefined,
-        session: undefined,
-        mainStreamManager: undefined,
-        publisher: undefined,
-        subscribers: [],
-        myUserName: '영택임' + Math.floor(Math.random() * 100),
-        
-        count : 5,
-        // 게임 시작 관련
-        start: false, // 게임시작유무
-        cnt : false, // 카운트시작유무
-        ready: false,
+      mySessionId: '',
+      OV: undefined,
+      session: undefined,
+      mainStreamManager: undefined,
+      publisher: undefined,
+      subscribers: [],
+      myUserName: '영택임' + Math.floor(Math.random() * 100),
+      
+      count : 5,
+      // 게임 시작 관련
+      start: false, // 게임시작유무
+      cnt : false, // 카운트시작유무
+      ready: false,
 
-        // 답입력값
-        answerSheet: '',
-        answerAlert: '',
-        gameStatus: 0,
-        round: 0,
-        
-        open : false,
+      // 답입력값
+      answerSheet: '',
+      answerAlert: '',
+      gameStatus: 0,
+      round: 0,
+      
+      open : false,
+
+      problem : '',
+      answer : '',
+      difficulty : '',
+      answerList : [],
+      isConnect : false,
+      stompClient : {},
+      status : null,
+      problemNum : 1,
+      temp : '',
+      currentRank : {},
+      trigger : true,
+      playerLen : 0,
+      isAll : false,
     }
   },
   
@@ -174,143 +302,141 @@ export default {
   },
 
   computed : {
-    ...mapGetters(['authHeader'])
+    ...mapGetters(['authHeader','profile'])
   },
 //this.$route.params.token.slice(39,53)
   methods : {
     // 오픈비두 세션에 들어가기,created에 실행
     joinSession () {
-            // 세션의 id는 토큰에서 잘라서 활용 
-            this.getToken()
-            this.mySessionId = this.token
-            this.mySessionId
-            this.OV = new OpenVidu();
-            this.session = this.OV.initSession();
+      // 세션의 id는 토큰에서 잘라서 활용 
+      this.getToken()
+      this.mySessionId = this.token
+      this.mySessionId
+      this.OV = new OpenVidu();
+      this.session = this.OV.initSession();
 
-            this.session.on('streamCreated', ({ stream }) => {
-                const subscriber = this.session.subscribe(stream);
-                this.subscribers.push(subscriber);
-            });
-
-
-            this.session.on('streamDestroyed', ({ stream }) => {
-                const index = this.subscribers.indexOf(stream.streamManager, 0);
-                if (index >= 0) {
-                    this.subscribers.splice(index, 1);
-                }
-            });
+      this.session.on('streamCreated', ({ stream }) => {
+          const subscriber = this.session.subscribe(stream);
+          this.subscribers.push(subscriber);
+      });
 
 
-            this.session.on('exception', ({ exception }) => {
-                console.warn(exception);
-            });
+      this.session.on('streamDestroyed', ({ stream }) => {
+          const index = this.subscribers.indexOf(stream.streamManager, 0);
+          if (index >= 0) {
+              this.subscribers.splice(index, 1);
+          }
+      });
 
-            // 화상 연결 만들기
-            this.createPublisher()
-            
 
-            window.addEventListener('beforeunload', this.leaveSession)
-        },
+      this.session.on('exception', ({ exception }) => {
+          console.warn(exception);
+      });
 
-        // 방 나가기
-        leaveSession () {
-            // 일단 axios로 스프링 서버의 방에서 나가기
-            console.log(this.$route.params.roomSequence)
-            axios({
-                url : `/api/word-game/rooms/${this.$route.params.roomSequence}`,
-                method : 'delete',
-                headers : this.authHeader
-            })
-            
-            .then(() =>{
-            if(this.session) {this.session.disconnect();}
+      // 화상 연결 만들기
+      this.createPublisher()
+      
 
-            this.session = undefined;
-            this.mainStreamManager = undefined;
-            this.publisher = undefined;
-            this.subscribers = [];
-            this.OV = undefined;
-            window.removeEventListener('beforeunload', this.leaveSession);
-              this.$router.push({name : 'BodyMainView'})
-            })
-            // 그 후 세션에서 나가기 
-            
-            // 나가는 일련의 과정이 끝나면 MainView로 라우터 이동
-            
-        },
+      window.addEventListener('beforeunload', this.leaveSession)
+  },
+
+  // 방 나가기
+  leaveSession () {
+      // 일단 axios로 스프링 서버의 방에서 나가기
+      console.log(this.$route.params.roomSequence)
+      axios({
+          url : `/api/word-game/rooms/${this.$route.params.roomSequence}`,
+          method : 'delete',
+          headers : this.authHeader
+      })
+      
+      .then(() =>{
+      if(this.session) {this.session.disconnect();}
+
+      this.session = undefined;
+      this.mainStreamManager = undefined;
+      this.publisher = undefined;
+      this.subscribers = [];
+      this.OV = undefined;
+      window.removeEventListener('beforeunload', this.leaveSession);
+        this.$router.push({name : 'BodyMainView'})
+      })
+      // 그 후 세션에서 나가기 
+      
+      // 나가는 일련의 과정이 끝나면 MainView로 라우터 이동
+      
+  },
+  
+  // 화상 만들기
+  createPublisher(){
+      console.log(this.getToken())
+      console.log(this.token)
+      this.session.connect(this.token,{ clientData: this.myUserName })
+      .then(() => {
+        // 미디어 스트림 가져오기        
+        let publisher = this.OV.initPublisher(undefined, {
+            audioSource: undefined, // The source of audio. If undefined default microphone
+            videoSource: undefined, // The source of video. If undefined default webcam
+            publishAudio: true,      // Whether you want to start publishing with your audio unmuted or not
+            publishVideo: true,      // Whether you want to start publishing with your video enabled or not
+            resolution: '640x480',  // The resolution of your video
+            frameRate: 30,            // The frame rate of your video
+            insertMode: 'APPEND',    // How the video is inserted in the target element 'video-container'
+            mirror: false           // Whether to mirror your local video or not
+        });
         
-        // 화상 만들기
-        createPublisher(){
-            console.log(this.getToken())
-			console.log(this.token)
-            this.session.connect(this.token,{ clientData: this.myUserName })
-            .then(() => {
+        this.mainStreamManager = publisher;
+        this.publisher = publisher;
 
-                        // 미디어 스트림 가져오기 
-                        
-                        let publisher = this.OV.initPublisher(undefined, {
-                            audioSource: undefined, // The source of audio. If undefined default microphone
-                            videoSource: undefined, // The source of video. If undefined default webcam
-                            publishAudio: true,      // Whether you want to start publishing with your audio unmuted or not
-                            publishVideo: true,      // Whether you want to start publishing with your video enabled or not
-                            resolution: '640x480',  // The resolution of your video
-                            frameRate: 30,            // The frame rate of your video
-                            insertMode: 'APPEND',    // How the video is inserted in the target element 'video-container'
-                            mirror: false           // Whether to mirror your local video or not
-                        });
-                        
-                        this.mainStreamManager = publisher;
-                        this.publisher = publisher;
-
-                        
-                        this.session.publish(this.publisher);
-                        console.log(this.publisher)
-                    })
-                    .catch(error => {
-                        console.log('There was an error connecting to the session:', error.code, error.message);
-                    })
+        
+        this.session.publish(this.publisher);
+        console.log(this.publisher)
+    })
+    .catch(error => {
+        console.log('There was an error connecting to the session:', error.code, error.message);
+    })
 
 
-        },
+  },
 
-        updateMainVideoStreamManager (stream) {
-            if (this.mainStreamManager === stream) return;
-            this.mainStreamManager = stream;
-        },
+  updateMainVideoStreamManager (stream) {
+      if (this.mainStreamManager === stream) return;
+      this.mainStreamManager = stream;
+  },
 
-    getToken() {
-        if (this.$route.params.token) {
-            this. token = this.$route.params.token
-            return this.token
-        } else {
-            return this.token
-        }
-    },
-    // 버튼에 해당하는 메서드
-	muteVideo() {
+  getToken() {
+      if (this.$route.params.token) {
+          this. token = this.$route.params.token
+          return this.token
+      } else {
+          return this.token
+      }
+  },
+  // 버튼에 해당하는 메서드
+  muteVideo() {
       if (this.publisher.stream.videoActive) {
         this.publisher.publishVideo(false)
       }else {
         this.publisher.publishVideo(true)
       }
     },
-	muteAudio() {
+  muteAudio() {
       if (this.publisher.stream.audioActive) {
         this.publisher.publishAudio(false)
       }else {
         this.publisher.publishAudio(true)
       }
     },    
-	isOpen (){
+  isOpen (){
       return this.open = !this.open
     },
 
-	gameStart() {
+  gameStart() {
       this.start = true
       this.cnt = true
       this.countDown()
 
-		},
+    },
   countDown()  {
       setTimeout(() => { this.count = 4 }, 1000)
       setTimeout(() => { this.count = 3 }, 2000)
@@ -320,79 +446,224 @@ export default {
       setTimeout(() => { this.cnt=false}, 4800)
       this.count = 5
     },
+  socketCreate(){
+      let socket = new SockJS(serverUrl)    
+      this.stompClient = Stomp.over(socket)
+      console.log('소켓 연결하는 중')
+      this.stompClient.connect({}, frame => {
+          console.log(frame, '연결 성공!')
+          this.stompClient.subscribe(`/topic/body-game/${this.number}`, 
+          res => {
+              console.log(res,1234)
+              const response = JSON.parse(res.body)
+              console.log(Object.keys(response)[0])
+          })
+          
+      },
+      )
+      
+  },
+  threecountDown(){
+    this.cnt = true
+    setTimeout(() => {this.threecount = 3}, 1000)
+    setTimeout(() => {this.threecount = 2}, 2000)
+    setTimeout(() => {this.threecount = 1}, 3000)
+    setTimeout(() => {this.threecount = 'start!'}, 4000)
+    setTimeout(() => { this.cnt=false }, 4500)
+    setTimeout(() => { this.timerStart(5) }, 4500)
+    this.threecount = 3
+    setTimeout(() => { this.getProblem() }, 1500)
+  },
+  sendStart(){
+    console.log('보낼거임')
+    this.start = true
+    this.cnt = true
+    const gameStatus = {
+        total_question : 10
+    }
+    this.stompClient.send(`/game/body-game/${this.$route.params.roomSequence}`, JSON.stringify(gameStatus), {})
+    this.threecountDown()
+  },
+
+  getProblem(){
+    this.trigger = true
+    this.stompClient.send(
+        `/game/body-game/room/${this.$route.params.roomSequence}/problem/${this.problemNum}`, undefined, {}
+    )
+    this.setCorrect()
+    
+    },
+  sendAnswer(){
+    const foranswer = {
+        player : this.profile.nickname,
+        submit : this.temp,
+        problem_num : this.problemNum
+    }
+    const submit = JSON.stringify(foranswer)
+    this.stompClient.send(
+        `/game/body-game/submit/${this.$route.params.roomSequence}`, submit, {}
+    )},
+  sendCorrect(){
+        const questionNum = {question_num : this.problemNum} 
+        this.stompClient.send(`/game/body-game/answer/${this.$route.params.roomSequence}`,
+        JSON.stringify(questionNum), {}
+        )
+        this.problemNum++
+        console.log(this.problemNum, '몇개 불러오는거임?')
+        if (this.problemNum <= 10){
+          console.log('결과까지!')
+          setTimeout(() => {this.threecountDown()}, 3000)
+        } else if (this.problemNum > 10) {
+          this.sendResult()
+        }
+    },
+
+  sendResult(){
+    this.stompClient.send(
+        `/game/body-game/result/${this.$route.params.roomSequence}`,
+        undefined,
+        {}
+      )
+  },     
 
  
   }} 
 
 </script>
 
-<style scoped>
+
+
+<style>
 svg {
-  cursor: pointer;	
+  cursor: pointer;
+  /* width: 40;
+  height: 40;  */
 }
 
-#main-container {
-	margin: auto;
+.body-detail-bg-img {
+  margin: auto;
+  background-image: url("@/assets/bubble1.png");
+  background-size: cover;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  background-color: transparent;
+  /* background: transparent; */
+
 }
 
 #join + #session {
-	justify-content: center;
-	width: 100%;
+  /* margin: auto; */
+  /* width: 90%; */
 
+  justify-content: center;
+  align-items: center;
+  /* width: 100%; */
 
+  /* background-image: url("@/assets/bubble1.png");
+  background-size: cover;
+  width: 100vw;
+  height: 100vh;
+  position: absolute; */
+
+  /* background-color: transparent; */
 }
 
-#session-header {
-	width: 100%;
-	display: flex;
+#body-detail-session-header {
+  margin: auto;
+  padding: 0.3%;
+  width: 96%;
+  height: 10%;
+  display: flex;
   flex-flow: row wrap;
-	justify-content: space-between;
+  justify-content: space-between;
   align-self: center;
 
+  background-color: transparent;
+
 }
 
-.icon-area {
+.body-detail-back-title {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-self: center;
+
+  background-color: transparent;
+}
+
+.body-detail-back-icon {
+  /* width: 40%; */
+}
+
+.body-detail-icon-area {
   border: none;
   display: inline-block;
-	width: 40;
-	height: 40;
+  width: 20%;
+  height: 20%;
+
+  background-color: transparent;
 }
 
-/* svg {
-	width: 6;
-	height: 6;
-} */
-
-#buttonLeaveSession {
-  width: 30px;
-  height: 30px;
+#body-detail-buttonLeaveSession {
+  width: 10%;
+  /* height: 15%; */
   display: block;
 }
 
-#session-header2 {
-	display: flex;
-	/* flex-direction: row;
-	flex-wrap: wrap; */
-	flex-flow: row wrap;
-	justify-content: space-between;
-	/* justify-content: center; */
-	align-self: center;
-	/* right: 0%; */
-	/* margin: 0 2.2vw;
+.body-detail-session-title {
+  padding-left: 2%;
+  font-size: 1rem;
+  display: flex;
+  align-self: center;
+  text-align: center;
+
+  justify-content : center;
+	align-items : center;
+
+}
+
+.body-detail-total-time {
+  /* padding-right: 6%; */
+  font-size: 1rem;
+  display: flex;
+  align-self: center;
+  text-align: center;
+  
+  justify-content : center;
+	align-items : center;
+
+}
+
+#body-detail-session-header2 {
+  display: flex;
+  /* flex-direction: row;
+  flex-wrap: wrap; */
+  flex-flow: row wrap;
+  justify-content: space-between;
+  /* justify-content: center; */
+  align-self: center;
+  align-items : center;
+
+  background-color: transparent;
+
+  /* right: 0%; */
+  /* margin: 0 2.2vw;
   padding: 2vh; */
 }
 
-#video-container {
+#body-detail-video-container {
+  background-color: transparent;
   /* display: flex;
   flex-direction: row;
-	float: left;
+    float: left;
   align-self: center; */
 
   /* justify-content: center; */
-	/* right: 0%; */
+    /* right: 0%; */
 }
 
-#video-container video {
+#body-detail-video-container video {
    /* position: relative; */
    float: left;
    width: 16%;
@@ -405,9 +676,11 @@ svg {
    display: flex;
    align-items: center;
    justify-content: space-around;
+
+   background-color: transparent;
 }
 
-#video-container video + div {
+#body-detail-video-container video + div {
   
   text-align: center;
   /* line-height: 75px; */
@@ -417,9 +690,11 @@ svg {
    margin-left:-28.5%;
    /* display: flex; */
    /* justify-content: space-around; */
+
+   background-color: transparent;
 }
 
-#video-container p {
+#body-detail-video-container p {
   font-family:'IM_Hyemin-Bold';
   display: inline-block;
   background: #f8f8f8;
@@ -428,21 +703,23 @@ svg {
   color: #3c90c9;
   font-weight: bold;
   border-radius: 8px;
-	/* text-align: right; */
+    /* text-align: right; */
 }
 
-video {
-   
-   padding-top: 1vh;
-   /* 맨 아래에 나오는 카메라화면 */
-   /* width: ; */
-    width: 100%;
-   /* height: 48vh; */
-   height: auto;
-   position: relative;
+video {   
+  /* padding-top: 1vh; */
+  /* 맨 아래에 나오는 카메라화면 */
+  /* width: ; */
+  width: 100%;
+  /* height: 48vh; */
+  height: auto;
+  position: relative;
+
+  justify-content: center;
+  align-items: center;
 }
 
-#main-video p {
+#body-detail-main-video p {
   /* position: absolute; */
   display: inline-block;
   background: #f8f8f8;
@@ -455,113 +732,144 @@ video {
 }
 
 user-video {
-	/* margin-left: 20px; */
-	/* width: 200;
-	height: 180; */
+    /* margin-left: 20px; */
+    /* width: 200;
+    height: 180; */
 
 }
 
-#main-video {
-	/* justify-content: center; */
+#body-detail-main-video {
+  width: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: transparent;
 
 }
-
-
-/* VideoCameraIcon {
-	width: 6;
-	height: 6;
-} */
-/* MicrophoneIcon
-LogoutIcon
-CogIcon
-PaperAirplaneIcon */
 
 /* .left-right {
-	flex-flow: row wrap;
-	justify-content: space-around;
+    flex-flow: row wrap;
+    justify-content: space-around;
 } */
 
-#session-body-left {
-	display: flex;
-	flex-direction: column;
-	float: left;
-	justify-content: center;
-	align-self: center;
-	
+#body-detail-session-body-left {
+  /* margin-left */
+  padding-left: 3%;  
+  padding-right: 3%;  
+  padding-top: 1%;  
+  display: flex;
+  flex-direction: column;
+  float: left;
+  justify-content: center;
+  align-self: center;
+  align-items: center;
+  
+  background-color: transparent;
 }
 
 .cam-buttons {
-	width: 60%;
-	margin: 0 auto;
+    width: 60%;
+    margin: 0 auto;
+    margin-top: 2%;
 
-	display: flex;
-	/* flex-direction: row; */
-	flex-flow: row wrap;
-	justify-content: space-evenly;
-	align-self: center;
-	/* justify-content: center; */
-	text-align: center;
-	/* width: 400;
-	height: 40; */
-	vertical-align: middle;
-	
+    display: flex;
+    /* flex-direction: row; */
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    align-self: center;
+    /* justify-content: center; */
+    text-align: center;
+    /* width: 400;
+    height: 40; */
+    vertical-align: middle;
+    
 }
 
 img {
-  width : 4vw;
-  height : 6.7vh;
+  /* width : 4vw;
+  height : 6.7vh; */
+}
+
+.body-detail-answer-send {
+  padding-top: 2%;
+  display: flex;
+  flex-direction: row;
+  /* align-self: center; */
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+    
+}
+
+#body-detail-answer-sheet {
+    /* border: 1; */
+    border: 1px dotted black;
+    font-size: 2rem;
+    width: 90%;
+}
+
+.body-detail-check-answer {
+    /* border: 1; */
+    /* border: 1px dotted black; */
+    /* text-align: center; */
+    justify-content: center;
+    /* margin: auto; */
+    align-self: center;
+    font-size: 2rem;
+    color: red;
+    font-style: italic;
+
+    /* background-color: transparent;
+    border: none;
+    background: transparent; */
+
 }
 
 
-#session-body-right {
-	display: flex;
-	flex-direction: column;
-	float: right;
-	/* padding-top: 5px; */
-	margin-top: 10px;
-	justify-content: center;
-	align-self: center;	
+
+#body-detail-session-body-right {
+  margin-right: 3%;
+  padding-top: 1%;
+  padding-right: 5%;
+  display: flex;
+  flex-direction: column;
+  float: right;
+  /* padding-top: 5px; */
+  margin-top: 10px;
+  justify-content: center;
+  align-self: center;    
+
+  background-color: transparent;
 }
 
-.rank {
-	border: thick double #32a1ce;
-	padding-left: 5px;
-  padding-right: 5px;
-	/* width: 20rem; */
-	height: auto;
-	/* text-align: center; */
-	justify-content: center;
-	/* margin: auto; */
-	font-size: 25px;
+.body-detail-rank {
+  border: thick double #32a1ce;
+  /* padding-left: 1%; */
+  padding-right: 3%;
+  /* width: 20rem; */
+  height: auto;
+  /* text-align: center; */
+  justify-content: center;
+  /* margin: auto; */
+  font-size: 1rem;
 }
 
-.problem-timer {
-	align-self: center;
-	/* float: right; */
-	text-align: center;
-	margin-top: 5%;
-	margin-bottom: 3%;
-	/* width: 50 !important;
-	height: 50 !important; */
-	/* border: 1px dotted black;
-	border-radius: 100% 100% 100% 100%; */
-	font-size: 30px;
-	
+
+
+.body-detail-leader-button {
+    font-size: 2rem;
+    text-align: center;
+    /* justify-content: center; */
+    margin-top: 3%;
+    margin-bottom: 3%;
 }
 
-.leader-button {
-	font-size: 40px;
-	text-align: center;
-	/* justify-content: center; */
-	margin-top: 3%;
-	margin-bottom: 3%;
+.body-detail-leader-button button {
+    width: 30%;
 }
 
-.leader-button button {
-	width: 30%;
-}
-
-.start-box {
+.body-detail-start-box {
    position: relative;
    width: 33vw;
    height: 48vh;
@@ -575,31 +883,17 @@ img {
    align-items: center;
 }
 
-.answer-send {
-	display: flex;
-	flex-direction: row;
-	/* align-self: center; */
-	justify-content: center;
-	margin: auto;
-	
+.body-detail-problem-timer {
+  align-self: center;
+  /* float: right; */
+  text-align: center;
+  /* margin-top: 5%;
+  margin-bottom: 3%; */
+  font-size: 2rem;   
+
+  justify-content : center;
+	align-items : center;
+    
 }
 
-#answer-sheet {
-	/* border: 1; */
-	border: 1px dotted black;
-	font-size: 30px;
-}
-
-.check-answer {
-	/* border: 1; */
-	/* border: 1px dotted black; */
-	/* text-align: center; */
-	justify-content: center;
-	/* margin: auto; */
-	align-self: center;
-	font-size: 30px;
-	color: red;
-	font-style: italic;
-
-}
 </style>

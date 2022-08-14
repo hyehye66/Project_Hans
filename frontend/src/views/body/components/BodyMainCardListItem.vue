@@ -2,7 +2,8 @@
    <div class="bg-white p-8 rounded-lg shadow-lg relative hover:shadow-2xl transition duration-500 word-card">
       <h1 class="text-2xl text-gray-800 font-semibold mb-3">{{ room.title }}</h1>
       <p class="text-gray-600 leading-6 tracking-normal">방장 : {{ room.member.nickname }}</p>
-    <p class="text-gray-600 leading-6 tracking-normal">참여인원 : {{ room.currentNum }}/{{room.restrictNum}}</p>
+      <p class="text-gray-600 leading-6 tracking-normal">참여인원 : {{ room.currentNum }}/{{room.restrictNum}}</p>
+      <div></div>
       <button class="py-2 px-4 mt-8 text-white rounded-md shadow-xl join-button" @click="joinBodyRoom" >입장하기</button>
       <div>
         <span class="absolute py-2 px-8 text-sm text-white top-0 right-0 rounded-md transform translate-x-2 -translate-y-3 shadow-xl mode-name">{{ mode }}</span>
@@ -62,14 +63,15 @@ export default {
 
 <style scoped>
 .word-card {
-    width : 300px;
+    width : 275px;
 }
 
 .join-button {
-  background-color: #f38e7b;
+  background-color: #f7bfb4;
+  justify-content: center;
 }
 
 .mode-name {
-  background-color: #f38e7b;
+  background-color: #f7bfb4;
 }
 </style>

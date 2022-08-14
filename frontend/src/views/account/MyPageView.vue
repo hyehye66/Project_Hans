@@ -159,9 +159,10 @@ export default {
 
 <style scoped>
 .container {
+  padding-top: 4%;
   display: flex;
   justify-content: center;
-  margin-top: 4%;
+  align-items: center;
 }
 
 .box {

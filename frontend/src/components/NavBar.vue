@@ -63,7 +63,6 @@
       style="cursor: pointer">
       Logout
       </button>
-   
 
     <!-- <button v-if="!isLoggedIn" class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded" @click="isOpen" style="cursor: pointer">Login</button>
     <button v-if="isLoggedIn" class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded" @click="logout" style="cursor: pointer">Logout</button> -->
@@ -105,7 +104,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .logo-image{
   width : 30%;
   height: auto;
@@ -115,4 +114,5 @@ export default {
 .drop-box{
   z-index: 999;
 }
+
 </style>
