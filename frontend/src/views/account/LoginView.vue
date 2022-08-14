@@ -1,21 +1,24 @@
 <template>
-<account-error-list v-if="authError"></account-error-list>
+<nav-bar />
+<!-- <account-error-list v-if="authError"></account-error-list> -->
 <div class="hero min-h-screen bg-base-200">
   <div class="hero-content flex-col lg:flex-row-reverse">
     <!-- <div class="main-img">
       <img src="@/assets/login4.png" alt="login3">
     </div> -->
 
-    <div class="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100 col-md-4">
+    <div class="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100 col-md-5">
       <div class="card-body">
         <div class="text-center lg:text-left">
           <h1 class="upper-text text-5xl font-bold">Login now!</h1>
-          <p class="lower-text py-6">재미난 게임을 통해 한국어 실력을 향상시켜보세요</p>
+          <p class="lower-text py-6">재미난 게임을 통해 한국어 실력을 향상시켜보세요.</p>
+          <!-- <p class="lower-text py-6">재미난 게임을 통해 </p>
+          <p class="lower-text py-6">한국어 실력을 향상시켜보세요</p> -->
         </div>
-        <div class="form-control">      
           <label class="label">
             소셜 SNS로 시작하기
           </label>
+        <div class="form-control">      
           <div class="google-icon">
             <div>
               <div id="signin_button"></div>
@@ -33,12 +36,14 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import NavBar from "@/components/NavBar.vue";
 import AccountErrorList from '@/views/account/components/AccountErrorList.vue'
 
 export default {
   name: 'LoginView',
   components: {
-    AccountErrorList,
+    NavBar,
+    // AccountErrorList,
   },
   data() {
       return {
@@ -89,7 +94,6 @@ export default {
 
         },
 
-
 }
 
 
@@ -99,16 +103,17 @@ export default {
 <style scoped>
 .hero {
   background-image: url("@/assets/login5.png");
+  background-size: cover;
   /* background: #f1c4d9; */
   width: 100vw;
   height: 90vh;
   position: absolute;
   /* opacity: 0.9; */
-  object-fit: cover;
+  /* object-fit: cover; */
 }
 
 .hero-content {
-  margin: 5%;
+  margin: 3%;
   /* display: flex; */
   /* flex-flow: row wrap; */
   /* justify-content: space-evenly; */
@@ -124,19 +129,35 @@ export default {
 }
 
 .card {
-  margin-right: 9%;
-  margin-top: 3%;
+  margin-right: 8%;
+  margin-top: 5%;
   width: 29%;
   float: right;
   border-radius: 5% 5% 5% 5%;
+  /* background-color: rgba( 201, 212, 231, 0.6 ); */
+  background-color: transparent;
 }
 
 .card-body {
-  padding: 5%;  
+  padding: 5%;
+  flex-flow: column wrap;
+  display: flex;
+	justify-content: center;
+	align-self: center;	
 }
 
 .form-control {
+  /* left: 50%;
+  right: 50%; */
   padding: 3%;
+  /* background-color: rgba( 201, 212, 231, 0.3 ); */
+  background-color: transparent;
+  width: 80%;
+  flex-flow: column wrap;
+  display: flex;
+	justify-content: center;
+	align-self: center;
+  border: transparent;
 }
 
 .text-center {
@@ -144,21 +165,25 @@ export default {
 }
 
 .upper-text {
-  margin: 3%;
-  font-size: 3.2em;
+  margin-top: 3%;
+  margin-bottom: 5%;
+  font-size: 3.5em;
   color: #f1c4d9;
 
 }
 
 .lower-text {
-  font-size: 1.5em;
+  /* margin-top: 3%;
+  margin-bottom: 3%; */
+  font-size: 1.7em;
   color: #2657a7;
 
 }
 
 label {
   justify-content: center;
-  font-size: 1em;
+  font-size: 1.2em;
+  color: #ffff;
 }
 
 .google-icon {
