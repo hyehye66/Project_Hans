@@ -362,7 +362,7 @@ export default {
            this.$store.state.games.TimerChk = true
            // axios로 스프링 서버의 방에서 나가기
             axios({
-                url : `/api/word-game/rooms/${this.$route.params.roomSequence}`,
+                url : `/api/body-game/rooms/${this.$route.params.roomSequence}`,
                 method : 'delete',
                 headers : this.authHeader
             })
@@ -478,7 +478,7 @@ export default {
       console.log(this.answerList)
       this.stompClient.connect({}, frame => {
           console.log(frame, '연결 성공!')
-          this.stompClient.subscribe(`/topic/word-game/${this.$route.params.roomSequence}`, 
+          this.stompClient.subscribe(`/topic/body-game/${this.$route.params.roomSequence}`, 
           res => {
               const response = JSON.parse(res.body)
               let key = Object.keys(response) 
@@ -525,9 +525,10 @@ export default {
     this.start = true
     this.cnt = true
     const gameStatus = {
-        total_question : 10
+        total_question : 10,
+        difficulty : 3
     }
-    this.stompClient.send(`/game/word-game/${this.$route.params.roomSequence}`, JSON.stringify(gameStatus), {})
+    this.stompClient.send(`/game/body-game/${this.$route.params.roomSequence}`, JSON.stringify(gameStatus), {})
     this.threecountDown()
   },
 
@@ -535,7 +536,7 @@ export default {
     this.answerTime = false
     this.trigger = true
     this.stompClient.send(
-        `/game/word-game/room/${this.$route.params.roomSequence}/problem/${this.problemNum}`, undefined, {}
+        `/game/body-game/room/${this.$route.params.roomSequence}/problem/${this.problemNum}`, undefined, {}
     )
     this.setCorrect()
     
@@ -574,18 +575,19 @@ export default {
     const foranswer = {
         player : this.profile.nickname,
         submit : this.temp,
-        problem_num : this.problemNum
+        problem_num : this.problemNum,
+        time : 3
     }
     const submit = JSON.stringify(foranswer)
     this.stompClient.send(
-        `/game/word-game/check/${this.$route.params.roomSequence}`, submit, {}
+        `/game/body-game/check/${this.$route.params.roomSequence}`, submit, {}
     )
     this.temp = ''
     },
 
   sendCorrect(){
         const questionNum = {question_num : this.problemNum} 
-        this.stompClient.send(`/game/word-game/answer/${this.$route.params.roomSequence}`,
+        this.stompClient.send(`/game/body-game/answer/${this.$route.params.roomSequence}`,
         JSON.stringify(questionNum), {}
         )
         this.problemNum++
@@ -600,7 +602,7 @@ export default {
 
   sendResult(){
     this.stompClient.send(
-        `/game/word-game/result/${this.$route.params.roomSequence}`,
+        `/game/body-game/result/${this.$route.params.roomSequence}`,
         undefined,
         {}
       )
