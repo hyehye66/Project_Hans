@@ -4,6 +4,7 @@ import com.hans.hans.domain.wordgame.dto.*;
 import com.hans.hans.domain.wordgame.service.WordGameSocketService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class WordGameSocketController {
     private final WordGameSocketService wordGameSocketService;
 
@@ -51,6 +53,7 @@ public class WordGameSocketController {
     @MessageMapping("/word-game/room/{room_seq}/owner")
     @SendTo("/topic/word-game/{room_seq}")
     public WordGameOwnerResponseDto getOwner(WordGameOwnerRequestDto wordGameOwnerRequestDto, @DestinationVariable("room_seq") Long roomSequence){
+        log.debug("totalQuestion: ", wordGameOwnerRequestDto.getTotalQuestion());
         WordGameOwnerResponseDto wordGameOwnerResponseDto = wordGameSocketService.getOwner(wordGameOwnerRequestDto, roomSequence);
         return wordGameOwnerResponseDto;
     }
