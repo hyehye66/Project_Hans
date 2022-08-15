@@ -12,4 +12,5 @@ public class BodyGameStartRequestDto {
     @JsonProperty("total_question")
     private int totalQuestion;
     private Long difficulty;
+    private int timeLimit;
 }
