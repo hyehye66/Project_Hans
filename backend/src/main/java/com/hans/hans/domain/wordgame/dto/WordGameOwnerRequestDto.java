@@ -5,7 +5,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class WordGameOwnerResponseDto {
-    private String owner;
+public class WordGameOwnerRequestDto {
     private int totalQuestion;
 }
