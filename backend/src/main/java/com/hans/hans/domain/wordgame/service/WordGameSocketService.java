@@ -9,5 +9,5 @@ public interface WordGameSocketService {
     WordGameSubmitResponseDto submit(WordGameSubmitRequestDto wordGameSubmitRequestDto, Long roomSequence);
     WordGameAnswerResponseDto getAnswer(WordGameAnswerRequestDto wordGameAnswerRequestDto, Long roomSequence);
     WordGameResultResponseDto getResult(Long roomSequence);
-
+    WordGameOwnerResponseDto getOwner(Long roomSequence);
 }
