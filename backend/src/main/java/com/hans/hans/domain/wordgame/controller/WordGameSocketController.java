@@ -27,7 +27,7 @@ public class WordGameSocketController {
         return wordGameSocketService.getProblem(roomSequence, problemNum);
     }
 
-    @MessageMapping("/word-game/check/{room_seq}")
+    @MessageMapping("/word-game/submit/{room_seq}")
     @SendTo("/topic/word-game/{room_seq}")
     public WordGameSubmitResponseDto submit(WordGameSubmitRequestDto wordGameSubmitRequestDto, @DestinationVariable("room_seq") Long roomSequence){
         WordGameSubmitResponseDto wordGameSubmitResponseDto = wordGameSocketService.submit(wordGameSubmitRequestDto,roomSequence);
