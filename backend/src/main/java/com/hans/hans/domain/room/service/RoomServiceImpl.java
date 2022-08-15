@@ -338,45 +338,46 @@ public class RoomServiceImpl implements RoomService{
         ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
 
         try {
-            Date now = new Date();
-            String title = bodyGameCreateRequestDto.getTitle();
+            if(roomMemberRepository.findByMember(member)==null){
+                Date now = new Date();
+                String title = bodyGameCreateRequestDto.getTitle();
 
-            int restrictNum = bodyGameCreateRequestDto.getRestrictNum();
-            int totalQuestion = bodyGameCreateRequestDto.getTotalQuestion();
-            Long difficulty = bodyGameCreateRequestDto.getDifficulty();
-            int timeLimit = bodyGameCreateRequestDto.getTimeLimit();
+                int restrictNum = bodyGameCreateRequestDto.getRestrictNum();
+                int totalQuestion = bodyGameCreateRequestDto.getTotalQuestion();
+                Long difficulty = bodyGameCreateRequestDto.getDifficulty();
+                int timeLimit = bodyGameCreateRequestDto.getTimeLimit();
 
-            Session session = openVidu.createSession();
-            String token = session.createConnection(connectionProperties).getToken();
+                Session session = openVidu.createSession();
+                String token = session.createConnection(connectionProperties).getToken();
 
-            Room room = roomRepository.save(
-                    Room.builder()
-                            .member(member)
-                            .mode(modeRepository.findByModeSequence(Modes.BODY.getModeSequence()))
-                            .title(title)
-                            .restrictNum(restrictNum)
-                            .currentNum(1)
-                            .roomDTTM(now)
-                            .roomStatus(false)
-                            .build()
-            );
+                Room room = roomRepository.save(
+                        Room.builder()
+                                .member(member)
+                                .mode(modeRepository.findByModeSequence(Modes.BODY.getModeSequence()))
+                                .title(title)
+                                .restrictNum(restrictNum)
+                                .currentNum(1)
+                                .roomDTTM(now)
+                                .roomStatus(false)
+                                .build()
+                );
 
-            roomMemberRepository.save(
-                    RoomMember.builder()
-                            .member(member)
-                            .room(room)
-                            .token(token)
-                            .enterDTTM(now)
-                            .build()
-            );
+                roomMemberRepository.save(
+                        RoomMember.builder()
+                                .member(member)
+                                .room(room)
+                                .token(token)
+                                .enterDTTM(now)
+                                .build()
+                );
 
-            this.mapSessions.put(room.getRoomSequence(), session);
+                this.mapSessions.put(room.getRoomSequence(), session);
 
-            BodyGameCreateResponseDto bodyGameCreateResponseDto = new BodyGameCreateResponseDto(room, token);
-            bodyGameCreateResponseDto.updateSettings(totalQuestion,difficulty,timeLimit);
+                BodyGameCreateResponseDto bodyGameCreateResponseDto = new BodyGameCreateResponseDto(room, token);
+                bodyGameCreateResponseDto.updateSettings(totalQuestion,difficulty,timeLimit);
 
-            return bodyGameCreateResponseDto;
-
+                return bodyGameCreateResponseDto;
+            }else throw new AlreadyInTheRoomException("현재 사용자는 이미 다른 방에 입장되어 있습니다.");
         }catch (OpenViduJavaClientException e1) {
             // If internal error generate an error message and return it to client
             throw new SessionCreateException("세션 만드는데 문제있음");
