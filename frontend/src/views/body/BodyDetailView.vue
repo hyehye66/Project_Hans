@@ -100,7 +100,6 @@
     <!-- 정답 적는 란 -->
     <div class="body-detail-answer-send">
       <div v-if="!cnt">게임 시간 : {{this.$store.state.games.TimerStr}} 초</div> 
-
       <div v-if="!cnt && (joker == profile.nickname)">문제는 : {{ problem }} </div>
 
       <input type="text" name="" id="body-detail-answer-sheet" v-model="temp" size="30"
@@ -201,10 +200,8 @@
     
     <!-- 시작버튼 & 현재 문제 남은 시간 타이머 -->
 
-
     <div v-if="!status && (profile.nickname == isHost)" class="body-detail-leader-button">
-
-      <button id="start-btn" @click="sendStart"     
+      <button id="start-btn" @click="sendStart" 
       class="bg-transparent hover:bg-yellow-500 text-yellow-700 font-semibold hover:text-white 
       py-2 px-2 border border-yellow-500 hover:border-transparent rounded-full">
         START
@@ -308,12 +305,11 @@ export default {
       isCorrect : false,
       answerTime : false,
       threecount : 3,
-
       point : 0,
       currentPlayers : [],
       joker : '',
-      isHost : this.$route.params.host
-
+      isHost : this.$route.params.host,
+      changeTagger : false
     }
   },
   
@@ -378,7 +374,6 @@ export default {
             })
 
             .then(() =>{
-
             if (this.isHost == this.profile.nickname) {
               this.stompClient.send(`/game/body-game/room/${this.$route.params.roomSequence}/owner`, 
               {
@@ -388,7 +383,6 @@ export default {
               }, {})
             }
             
-
             if(this.session) {this.session.disconnect();}
 
 
@@ -512,6 +506,8 @@ export default {
                   console.log(this.currentRank)
               } else if (key[0] === 'problem') {
                   this.problem = response.problem
+                  this.changeTagger = false
+
 
               } else if (key[0] === 'roomSequence') {
                   this.answer = response.answer
@@ -534,20 +530,21 @@ export default {
                       return b[0] - a[0];
                     })
                   }   
-
                   }
-                  console.log(this.currentRank)
                   this.answerList= []
                   this.isCorrect = false
 
                   console.log(this.currentPlayers, '여기요 여기')
+                  if (!this.changeTagger) {
                   this.joker = this.currentPlayers.shift()
                   console.log(this.currentPlayers, '뽑은 후')
                   console.log(this.joker)
+                  this.changeTagger == true
+                  }
+                  
                   
                   this.currentPlayers.push(this.joker)
                   this.getSub(this.joker)
-
               } else if (key[0] === 'players') {
                   this.difficulty = response.points
               } else if (key[0] == 'correctPlayers') {
@@ -598,7 +595,6 @@ export default {
         this.$store.state.games.all = false
         clearInterval(interval)
       }
-
     }, 1000)
      
     // if (!result) {
@@ -688,7 +684,6 @@ export default {
   }
   
   
-
 
 </script>
 

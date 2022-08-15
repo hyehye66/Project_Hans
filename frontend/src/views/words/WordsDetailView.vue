@@ -468,7 +468,7 @@ export default {
     }
     const submit = JSON.stringify(foranswer)
     this.stompClient.send(
-        `/game/word-game/check/${this.$route.params.roomSequence}`, submit, {}
+        `/game/word-game/submit/${this.$route.params.roomSequence}`, submit, {}
     )
     this.temp = ''
     },
