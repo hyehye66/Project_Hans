@@ -69,6 +69,7 @@ export default {
   props :{
     bodycreateopen : Boolean,
   },
+  
   data(){
     return {
     sessionName: '',
@@ -137,8 +138,9 @@ export default {
     ).
     then(res => {
 
-      console.log(res)
-      this.$router.push({ name: 'BodyDetailView', params: { mode : this.mode, sessionName : this.sessionName, token : res.data.data.token, roomSequence : res.data.data.roomSequence}})
+      console.log(res.data,'뭐받아옴?')
+      this.$router.push({ name: 'BodyDetailView', params: { mode : this.mode, sessionName : this.sessionName, token : res.data.data.token, roomSequence : res.data.data.roomSequence,
+      host : this.profile.nickname}})
       
 
     })
@@ -147,7 +149,7 @@ export default {
     
   },
 },
-computed : {...mapGetters(['authHeader'])}
+computed : {...mapGetters(['authHeader','profile'])}
 }
 </script>
 <style scoped>

@@ -101,7 +101,7 @@
     <!-- 정답 적는 란 -->
     <div class="body-detail-answer-send">
       <div v-if="!cnt">게임 시간 : {{this.$store.state.games.TimerStr}} 초</div> 
-      <div v-if="!cnt && joker == profile.nickname">문제는 : {{ problem }} </div>
+      <div v-if="!cnt && (joker == profile.nickname)">문제는 : {{ problem }} </div>
       <input type="text" name="" id="body-detail-answer-sheet" v-model="temp" size="30"
       placeholder="답을 입력해주세요." @keyup.enter="sendAnswer" v-if="!isCorrect && !(joker == profile.nickname)"/>
       <PaperAirplaneIcon style="height: 35; width: 35;" @click="sendAnswer" v-if="!isCorrect"/>					
@@ -168,14 +168,14 @@
     </div> -->
     
     <!-- 시작버튼 & 현재 문제 남은 시간 타이머 -->
-    <div v-if="!status" class="body-detail-leader-button">
+    <div v-if="!status && (profile.nickname == isHost)" class="body-detail-leader-button">
       <button id="start-btn" @click="sendStart" 
       class="bg-transparent hover:bg-yellow-500 text-yellow-700 font-semibold hover:text-white 
       py-2 px-2 border border-yellow-500 hover:border-transparent rounded-full">
         START
       </button>
     </div>
-    <div v-if="cnt" class="body-detail-leader-button">
+    <div v-if="cnt && status" class="body-detail-leader-button">
       남은 시간: {{threecount}}
     </div>
       
@@ -276,7 +276,7 @@ export default {
       point : 0,
       currentPlayers : [],
       joker : '',
-      tempRankList : []
+      isHost : this.$route.params.host
     }
   },
   
@@ -340,8 +340,15 @@ export default {
             })
 
             .then(() =>{
-
-            this.stompClient.send(`/game/body-game/room/${this.$route.params.roomSequence}/owner`, {}, {})
+            if (this.isHost == this.profile.nickname) {
+              this.stompClient.send(`/game/body-game/room/${this.$route.params.roomSequence}/owner`, 
+              {
+                difficulty : this.difficulty,
+                timeLimit : this.timeLimit,
+                totalQuestion : this.totalQuestion
+              }, {})
+            }
+            
             if(this.session) {this.session.disconnect();}
             if (this.stompClient) {this.stompClient.disconnect()}
             this.stompClient = null;
@@ -470,7 +477,7 @@ export default {
 
               } else if (key[0] === 'problem') {
                   this.problem = response.problem
-                  this.getSub(this.joker)
+                  
 
               } else if (key[0] === 'roomSequence') {
                   this.answer = response.answer
@@ -490,10 +497,9 @@ export default {
                         }
                       }
                     this.currentRank.sort(function(a, b)  {
-                      return b - a;
+                      return b[0] - a[0];
                     })
-                  }
-                  
+                  }   
                   }
                   this.answerList= []
                   this.isCorrect = false
@@ -503,6 +509,7 @@ export default {
                   console.log(this.joker)
                   
                   this.currentPlayers.push(this.joker)
+                  this.getSub(this.joker)
               } else if (key[0] === 'players') {
                   this.difficulty = response.points
 
@@ -514,6 +521,8 @@ export default {
                     break
                   }
                 }
+              } else if (key[0] == 'owner') {
+                this.isHost = response.owner
               }
           })
             
@@ -542,34 +551,37 @@ export default {
     
     },
       
-  problemTrigger(){
-    return new Promise(resolve => 
-
-    setTimeout(() => {this.trigger = false; resolve(this.trigger)}, 15000)
-
-    )
-  },
   async setCorrect(){
-    const result = await this.problemTrigger()
-    await this.allCorrect()
-    if (!result) {
-      // this.$store.state.games.TimerChk = true
-      this.sendCorrect()
-      // 근데 이게 먹힌다구?
-    } 
-    // if (result2) {console.log('!!')}
-  },
-  allCorrect(){
+    let timeout = setTimeout(() => { this.$store.state.games.all = false; this.sendCorrect()}, 15000)
     let interval = setInterval(() => {
-      if (this.answerList.length == this.playerLen){
-        this.$store.state.games.TimerChk = true
+      this.allCorrect()
+      if(this.$store.state.games.all){
+        clearTimeout(timeout)
         this.sendCorrect()
+        this.$store.state.games.all = false
         clearInterval(interval)
       }
-      
     }, 1000)
+     
+    // if (!result) {
+    //   this.sendCorrect()
+    // } 
   },
- 
+  
+  allCorrect(){
+   
+    // let interval = setInterval(() => {
+
+      if (this.answerList.length == this.playerLen-1){
+        this.$store.state.games.TimerChk = true
+        this.$store.state.games.all = true
+        // clearInterval(interval)
+      }
+      
+    // }, 1000)
+    
+   
+  },
 
   sendAnswer(){
     const foranswer = {
@@ -607,7 +619,10 @@ export default {
         {}
       ),
       this.status = false,
-      this.start = false
+      this.start = false,
+      this.currentRank = [],
+      this.currentPlayers =[],
+      this.joker = ''
   },     
 
   getSub(Sulae){
@@ -626,8 +641,15 @@ export default {
     } else {
       this.mainStreamManager = this.publisher
     }
+    this.mainStreamManager.publishAudio(false)
   }
-  }} 
+  },
+  mounted(){
+    console.log(this.isHost,this.$route.params)
+  } 
+  }
+  
+  
 
 </script>
 
