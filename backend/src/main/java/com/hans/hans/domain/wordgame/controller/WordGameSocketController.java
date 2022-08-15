@@ -53,7 +53,7 @@ public class WordGameSocketController {
     @MessageMapping("/word-game/room/{room_seq}/owner")
     @SendTo("/topic/word-game/{room_seq}")
     public WordGameOwnerResponseDto getOwner(WordGameOwnerRequestDto wordGameOwnerRequestDto, @DestinationVariable("room_seq") Long roomSequence){
-        log.debug("totalQuestion: ", wordGameOwnerRequestDto.getTotalQuestion());
+        System.out.println("[TEST] totalQuestion: " + wordGameOwnerRequestDto.getTotalQuestion());
         WordGameOwnerResponseDto wordGameOwnerResponseDto = wordGameSocketService.getOwner(wordGameOwnerRequestDto, roomSequence);
         return wordGameOwnerResponseDto;
     }
