@@ -1,4 +1,5 @@
 <template>
+<nav-bar></nav-bar>
   <div class="container">
 
     <div class="box relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg bg-white rounded">       
@@ -92,9 +93,13 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import NavBar from "@/components/NavBar.vue";
 
 export default {
   name: 'MyPageView',
+  components: {
+    NavBar,
+  },
   data () {
     return {
       // avatarList: [

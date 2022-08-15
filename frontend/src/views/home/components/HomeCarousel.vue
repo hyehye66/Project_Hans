@@ -112,7 +112,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 img {
     height: auto;
     width: 100%;
@@ -123,6 +123,8 @@ img {
 .carousel-item {
   position:relative;
   /* transition: .5s ease; 필수는 아님 */
+  width: 100vw;
+  height: 100vh;
  }
 
 .carousel-caption {
@@ -146,7 +148,7 @@ img {
   position: absolute;
   top: 25%;
   right: 7%;
-  border-radius: 15px 50px;
+  border-radius: 15% 50%;
 
 }
 

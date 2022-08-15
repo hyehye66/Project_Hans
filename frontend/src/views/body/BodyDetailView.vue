@@ -21,7 +21,6 @@
     <!--  h-30 w-40 p-2 border-2 border-gray-400 bg-gray-200 -->
       <!-- <div class="h-full w-full bg-gray-400"> -->
         <h1>총 진행시간</h1>
-        
       <!-- </div> -->
     </div>
   </div>
@@ -46,7 +45,7 @@
     <!-- col-md-8 -->
       <user-video :stream-manager="mainStreamManager" v-if="!answerTime"/>
       <p v-if="answerTime"> 정답은 : {{answer}}</p>
-      <p v-if="answerTime"> 맞춘 사람 : {{Object.keys(answerList)}}</p>
+      <p v-if="answerTime"> 맞춘 사람 : {{answerList}}</p>
       <p v-if="answerTime"> 점수는 : {{point}}</p>
     </div>
     <!-- 캠,마이크,나가기,설정 -->
@@ -101,9 +100,11 @@
     <!-- 정답 적는 란 -->
     <div class="body-detail-answer-send">
       <div v-if="!cnt">게임 시간 : {{this.$store.state.games.TimerStr}} 초</div> 
+
       <div v-if="!cnt && (joker == profile.nickname)">문제는 : {{ problem }} </div>
+
       <input type="text" name="" id="body-detail-answer-sheet" v-model="temp" size="30"
-      placeholder="답을 입력해주세요." @keyup.enter="sendAnswer" v-if="!isCorrect && !(joker == profile.nickname)"/>
+      placeholder="답을 입력해주세요." @keyup.enter="sendAnswer" v-if="!isCorrect"/>
       <PaperAirplaneIcon style="height: 35; width: 35;" @click="sendAnswer" v-if="!isCorrect"/>					
     </div>
     <!-- 정오답 알림 메시지 -->
@@ -139,16 +140,47 @@
               <!-- head -->
               <thead>
                 <tr>
-                  
+                  <th></th>
                   <th>Nickname</th>
                   <th>Score</th>
                 </tr>
               </thead>
               <tbody>
                 <!-- row 1 -->
-                <tr class="hover" v-for="idx of currentRank" :key="idx">
-                  <td>{{idx[1]}}</td>
-                  <td>{{idx[0]}}</td>
+                <tr class="hover">
+                  <th>1</th>
+                  <td>Cy Ganderton</td>
+                  <td>Quality Control Specialist</td>
+                </tr>
+                <!-- row 2 -->
+                <tr class="hover">
+                  <th>2</th>
+                  <td>Hart Hagerty</td>
+                  <td>Desktop Support Technician</td>
+                </tr>
+                <!-- row 3 -->
+                <tr class="hover">
+                  <th>3</th>
+                  <td>Brice Swyre</td>
+                  <td>Desktop Support Technician</td>
+                </tr>
+                <!-- row 4 -->
+                <tr class="hover">
+                  <th>4</th>
+                  <td>Brice Swyre</td>
+                  <td>Tax Accountant</td>
+                </tr>
+                <!-- row 5 -->
+                <tr class="hover">
+                  <th>5</th>
+                  <td>Brice Swyre</td>
+                  <td>Tax Accountant</td>
+                </tr>
+                <!-- row 6 -->
+                <tr class="hover">
+                  <th>6</th>
+                  <td>Brice Swyre</td>
+                  <td>Tax Accountant</td>
                 </tr>
               </tbody>
             </table>
@@ -168,8 +200,11 @@
     </div> -->
     
     <!-- 시작버튼 & 현재 문제 남은 시간 타이머 -->
+
+
     <div v-if="!status && (profile.nickname == isHost)" class="body-detail-leader-button">
-      <button id="start-btn" @click="sendStart" 
+
+      <button id="start-btn" @click="sendStart"     
       class="bg-transparent hover:bg-yellow-500 text-yellow-700 font-semibold hover:text-white 
       py-2 px-2 border border-yellow-500 hover:border-transparent rounded-full">
         START
@@ -266,24 +301,25 @@ export default {
       status : null,
       problemNum : 1,
       temp : '',
-      currentRank : [],
+      currentRank : {},
       trigger : true,
       playerLen : 0,
       isAll : false,
       isCorrect : false,
       answerTime : false,
       threecount : 3,
+
       point : 0,
       currentPlayers : [],
       joker : '',
       isHost : this.$route.params.host
+
     }
   },
   
   created(){
     this.joinSession(),
     this.socketStart()
-
   },
 
   computed : {
@@ -328,8 +364,10 @@ export default {
 
   // 방 나가기
   leaveSession () {
-            // 우리 소켓 통신 연결 해제 
             
+            // 우리 소켓 통신 연결 해제 
+            if (this.stompClient) {this.stompClient.disconnect()}
+            this.stompClient = null;
             // 타이머 강제 종료
            this.$store.state.games.TimerChk = true
            // axios로 스프링 서버의 방에서 나가기
@@ -340,6 +378,7 @@ export default {
             })
 
             .then(() =>{
+
             if (this.isHost == this.profile.nickname) {
               this.stompClient.send(`/game/body-game/room/${this.$route.params.roomSequence}/owner`, 
               {
@@ -349,9 +388,9 @@ export default {
               }, {})
             }
             
+
             if(this.session) {this.session.disconnect();}
-            if (this.stompClient) {this.stompClient.disconnect()}
-            this.stompClient = null;
+
 
             this.session = undefined;
             this.mainStreamManager = undefined;
@@ -359,7 +398,7 @@ export default {
             this.subscribers = [];
             this.OV = undefined;
             window.removeEventListener('beforeunload', this.leaveSession);
-              this.$router.push({name : 'BodyMainView'})
+              this.$router.push({name : 'WordsMainView'})
             })
             // 그 후 세션에서 나가기 
             
@@ -369,6 +408,8 @@ export default {
   
   // 화상 만들기
   createPublisher(){
+      console.log(this.getToken())
+      console.log(this.token)
       this.session.connect(this.token,{ clientData: this.myUserName })
       .then(() => {
         // 미디어 스트림 가져오기        
@@ -383,9 +424,9 @@ export default {
             mirror: false           // Whether to mirror your local video or not
         });
         
-
+        this.mainStreamManager = publisher;
         this.publisher = publisher;
-
+        console.log(this.mainStreamManager, '뭘받아오냐?')
         
         this.session.publish(this.publisher);
         console.log(this.publisher)
@@ -455,6 +496,7 @@ export default {
       let socket = new SockJS(serverUrl)
       this.stompClient = Stomp.over(socket)
       console.log('소켓 연결하는 중')
+      console.log(this.answerList)
       this.stompClient.connect({}, frame => {
           console.log(frame, '연결 성공!')
           this.stompClient.subscribe(`/topic/body-game/${this.$route.params.roomSequence}`, 
@@ -464,25 +506,17 @@ export default {
               if ("gameStatus" === key[1]){
                   this.status = true
                   this.playerLen = response.players.length
-                  this.currentPlayers = response.players
                   for (let i of response.players) {
-                    this.currentRank.push([0,i])
+                    this.currentRank[`${i}`] = 0
                   }
-                  console.log(this.currentPlayers, '뽑기전')
-                  this.joker = this.currentPlayers.shift()
-                  console.log(this.joker)
-                  this.currentPlayers.push(this.joker)
-                  console.log(this.currentPlayers, '뽑은 후')
-                  this.threecountDown()
-
+                  console.log(this.currentRank)
               } else if (key[0] === 'problem') {
                   this.problem = response.problem
-                  
 
               } else if (key[0] === 'roomSequence') {
                   this.answer = response.answer
                   this.answerList = response.correctPlayers
-                  console.log(Object.keys(this.answerList).length , '진짜 안먹?')
+                  console.log(this.answerList, '진짜 안먹?')
                   this.answerTime = true
                   this.point = response.point
                   
@@ -500,9 +534,12 @@ export default {
                       return b[0] - a[0];
                     })
                   }   
+
                   }
+                  console.log(this.currentRank)
                   this.answerList= []
                   this.isCorrect = false
+
                   console.log(this.currentPlayers, '여기요 여기')
                   this.joker = this.currentPlayers.shift()
                   console.log(this.currentPlayers, '뽑은 후')
@@ -510,12 +547,12 @@ export default {
                   
                   this.currentPlayers.push(this.joker)
                   this.getSub(this.joker)
+
               } else if (key[0] === 'players') {
                   this.difficulty = response.points
-
               } else if (key[0] == 'correctPlayers') {
                 this.answerList = response.correctPlayers
-                for(let i in this.answerList){
+                for(let i of this.answerList){
                   if (i === this.profile.nickname){
                     this.isCorrect = true
                     break
@@ -538,7 +575,7 @@ export default {
         difficulty : 3
     }
     this.stompClient.send(`/game/body-game/${this.$route.params.roomSequence}`, JSON.stringify(gameStatus), {})
-    
+    this.threecountDown()
   },
 
   getProblem(){
@@ -561,6 +598,7 @@ export default {
         this.$store.state.games.all = false
         clearInterval(interval)
       }
+
     }, 1000)
      
     // if (!result) {
@@ -592,7 +630,7 @@ export default {
     }
     const submit = JSON.stringify(foranswer)
     this.stompClient.send(
-        `/game/body-game/submit/${this.$route.params.roomSequence}`, submit, {}
+        `/game/body-game/check/${this.$route.params.roomSequence}`, submit, {}
     )
     this.temp = ''
     },
@@ -603,7 +641,7 @@ export default {
         JSON.stringify(questionNum), {}
         )
         this.problemNum++
-        
+        console.log(this.problemNum, '몇개 불러오는거임?')
         if (this.problemNum <= 10){
           console.log('결과까지!')
           setTimeout(() => {this.threecountDown()}, 3000)
@@ -650,6 +688,7 @@ export default {
   }
   
   
+
 
 </script>
 

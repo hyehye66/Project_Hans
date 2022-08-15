@@ -1,13 +1,15 @@
 <template>
-  
-  <communication-record />
+  <nav-bar />
+  <!-- <div class="communication-bg-img">
+  </div> -->
   <communication-tab :situationSentence="situationSentence" />
 
 </template>
 
 <script>
-import CommunicationRecord from './components/CommunicationRecord.vue'
+// import CommunicationRecord from './components/CommunicationRecord.vue'
 import CommunicationTab from './components/CommunicationTab.vue'
+import NavBar from "@/components/NavBar.vue";
 import axios from 'axios'
 import { mapGetters } from 'vuex'
 
@@ -15,8 +17,9 @@ import { mapGetters } from 'vuex'
 export default {
   name : 'CommunicationView',
   components : {
-    CommunicationRecord,
+    // CommunicationRecord,
     CommunicationTab,
+    NavBar,
   },
   data(){
     return {
@@ -50,6 +53,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+
 
 </style>
