@@ -61,7 +61,7 @@ export default {
     searchStart () {
       console.log(123)
       axios ( {
-          url: `/api/rankings/search?nickname=${this.nickname}&id=${this.modeSequence}`,
+          url: `/api/rankings/search?nickname=${this.searchNickname}&modeSequence=${this.modeSequence}`,
           headers: this.authHeader,
           method: "get",
           data: {

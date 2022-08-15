@@ -55,7 +55,7 @@
                   <tbody>
                     <!-- row 1 -->
                     <tr v-for="rankData in rankDataList" :key="rankData.rankingSequence">
-                      <th><rank-items :rankingSequence="rankData.rankingSequence"/></th>
+                      <th><rank-items :rankingSequence="rankDataList.indexOf(rankData)+1"/></th>
                       <td><rank-items :nickname="rankData.nickname"/></td>
                       <td><rank-items :score="rankData.score" /></td>
                       <td><rank-items :tier="rankData.tier" /></td>
@@ -152,7 +152,7 @@
                   <tbody>
                     <!-- row 1 -->
                     <tr v-for="rankData in rankDataList" :key="rankData.rankingSequence">
-                      <th><rank-items :rankingSequence="rankData.rankingSequence"/></th>
+                      <th><rank-items :rankingSequence="rankDataList.indexOf(rankData)+1"/></th>
                       <td><rank-items :nickname="rankData.nickname"/></td>
                       <td><rank-items :score="rankData.score" /></td>
                       <td><rank-items :tier="rankData.tier" /></td>
