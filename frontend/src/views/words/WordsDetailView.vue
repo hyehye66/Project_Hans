@@ -179,11 +179,16 @@ export default {
         status : null,
         problemNum : 1,
         temp : '',
-        currentRank : {},
+        currentRank : [],
         trigger : true,
         playerLen : 0,
         isAll : false,
-        isCorrect : false
+        isCorrect : false,
+        answerTime : false,
+        point : 0,
+        currentPlayers : [],
+        joker : '',
+        isHost : ''
     }
   },
   
@@ -367,6 +372,7 @@ export default {
                   console.log(this.currentRank)
               } else if (key[0] === 'problem') {
                   this.problem = response.problem
+                  console.log(this.problem)
               } else if (key[0] === 'roomSequence') {
                   this.answer = response.answer
                   this.answerList = response.correctPlayers
@@ -376,18 +382,21 @@ export default {
                   console.log(this.currentRank)
                   this.answerList= []
                   this.isCorrect = false
+                  this.problemNum++
               } else if (key[0] === 'players') {
                   this.difficulty = response.points
               } else if (key[0] == 'correctPlayers') {
                 this.answerList = response.correctPlayers
-                console.log(this.answerList, '첫번째문제 answerList진짜 못보냐?')
-                console.log(this.answerList.length)
+                
+                
                 for(let i of this.answerList){
                   if (i === this.profile.nickname){
                     this.isCorrect = true
                     break
                   }
                 }
+              } else if (key[0] == 'owner') {
+                this.isHost = response.owner
               }
           })
             
@@ -414,34 +423,39 @@ export default {
     
     },
       
-  problemTrigger(){
-    return new Promise(resolve => 
-
-    setTimeout(() => {this.trigger = false; resolve(this.trigger)}, 15000)
-
-    )
-  },
   async setCorrect(){
-    const result = await this.problemTrigger()
-    //await this.allCorrect() 인터벌 (얼코렉트)
-    let result2 = await this.allCorrect()
-    if (!result || result2) {
-      // this.$store.state.games.TimerChk = true
-      this.sendCorrect()
-    } 
-    // if (result2) {console.log('!!')}
-  },
-  allCorrect(){
+
+    
+    let timeout = setTimeout(() => { this.$store.state.games.all = false; this.sendCorrect()}, 15000)
     let interval = setInterval(() => {
+      this.allCorrect()
+      if(this.$store.state.games.all){
+        clearTimeout(timeout)
+        this.sendCorrect()
+        this.$store.state.games.all = false
+        clearInterval(interval)
+      }
+    }, 1000)
+     
+    // if (!result) {
+    //   this.sendCorrect()
+    // } 
+  },
+  
+  allCorrect(){
+   
+    // let interval = setInterval(() => {
       console.log('정답자 수 : '+ this.answerList.length)
       console.log('참여자 수 : '+ this.playerLen)
+
       if (this.answerList.length == this.playerLen){
         this.$store.state.games.TimerChk = true
-        clearInterval(interval)
-        return true
+        this.$store.state.games.all = true
+        // clearInterval(interval)
       }
       
-    }, 1000)
+    // }, 1000)
+    
    
   },
  
@@ -464,7 +478,6 @@ export default {
         this.stompClient.send(`/game/word-game/answer/${this.$route.params.roomSequence}`,
         JSON.stringify(questionNum), {}
         )
-        this.problemNum++
         console.log(this.problemNum, '몇개 불러오는거임?')
         if (this.problemNum <= 10){
           console.log('결과까지!')

@@ -78,7 +78,7 @@ export default {
           }
           
         )
-            .then(res =>{this.rooms = res.data.data.listRooms.content})
+            .then(res =>{this.rooms = res.data.data.listRooms.content,console.log(this.rooms)})
             .catch(err => {
             console.log(err.status)
             console.log(err,'error here')})

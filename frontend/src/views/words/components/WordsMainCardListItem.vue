@@ -42,8 +42,8 @@ export default {
         .then(res => {console.log(res.data.data),
         this.$router.push({ name: 'WordsDetailView', 
         params: { mode : this.mode, sessionName : this.room.title, 
-        token : res.data.data.token,roomSequence : this.room.roomSequence,
-        problemIdx : this.room.totalQuestion}})})
+        token : res.data.data.token,roomSequence : this.room.roomSequence, 
+        problemIdx : this.room.totalQuestion, host : this.room.member}})})
         .catch(err => console.log(err,123 ))
         }
       else{
