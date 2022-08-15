@@ -57,18 +57,25 @@
 
         <div id="session-body-right" class="col-md-5">
             <!-- 랭크 -->
-            <h1>랭크</h1>
-            <div class="rank col-md-12">
-            <!--  shadow-md py-60 px-50 -->						
-                <ul>
-                    <li>김민철 1</li>
-                    <li>김지현 2</li>
-                    <li>김지현 2</li>
-                    <li>김지현 2</li>
-                    <li>김지현 2</li>
-                    <li>김지현 2</li>
-                </ul>
-            </div>
+            <div class="overflow-x-auto">
+            <table class="table table-zebra w-full" id="rank-table">
+              <!-- head -->
+              <thead>
+                <tr>
+                  
+                  <th>Nickname</th>
+                  <th>Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- row 1 -->
+                <tr class="hover" v-for="idx of currentRank" :key="idx">
+                  <td>{{idx[1]}}</td>
+                  <td>{{idx[0]}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
             <!-- <br> -->
             <!-- 현재 문제 남은 시간 타이머 -->
             <div class="problem-timer" style="width: 30%">남은 시간: 
@@ -188,14 +195,17 @@ export default {
         point : 0,
         currentPlayers : [],
         joker : '',
-        isHost : ''
+        isHost : '',
+        totalQuestion : 0
     }
   },
   
   created(){
     this.joinSession(),
     this.socketStart()
-    console.log(this.$route.params)
+    this.isHost = this.$route.params.host
+    console.log(this.isHost),
+    this.setRoomInfo()
   },
 
   computed : {
@@ -203,6 +213,11 @@ export default {
   },
 //this.$route.params.token.slice(39,53)
   methods : {
+    setRoomInfo(){
+    if (this.$route.params.host == this.profile.nickname){
+      this.totalQuestion = this.$route.params.totalQuestion
+      console.log(this.totalQuestion, '잘받아와졌나..? 해치웠나?')
+    }},
     ...mapActions(['timerStart']),
     // 오픈비두 세션에 들어가기,created에 실행
     joinSession () {
@@ -254,9 +269,15 @@ export default {
             })
 
             .then(() =>{
-            this.stompClient.send(`/game/word-game/room/${this.$route.params.roomSequence}/owner`, undefined, {})
+              // 방장 나갈 때 
+            if (this.isHost === this.profile.nickname) {
+              const gameInfo = {totalQuestion:10}
+              this.stompClient.send(`/game/word-game/room/${this.$route.params.roomSequence}/owner/${this.totalQuestion}`, 
+              JSON.stringify(gameInfo), {})
+            }
+            
             if(this.session) {this.session.disconnect();}
-             if (this.stompClient) {this.stompClient.disconnect()}
+            if (this.stompClient) {this.stompClient.disconnect()}
             this.stompClient = null;
 
             this.session = undefined;
@@ -356,7 +377,6 @@ export default {
       let socket = new SockJS(serverUrl)
       this.stompClient = Stomp.over(socket)
       console.log('소켓 연결하는 중')
-      console.log(this.answerList)
       this.stompClient.connect({}, frame => {
           console.log(frame, '연결 성공!')
           this.stompClient.subscribe(`/topic/word-game/${this.$route.params.roomSequence}`, 
@@ -366,25 +386,42 @@ export default {
               if ("gameStatus" === key[1]){
                   this.status = true
                   this.playerLen = response.players.length
+                  this.currentPlayers = response.players
                   for (let i of response.players) {
-                    this.currentRank[`${i}`] = 0
+                    this.currentRank.push([0,i])
                   }
                   console.log(this.currentRank)
               } else if (key[0] === 'problem') {
                   this.problem = response.problem
                   console.log(this.problem)
+
               } else if (key[0] === 'roomSequence') {
                   this.answer = response.answer
                   this.answerList = response.correctPlayers
-                  for (let i of this.answerList) {
-                    this.currentRank[`${i}`] += response.point
-                  }
-                  console.log(this.currentRank)
+                  
+                  this.answerTime = true
+                  this.point = response.point
+                  console.log(this.answerList,'여긴가000')
+                  if (this.answerList.length > 0) {
+                    console.log('여긴가 111')
+                    for (let i of this.answerList) {
+                      console.log(i,'여긴가2222')
+                      for ( let j of this.currentRank) {
+                        if (i === j[1]){
+                          console.log(j[1],j[0], '왜 안됨?')
+                          j[0] += response.point
+                          break
+                        }
+                      }
+                    this.currentRank.sort(function(a, b)  {
+                      return b[0] - a[0];
+                    })
+                  }}
                   this.answerList= []
-                  this.isCorrect = false
-                  this.problemNum++
+                  this.isCorrect = false 
               } else if (key[0] === 'players') {
                   this.difficulty = response.points
+
               } else if (key[0] == 'correctPlayers') {
                 this.answerList = response.correctPlayers
                 
@@ -397,6 +434,7 @@ export default {
                 }
               } else if (key[0] == 'owner') {
                 this.isHost = response.owner
+                this.totalQuestion = response.totalQuestion
               }
           })
             
@@ -408,7 +446,7 @@ export default {
     this.start = true
     this.cnt = true
     const gameStatus = {
-        total_question : 10
+        total_question : this.totalQuestion
     }
     this.stompClient.send(`/game/word-game/${this.$route.params.roomSequence}`, JSON.stringify(gameStatus), {})
     this.threecountDown()
@@ -478,11 +516,12 @@ export default {
         this.stompClient.send(`/game/word-game/answer/${this.$route.params.roomSequence}`,
         JSON.stringify(questionNum), {}
         )
-        console.log(this.problemNum, '몇개 불러오는거임?')
-        if (this.problemNum <= 10){
+        this.problemNum++
+        
+        if (this.problemNum <= this.totalQuestion){
           console.log('결과까지!')
           setTimeout(() => {this.threecountDown()}, 3000)
-        } else if (this.problemNum > 10) {
+        } else if (this.problemNum > this.totalQuestion) {
           this.sendResult()
         }
     },
@@ -493,6 +532,10 @@ export default {
         undefined,
         {}
       )
+      this.status = false,
+      this.start = false,
+      this.currentRank = [],
+      this.currentPlayers =[]
   },
   
   }

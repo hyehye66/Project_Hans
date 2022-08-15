@@ -120,19 +120,7 @@
         실시간 순위
       </div>
       <div class="card-body">
-        <!-- <h5 class="card-title">Special title treatment</h5>
-        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a> -->
         <div class="body-detail-rank">
-          <!--  shadow-md py-60 px-50 -->						
-            <!-- <ul>
-              <li>김민철 1</li>
-              <li>김지현 2</li>
-              <li>김지현 2</li>
-              <li>김지현 2</li>
-              <li>김지현 2</li>
-              <li>김지현 2</li>
-            </ul> -->
 
           <div class="overflow-x-auto">
             <table class="table table-zebra w-full" id="rank-table">
@@ -277,14 +265,19 @@ export default {
       currentPlayers : [],
       joker : '',
       isHost : this.$route.params.host,
-      changeTagger : false
+
+      changeTagger : false,
+      totalQuestion : 0,
+      timeLimit : 0
+
     }
   },
   
   created(){
     this.joinSession(),
-    this.socketStart()
-
+    this.socketStart(),
+    this.setRoomInfo(),
+    this.isHost = this.$route.params.host
   },
 
   computed : {
@@ -292,6 +285,13 @@ export default {
   },
 //this.$route.params.token.slice(39,53)
   methods : {
+    setRoomInfo(){
+    if (this.$route.params.host == this.profile.nickname){
+      this.difficulty = this.$route.params.difficulty
+      this.timeLimit = this.$route.params.timeLimit
+      this.totalQuestion = this.$route.params.totalQuestion
+      console.log(this.difficulty, this.timeLimit, this.totalQuestion)
+    }},
     ...mapActions(['timerStart']),
     // 오픈비두 세션에 들어가기,created에 실행
     joinSession () {
@@ -342,12 +342,14 @@ export default {
 
             .then(() =>{
             if (this.isHost == this.profile.nickname) {
-              this.stompClient.send(`/game/body-game/room/${this.$route.params.roomSequence}/owner`, 
-              {
+              const gameInfo = {
                 difficulty : this.difficulty,
                 timeLimit : this.timeLimit,
                 totalQuestion : this.totalQuestion
-              }, {})
+                }
+              
+              this.stompClient.send(`/game/body-game/room/${this.$route.params.roomSequence}/owner`,  
+              JSON.stringify(gameInfo), {})
             }
             
             if(this.session) {this.session.disconnect();}
@@ -490,9 +492,7 @@ export default {
                   
                   if (Object.keys(this.answerList).length >0) {
                     for (let i of Object.keys(this.answerList)) {
-                      console.log(i, 11)
                       for ( let j of this.currentRank) {
-                        console.log(j,22)
                         if (i === j[1]){
                           j[0] += response.point
                           break
@@ -510,12 +510,13 @@ export default {
                   this.joker = this.currentPlayers.shift()
                   console.log(this.currentPlayers, '뽑은 후')
                   console.log(this.joker)
-                  this.changeTagger == true
+                  this.changeTagger = true
+                  this.getSub(this.joker)
                   }
                   
                   
                   this.currentPlayers.push(this.joker)
-                  this.getSub(this.joker)
+                  
               } else if (key[0] === 'players') {
                   this.difficulty = response.points
 
@@ -529,6 +530,9 @@ export default {
                 }
               } else if (key[0] == 'owner') {
                 this.isHost = response.owner
+                this.difficulty = response.difficulty
+                this.totalQuestion = response.totalQuestion
+                this.timeLimit = response.timeLimit
               }
           })
             
@@ -540,8 +544,8 @@ export default {
     this.start = true
     this.cnt = true
     const gameStatus = {
-        total_question : 10,
-        difficulty : 3
+        total_question : this.totalQuestion,
+        difficulty : this.difficulty
     }
     this.stompClient.send(`/game/body-game/${this.$route.params.roomSequence}`, JSON.stringify(gameStatus), {})
     
@@ -594,7 +598,7 @@ export default {
         player : this.profile.nickname,
         submit : this.temp,
         problem_num : this.problemNum,
-        time : 3
+        time : this.$store.state.games.TimeCounter
     }
     const submit = JSON.stringify(foranswer)
     this.stompClient.send(

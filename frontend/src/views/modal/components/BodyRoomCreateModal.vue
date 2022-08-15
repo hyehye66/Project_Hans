@@ -140,7 +140,7 @@ export default {
 
       console.log(res.data,'뭐받아옴?')
       this.$router.push({ name: 'BodyDetailView', params: { mode : this.mode, sessionName : this.sessionName, token : res.data.data.token, roomSequence : res.data.data.roomSequence,
-      host : this.profile.nickname}})
+      host : this.profile.nickname, difficulty : this.levelcnt, totalQuestion : this.problemcnt, timeLimit : this.timecnt}})
       
 
     })

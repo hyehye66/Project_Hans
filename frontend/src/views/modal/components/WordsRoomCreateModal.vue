@@ -97,11 +97,10 @@ export default {
        headers : this.authHeader}, 
     ).
     then(res => {
-      
       this.$router.push({ name: 'WordsDetailView', 
       params: { mode : this.mode, sessionName : this.sessionName, 
       token : res.data.data.token, roomSequence : res.data.data.roomSequence,
-      problemIdx : this.problemcnt
+      totalQuestion : this.problemcnt, host : this.profile.nickname
       }})
     })
     .catch(err => console.log(err,1234))
@@ -109,7 +108,7 @@ export default {
     
   },
 },
-computed : {...mapGetters(['authHeader'])}
+computed : {...mapGetters(['authHeader','profile'])}
 }
 </script>
 <style scoped>
