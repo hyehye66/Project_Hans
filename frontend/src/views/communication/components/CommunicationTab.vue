@@ -24,7 +24,7 @@
         </li>
         <li class="-mb-px mr-2 last:mr-0 flex-auto text-center" style="cursor:pointer">
           <a class="category-tab text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal" v-on:click="toggleTabs(5)" v-bind:class="{'text-blue-500 bg-white': openTab !== 5, 'text-white bg-blue-500': openTab === 5}">
-            <i class="fas fa-briefcase text-base mr-1"></i> Business
+            <i class="fas fa-briefcase text-base mr-1"></i> Call
           </a>
         </li>
       </ul>

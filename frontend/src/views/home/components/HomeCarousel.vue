@@ -114,10 +114,10 @@ export default {
 
 <style scoped>
 img {
-    height: auto;
-    width: 100%;
-    object-fit: cover;
-    /* contain */
+    height: 100vh;
+    width: 100vw;
+
+
   }
 
 .carousel-item {

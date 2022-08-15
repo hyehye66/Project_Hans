@@ -48,9 +48,9 @@
       <br>
       </div>
       <div class="modal-footer flex">
-      <button class="mt-3" v-if="sessionName" @click="joinSession">
+      <button class="mt-3" v-if="sessionName" @click="updateRoom">
       <!-- @click 추후수정 필요 -->
-      <span class='btn-animate' @click="updateRoom">완료</span>
+      <span class='btn-animate'>완료</span>
       </button>
       <!-- <button @click="$emit('update:open', !open)" type="button" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-3 rounded" data-bs-dismiss="modal">Close</button> -->
     </div>

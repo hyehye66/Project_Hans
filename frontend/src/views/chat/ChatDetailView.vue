@@ -27,14 +27,14 @@
         
         <div class="chat-detail-session-left col-md-8">
             <!-- 화상 -->
-            <div class="chat-detail-video-container1">
+            <div class="chat-detail-video-container1 col-lg-12">
               <div class="chat-detail-video-container2 col-lg-12">
                   <ChatDetailRTCItem :stream-manager="publisher" @click="updateMainVideoStreamManager"/>
                   <ChatDetailRTCItem v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager"/>
               </div>
             </div>
             <!-- 캠,마이크,나가기,설정 -->
-            <div class="cam-buttons">
+            <div class="cam-buttons col-md-6">
                 <!-- style="height: 100%" -->
                 <!-- 캠 -->
                 <span class="chat-detail-icon-area" @click='muteVideo'>
@@ -79,14 +79,28 @@
         </div>
 
         <div class="chat-detail-session-right col-md-4">
-            <div class="chat-box">
-                <ul v-for="idx in chattingList" :key="idx">
-                    <li>{{idx}}</li>
-                </ul>
-            </div>
-            <div class="my-chat-input">
-                <input v-model="myChat" type="text" @keyup.enter="startChatting"/>
-            </div>            
+          <div class="chat-box">
+            <div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-offset="0" class="scrollspy-example" tabindex="0">
+              <!-- <h4 id="scrollspyHeading1">First heading</h4>
+              <p>...</p>
+              <h4 id="scrollspyHeading2">Second heading</h4>
+              <p>...</p>
+              <h4 id="scrollspyHeading3">Third heading</h4>
+              <p>...</p>
+              <h4 id="scrollspyHeading4">Fourth heading</h4>
+              <p>...</p>
+              <h4 id="scrollspyHeading5">Fifth heading</h4>
+              <p>...</p> -->
+
+              <ul v-for="idx in chattingList" :key="idx">
+                <li class="one-chat">{{idx}}</li>
+              </ul>
+            </div>                
+          </div>
+          <div class="my-chat-input">
+              <input v-model="myChat" type="text" @keyup.enter="startChatting"  class="my-chatting"/>
+              <PaperAirplaneIcon style="height: 35; width: 35;" @click="startChatting" />
+          </div>            
         </div>
 
         <!-- <div id="main-video" class="col-md-6">
@@ -115,7 +129,7 @@ import { OpenVidu } from 'openvidu-browser';
 import axios from 'axios'
 import { mapGetters } from 'vuex';
 import { VideoCameraIcon, MicrophoneIcon, LogoutIcon, CogIcon, PaperAirplaneIcon } from '@heroicons/vue/outline';
-import ChatRoomUpdateModal from '../modal/components/ChatRoomUpdateModal.vue'
+import ChatRoomUpdateModal from '@/views/modal/components/ChatRoomUpdateModal.vue'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
@@ -125,11 +139,12 @@ export default {
   name : 'ChatDetailView',
   components : {
     ChatDetailRTCItem,
+    ChatRoomUpdateModal,
     // VideoCameraIcon,
     // MicrophoneIcon,
     LogoutIcon,
     CogIcon,
-    // PaperAirplaneIcon,
+    PaperAirplaneIcon,
   },
   data () {
     return {
@@ -326,7 +341,7 @@ svg {
   z-index: -1;
   opacity: 0.6;
   content: "";
-  background: url("@/assets/14.png");
+  background: url("@/assets/15.png");
   background-size: cover;
   
 }
@@ -378,8 +393,8 @@ svg {
 .chat-detail-icon-area {
   border: none;
   display: inline-block;
-  width: 20%;
-  height: 20%;
+  width: 10%;
+  height: 10%;
 
   background-color: transparent;
 }
@@ -560,12 +575,12 @@ user-video {
   
   background-color: transparent;
 
-  height: 80%;
+  /* height: 80%; */
 }
 
 .cam-buttons {
-    top: 80%;
-    width: 60%;
+    /* top: 80%; */
+    width: 50%;
     margin: 0 auto;
     margin-top: 2%;
 
@@ -580,6 +595,8 @@ user-video {
     height: 40; */
     vertical-align: middle;
     
+    position: fixed;
+    bottom: 10%;
 }
 
 img {
@@ -607,9 +624,17 @@ img {
 .chat-box {
   /* background-color: transparent;
   border-color: #ffff; */
-  background-color: rgba(60, 60, 60, 0.26 );
+
+
+  /* background-color: rgba(60, 60, 60, 0.26 );
   color: #ffff;
   border: none;
+  border-radius: 5% 5% 5% 5%;
+  padding: 3%;
+
+  width: 25rem;
+  height: 33rem; */
+
 }
 
 .chat-box ul{
@@ -629,10 +654,22 @@ img {
 }
 
 .my-chat-input {
-    /* border: 1; */
-    border: 1px dotted black;
-    font-size: 2rem;
-    width: 90%;
+  /* border: 1; */
+  /* border: 1px dotted black; */
+  border: none;
+  font-size: 1.6rem;
+  /* width: 90%; */
+
+  display: flex;
+  flex-direction: row;
+  /* align-self: center; */
+  justify-content: center;
+  align-items: center;
+    
+}
+
+.my-chatting {
+  width: 80%;
 }
 
 .chat-detail-chat-series {
@@ -650,6 +687,46 @@ img {
   color: #ffff;
 } */
 
+
+.chat-box {
+  margin-top: 3%;
+  padding:6%;
+  overflow-y: scroll;
+  /* border: 3px solid rgb(255, 255, 255); */
+  border-radius:20px;
+  align-items: center;
+  height: 73vh;
+  margin-right: 2.2vw;
+  background: rgba(0, 0, 0, 0.2);
+  color:white;
+ 
+}
+.chat-box::-webkit-scrollbar {
+  width: 8px; 
+  height: 8px;
+ 
+}
+.chat-box::-webkit-scrollbar-track {
+   background: #3f3150;
+   border-radius: 20px;
+}
+.chat-box::-webkit-scrollbar-corner {
+   background: #3f3150;
+   border-radius: 20px;
+  
+}
+.chat-box::-webkit-scrollbar-thumb {
+   background:  #b0a2c8;
+   border-radius: 20px;
+}
+.chat-box::-webkit-scrollbar-button {
+  background-color: #dccbe0;
+  border-radius: 20px;
+}
+
+.one-chat {
+  font-size: 1.2rem;
+}
 
 
 
