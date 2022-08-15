@@ -1,5 +1,5 @@
 <template>
-<!-- <div v-if="open" class="modal"  tabindex="-1" > -->
+<div v-if="open" class="modal"  tabindex="-1" >
   <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="staticBackdropLabel">대화방 설정</h5>
@@ -25,24 +25,27 @@
         <br>
 
       <div class="modal-footer flex">
-        <button class="mt-3" v-if="contents.roomTitle" @click="joinSession">
+        <button class="mt-3" v-if="contents.roomTitle" @click="updateRoom">
         <!-- @click 추후수정 필요 -->
         <span class='btn-animate'>완료</span>
         </button>
         <!-- <button @click="$emit('update:open', !open)" type="button" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-3 rounded" data-bs-dismiss="modal">Close</button> -->
       </div>
     </div>
+  </div>
 </div>
 </template>
 
 <script>
 import axios from "axios"
+import { mapGetters } from 'vuex';
 const SERVER_URL = process.env.VUE_APP_SERVER_URL
 
 export default {
   name: 'ChatRoomUpdateModal',
   data () {
     return {
+      maxUsercnt : 0,
       contents: {
         roomTitle: '',
         maxUser: [
@@ -62,38 +65,34 @@ export default {
       default : false,
       }
   },
+  computed : {
+    ...mapGetters(['authHeader'])},
   methods : {
     isClose() {
       console.log(this.open)
       this.$emit('update:open', false)
     },
+    updateRoom(){
+    axios(
+      { url : `/api/conversations/rooms/${this.$route.params.roomSequence}`,
+        method : 'put',
+        data : {
+        title : this.sessionName,
+        restrict_num : this.maxUsercnt,
+       },
+       headers : this.authHeader
+       })
+    .then(res => {
+      alert('방설정 변경완료!')
+      this.isClose()
 
-    room_info() {
-        this.$store.dispatch('roomInfo',this.contents)
-      },
-      joinSession() {
-        // event?
-        event.preventDefault();
-        return new Promise((resolve, reject) => {
-                axios.defaults.headers.common[
-                    "Authorization"
-                ] = `Bearer ${this.$store.state.accessToken}`;
-                axios.post(`${SERVER_URL}/conferences`, this.contents)
-                    .then((res) => {
-                        console.log('sdsdsdsd')
-                        // console.log(commit);
-                        console.log(res.data.roomId)
-                        // this.$store.dispatch('roomInfo',this.contents)
-                        this.$store.dispatch('joinSession',res.data.roomId)
-                        this.$router.push({ name: "Room" , params: {roomid: res.data.roomId }});
-                        
-                        resolve();
-                    })
-                    .catch((error) => {
-                        reject(error);
-                    })
-            })
-      },
+    })
+    .catch(err => console.log(err))
+        
+    
+  },
+
+    
   }
 }
 </script>
