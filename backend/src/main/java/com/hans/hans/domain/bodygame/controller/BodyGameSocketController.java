@@ -50,8 +50,8 @@ public class BodyGameSocketController {
     }
     @MessageMapping("/body-game/room/{room_seq}/owner")
     @SendTo("/topic/body-game/{room_seq}")
-    public BodyGameOwnerResponseDto getOwner(@DestinationVariable("room_seq") Long roomSequence){
-        BodyGameOwnerResponseDto bodyGameOwnerResponseDto = bodyGameSocketService.getOwner(roomSequence);
+    public BodyGameOwnerResponseDto getOwner(BodyGameOwnerRequestDto bodyGameOwnerRequestDto, @DestinationVariable("room_seq") Long roomSequence){
+        BodyGameOwnerResponseDto bodyGameOwnerResponseDto = bodyGameSocketService.getOwner(bodyGameOwnerRequestDto, roomSequence);
         return bodyGameOwnerResponseDto;
     }
 

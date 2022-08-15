@@ -126,10 +126,16 @@ public class BodyGameSocketServiceImpl implements BodyGameSocketService {
     }
 
     @Override
-    public BodyGameOwnerResponseDto getOwner(Long roomSequence) {
+    public BodyGameOwnerResponseDto getOwner(BodyGameOwnerRequestDto bodyGameOwnerRequestDto, Long roomSequence) {
         Room room = roomRepository.findByRoomSequence(roomSequence);
         String owner = room.getMember().getNickname();
-        BodyGameOwnerResponseDto bodyGameOwnerResponseDto = new BodyGameOwnerResponseDto(owner);
+        BodyGameOwnerResponseDto bodyGameOwnerResponseDto =
+                BodyGameOwnerResponseDto.builder()
+                .owner(owner)
+                .difficulty(bodyGameOwnerRequestDto.getDifficulty())
+                .timeLimit(bodyGameOwnerRequestDto.getTimeLimit())
+                .totalQuestion(bodyGameOwnerRequestDto.getTotalQuestion())
+                .build();
         return bodyGameOwnerResponseDto;
     }
 
