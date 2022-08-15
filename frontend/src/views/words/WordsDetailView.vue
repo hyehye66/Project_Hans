@@ -238,8 +238,7 @@ export default {
         leaveSession () {
             
             // 우리 소켓 통신 연결 해제 
-            if (this.stompClient) {this.stompClient.disconnect()}
-            this.stompClient = null;
+           
             // 타이머 강제 종료
            this.$store.state.games.TimerChk = true
            // axios로 스프링 서버의 방에서 나가기
@@ -250,8 +249,10 @@ export default {
             })
 
             .then(() =>{
+            this.stompClient.send(`/game/word-game/room/${this.$route.params.roomSequence}/owner`, undefined, {})
             if(this.session) {this.session.disconnect();}
-
+             if (this.stompClient) {this.stompClient.disconnect()}
+            this.stompClient = null;
 
             this.session = undefined;
             this.mainStreamManager = undefined;
@@ -422,23 +423,26 @@ export default {
   },
   async setCorrect(){
     const result = await this.problemTrigger()
-    await this.allCorrect()
-    if (!result) {
+    //await this.allCorrect() 인터벌 (얼코렉트)
+    let result2 = await this.allCorrect()
+    if (!result || result2) {
       // this.$store.state.games.TimerChk = true
       this.sendCorrect()
-      // 근데 이게 먹힌다구?
     } 
     // if (result2) {console.log('!!')}
   },
   allCorrect(){
     let interval = setInterval(() => {
+      console.log('정답자 수 : '+ this.answerList.length)
+      console.log('참여자 수 : '+ this.playerLen)
       if (this.answerList.length == this.playerLen){
         this.$store.state.games.TimerChk = true
-        this.sendCorrect()
         clearInterval(interval)
+        return true
       }
-      console.log(this.answerList, '첫문제되냐')
+      
     }, 1000)
+   
   },
  
 
