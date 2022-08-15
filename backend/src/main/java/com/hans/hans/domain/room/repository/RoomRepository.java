@@ -14,6 +14,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     Page<Room> findRoomsByMode(Mode mode, Pageable pageable);
     Room findByRoomSequence(Long roomSequence);
     Page<Room> findRoomsByTitleContaining(String nickname, Pageable pageable);
-    Page<Room> findRoomsByMember(Member member, Pageable pageable);
+    Page<Room> findRoomByMember(Member member, Pageable pageable);
     List<Room> findRoomsByModeAndRoomStatus(Mode mode, boolean roomStatus);
 }

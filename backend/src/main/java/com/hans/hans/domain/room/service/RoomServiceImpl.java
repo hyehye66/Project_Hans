@@ -210,7 +210,7 @@ public class RoomServiceImpl implements RoomService{
     public RoomsResponseDto searchRoomByNickname(String nickname, Pageable pageable){
         Member member = memberRepository.findByNickname(nickname);
 
-        Page<Room> rooms = roomRepository.findRoomsByMember(member,pageable);
+        Page<Room> rooms = roomRepository.findRoomByMember(member,pageable);
         if(rooms.getContent().size()==0) throw new NoExistRoomSearchByNicknameException("현재 검색한 방장 닉네임으로 개설된 방이 없습니다.");
 
         RoomsResponseDto roomsResponseDto = new RoomsResponseDto(rooms);
@@ -227,40 +227,41 @@ public class RoomServiceImpl implements RoomService{
         ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
 
         try {
-            Date now = new Date();
-            String title = conversationCreateRequestDto.getTitle();
-            int restrictNum = conversationCreateRequestDto.getRestrictNum();
+            if(roomMemberRepository.findByMember(member)==null){
+                Date now = new Date();
+                String title = conversationCreateRequestDto.getTitle();
+                int restrictNum = conversationCreateRequestDto.getRestrictNum();
 
-            Session session = openVidu.createSession();
-            String token = session.createConnection(connectionProperties).getToken();
+                Session session = openVidu.createSession();
+                String token = session.createConnection(connectionProperties).getToken();
 
-            Room room = roomRepository.save(
-                    Room.builder()
-                            .member(member)
-                            .mode(modeRepository.findByModeSequence(Modes.TALK.getModeSequence()))
-                            .title(title)
-                            .restrictNum(restrictNum)
-                            .currentNum(1)
-                            .roomDTTM(now)
-                            .roomStatus(false)
-                            .build()
-            );
+                Room room = roomRepository.save(
+                        Room.builder()
+                                .member(member)
+                                .mode(modeRepository.findByModeSequence(Modes.TALK.getModeSequence()))
+                                .title(title)
+                                .restrictNum(restrictNum)
+                                .currentNum(1)
+                                .roomDTTM(now)
+                                .roomStatus(false)
+                                .build()
+                );
 
-            roomMemberRepository.save(
-                    RoomMember.builder()
-                            .member(member)
-                            .room(room)
-                            .token(token)
-                            .enterDTTM(now)
-                            .build()
-            );
+                roomMemberRepository.save(
+                        RoomMember.builder()
+                                .member(member)
+                                .room(room)
+                                .token(token)
+                                .enterDTTM(now)
+                                .build()
+                );
 
-            this.mapSessions.put(room.getRoomSequence(), session);
+                this.mapSessions.put(room.getRoomSequence(), session);
 
-            ConversationCreateResponseDto conversationCreateResponseDto = new ConversationCreateResponseDto(room, token);
+                ConversationCreateResponseDto conversationCreateResponseDto = new ConversationCreateResponseDto(room, token);
 
-            return conversationCreateResponseDto;
-
+                return conversationCreateResponseDto;
+            }else throw new AlreadyInTheRoomException("현재 사용자는 이미 다른 방에 입장되어 있습니다.");
         }catch (OpenViduJavaClientException e1) {
             // If internal error generate an error message and return it to client
             throw new SessionCreateException("세션 만드는데 문제있음");
