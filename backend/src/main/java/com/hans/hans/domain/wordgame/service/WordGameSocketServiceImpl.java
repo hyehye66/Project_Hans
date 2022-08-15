@@ -117,10 +117,10 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
         return wordGameResultResponseDto;
     }
     @Override
-    public WordGameOwnerResponseDto getOwner(Long roomSequence){
+    public WordGameOwnerResponseDto getOwner(WordGameOwnerRequestDto wordGameOwnerRequestDto, Long roomSequence){
         Room room = roomRepository.findByRoomSequence(roomSequence);
         String owner = room.getMember().getNickname();
-        WordGameOwnerResponseDto wordGameOwnerResponseDto = new WordGameOwnerResponseDto(owner);
+        WordGameOwnerResponseDto wordGameOwnerResponseDto = new WordGameOwnerResponseDto(owner, wordGameOwnerRequestDto.getTotalQuestion());
         return wordGameOwnerResponseDto;
     }
 }
