@@ -93,7 +93,7 @@
           <LogoutIcon style="height: 50%; width: 50%;"/>
       </span>
       <!-- 설정 -->
-      <span class="body-detail-icon-area" @click="isOpen">
+      <span class="body-detail-icon-area" @click="isOpen" v-if="isHost == profile.nickname">
           <CogIcon style="height: 50%; width: 50%;"/>
       </span>
     </div>
@@ -263,15 +263,14 @@ export default {
       isCorrect : false,
       answerTime : false,
       threecount : 3,
-
       point : 0,
       currentPlayers : [],
       joker : '',
       isHost : this.$route.params.host,
       changeTagger : false,
       totalQuestion : 0,
-      timeLimit : 0
-
+      timeLimit : 0,
+      tempRankList : {}
     }
   },
   
@@ -292,7 +291,7 @@ export default {
       this.difficulty = this.$route.params.difficulty
       this.timeLimit = this.$route.params.timeLimit
       this.totalQuestion = this.$route.params.totalQuestion
-      console.log(this.difficulty, this.timeLimit, this.totalQuestion)
+      
     }},
     ...mapActions(['timerStart']),
     // 오픈비두 세션에 들어가기,created에 실행
@@ -334,6 +333,7 @@ export default {
             // 우리 소켓 통신 연결 해제 
             
             // 타이머 강제 종료
+            this.$store.state.games.all = true
            this.$store.state.games.TimerChk = true
            // axios로 스프링 서버의 방에서 나가기
             axios({
@@ -449,7 +449,7 @@ export default {
     setTimeout(() => {this.threecount = 1}, 3000)
     setTimeout(() => {this.threecount = 'start!'}, 4000)
     setTimeout(() => { this.cnt=false }, 4500)
-    setTimeout(() => { this.timerStart(15) }, 4500)
+    setTimeout(() => { this.timerStart(this.timeLimit) }, 4500)
     this.threecount = 3
     setTimeout(() => { this.getProblem() }, 1500)
   },
@@ -470,24 +470,23 @@ export default {
               let key = Object.keys(response) 
               if ("gameStatus" === key[1]){
                   this.status = true
-                  this.playerLen = response.players.length
-                  this.currentPlayers = response.players
+                  this.timeLimit = response.timeLimit
                   for (let i of response.players) {
                     this.currentRank.push([0,i])
                   }
-                  console.log(this.currentPlayers, '뽑기전')
+                  for (let j of response.players) {
+                    this.currentPlayers.push(j)
+                  }
+                  this.playerLen = this.currentPlayers
+                  // console.log(typeof(this.currentPlayers,'이거 왜 객체로 되냐?'))
                   this.joker = this.currentPlayers.shift()
                   console.log(this.joker)
                   this.currentPlayers.push(this.joker)
-                  console.log(this.currentPlayers, '뽑은 후')
                   this.threecountDown()
 
               } else if (key[0] === 'problem') {
                   this.problem = response.problem
-
                   this.changeTagger = false
-
-
 
               } else if (key[0] === 'roomSequence') {
                   this.answer = response.answer
@@ -495,7 +494,7 @@ export default {
                   console.log(Object.keys(this.answerList).length , '진짜 안먹?')
                   this.answerTime = true
                   this.point = response.point
-                  
+                  console.log(this.answerList,typeof(response.correctPlayers))
                   if (Object.keys(this.answerList).length >0) {
                     for (let i of Object.keys(this.answerList)) {
                       for ( let j of this.currentRank) {
@@ -520,10 +519,9 @@ export default {
                   console.log(this.joker)
                   this.changeTagger = true
                   this.getSub(this.joker)
-                  }
-                  
-                  
                   this.currentPlayers.push(this.joker)
+                  }
+
               } else if (key[0] === 'players') {
                   this.difficulty = response.points
 
@@ -552,7 +550,8 @@ export default {
     this.cnt = true
     const gameStatus = {
         total_question : this.totalQuestion,
-        difficulty : this.difficulty
+        difficulty : this.difficulty,
+        timeLimit : this.timeLimit
     }
     this.stompClient.send(`/game/body-game/${this.$route.params.roomSequence}`, JSON.stringify(gameStatus), {})
     
@@ -569,7 +568,7 @@ export default {
     },
       
   async setCorrect(){
-    let timeout = setTimeout(() => { this.$store.state.games.all = false; this.sendCorrect()}, 15000)
+    let timeout = setTimeout(() => { this.$store.state.games.all = false; this.sendCorrect()}, this.timeLimit * 1000)
     let interval = setInterval(() => {
       this.allCorrect()
       if(this.$store.state.games.all){

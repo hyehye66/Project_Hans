@@ -49,7 +49,7 @@
                     <LogoutIcon style="height: 40; width: 40;"/>
                 </div>
                 <!-- 설정모달창 띄우는 방법 생각하기 -->
-                <div class="icon-area" @click="isOpen">
+                <div class="icon-area" @click="isOpen" v-if="(isHost === profile.nickname)">
                     <CogIcon style="height: 40; width: 40;"/>
                 </div>
             </div>
@@ -79,10 +79,10 @@
             <!-- <br> -->
             <!-- 현재 문제 남은 시간 타이머 -->
             <div class="problem-timer" style="width: 30%">남은 시간: 
-            <div v-if="cnt">{{threecount}}</div></div>
+            <div v-if="cnt && status">{{threecount}}</div></div>
             <!-- style="width: 40; height: 40;" -->
             <!-- 임시시작버튼 -->
-            <div v-if="!start" class="leader-button">
+            <div v-if="!status && (profile.nickname == isHost)" class="leader-button">
                 <button @click="sendStart" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
                     START
                 </button>
