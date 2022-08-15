@@ -7,6 +7,7 @@ export default {
       TimeCounter: 0,
       TimerStr: '',
       TimerChk: false,
+      all : false,
     },
     mutations: {
     SET_TIMER: (state,timer) => state.timer = timer,
