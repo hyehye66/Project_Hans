@@ -281,41 +281,43 @@ public class RoomServiceImpl implements RoomService{
         String serverData = "{\"serverData\": \"" + member.getEmail() + "\"}";
         ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).role(role).build();
         try {
-            Date now = new Date();
-            String title = wordGameCreateRequestDto.getTitle();
+            if(roomMemberRepository.findByMember(member)==null){
+                Date now = new Date();
+                String title = wordGameCreateRequestDto.getTitle();
 
-            int restrictNum = wordGameCreateRequestDto.getRestrictNum();
-            int totalQuestion = wordGameCreateRequestDto.getTotalQuestion();
-            Session session = openVidu.createSession();
-            String token = session.createConnection(connectionProperties).getToken();
+                int restrictNum = wordGameCreateRequestDto.getRestrictNum();
+                int totalQuestion = wordGameCreateRequestDto.getTotalQuestion();
+                Session session = openVidu.createSession();
+                String token = session.createConnection(connectionProperties).getToken();
 
-            Room room = roomRepository.save(
-                    Room.builder()
-                            .member(member)
-                            .mode(modeRepository.findByModeSequence(Modes.WORD.getModeSequence()))
-                            .title(title)
-                            .restrictNum(restrictNum)
-                            .currentNum(1)
-                            .roomDTTM(now)
-                            .roomStatus(false)
-                            .build()
-            );
+                Room room = roomRepository.save(
+                        Room.builder()
+                                .member(member)
+                                .mode(modeRepository.findByModeSequence(Modes.WORD.getModeSequence()))
+                                .title(title)
+                                .restrictNum(restrictNum)
+                                .currentNum(1)
+                                .roomDTTM(now)
+                                .roomStatus(false)
+                                .build()
+                );
 
-            roomMemberRepository.save(
-                    RoomMember.builder()
-                            .member(member)
-                            .room(room)
-                            .token(token)
-                            .enterDTTM(now)
-                            .build()
-            );
+                roomMemberRepository.save(
+                        RoomMember.builder()
+                                .member(member)
+                                .room(room)
+                                .token(token)
+                                .enterDTTM(now)
+                                .build()
+                );
 
-            this.mapSessions.put(room.getRoomSequence(), session);
+                this.mapSessions.put(room.getRoomSequence(), session);
 
-            WordGameCreateResponseDto wordGameCreateResponseDto = new WordGameCreateResponseDto(room, token);
-            wordGameCreateResponseDto.updateProblemNum(totalQuestion);
-            return wordGameCreateResponseDto;
+                WordGameCreateResponseDto wordGameCreateResponseDto = new WordGameCreateResponseDto(room, token);
+                wordGameCreateResponseDto.updateProblemNum(totalQuestion);
 
+                return wordGameCreateResponseDto;
+            }else throw new AlreadyInTheRoomException("현재 사용자는 이미 다른 방에 입장되어 있습니다.");
         }catch (OpenViduJavaClientException e1) {
             // If internal error generate an error message and return it to client
             throw new SessionCreateException("세션 만드는데 문제있음");
