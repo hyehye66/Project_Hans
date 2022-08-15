@@ -3,11 +3,11 @@ package com.hans.hans.domain.bodygame.service;
 import com.hans.hans.domain.bodygame.dto.*;
 import com.hans.hans.domain.bodygame.entity.BodyGameRoom;
 import com.hans.hans.domain.ranking.service.RankingService;
+import com.hans.hans.domain.room.entity.Room;
+import com.hans.hans.domain.room.repository.RoomRepository;
 import com.hans.hans.domain.room.service.RoomService;
 import com.hans.hans.domain.word.entity.Word;
 import com.hans.hans.domain.word.repository.WordRepository;
-import com.hans.hans.domain.wordgame.dto.WordGameSubmitResponseDto;
-import com.hans.hans.domain.wordgame.entity.WordGameRoom;
 import com.hans.hans.global.enumerate.Modes;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
@@ -20,6 +20,7 @@ import java.util.*;
 public class BodyGameSocketServiceImpl implements BodyGameSocketService {
 
     private final BodyGameRoomService bodyGameRoomService;
+    private final RoomRepository roomRepository;
     private final WordRepository wordRepository;
     private final RankingService rankingService;
     private final RoomService roomService;
@@ -122,6 +123,14 @@ public class BodyGameSocketServiceImpl implements BodyGameSocketService {
         BodyGameResultResponseDto bodyGameResultResponseDto = new BodyGameResultResponseDto(jsonObject);
 
         return bodyGameResultResponseDto;
+    }
+
+    @Override
+    public BodyGameOwnerResponseDto getOwner(Long roomSequence) {
+        Room room = roomRepository.findByRoomSequence(roomSequence);
+        String owner = room.getMember().getNickname();
+        BodyGameOwnerResponseDto bodyGameOwnerResponseDto = new BodyGameOwnerResponseDto(owner);
+        return bodyGameOwnerResponseDto;
     }
 
 }

@@ -9,4 +9,5 @@ public interface BodyGameSocketService {
     BodyGameSubmitResponseDto submit(BodyGameSubmitRequestDto bodyGameSubmitRequestDto, Long roomSequence);
     BodyGameAnswerResponseDto getAnswer(BodyGameAnswerRequestDto bodyGameAnswerRequestDto, Long roomSequence);
     BodyGameResultResponseDto getResult(Long roomSequence);
+    BodyGameOwnerResponseDto getOwner(Long roomSequence);
 }
