@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
-@JsonAutoDetect
 public class WordGameOwnerRequestDto {
     private int totalQuestion;
 }

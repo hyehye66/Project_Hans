@@ -50,10 +50,13 @@ public class WordGameSocketController {
         return wordGameResultResponseDto;
     }
 
-    @MessageMapping("/word-game/room/{room_seq}/owner")
+    @MessageMapping("/word-game/room/{room_seq}/owner/{totalQuestion}")
     @SendTo("/topic/word-game/{room_seq}")
-    public WordGameOwnerResponseDto getOwner(WordGameOwnerRequestDto wordGameOwnerRequestDto, @DestinationVariable("room_seq") Long roomSequence){
-        System.out.println("[TEST] totalQuestion: " + wordGameOwnerRequestDto.getTotalQuestion());
+    public WordGameOwnerResponseDto getOwner(@DestinationVariable("totalQuestion") int totalQuestion, @DestinationVariable("room_seq") Long roomSequence){
+        System.out.println("////////////////////////////////////////////////////////////////////");
+        System.out.println("[TEST] totalQuestion: " + totalQuestion);
+        System.out.println("////////////////////////////////////////////////////////////////////");
+        WordGameOwnerRequestDto wordGameOwnerRequestDto = new WordGameOwnerRequestDto(totalQuestion);
         WordGameOwnerResponseDto wordGameOwnerResponseDto = wordGameSocketService.getOwner(wordGameOwnerRequestDto, roomSequence);
         return wordGameOwnerResponseDto;
     }
