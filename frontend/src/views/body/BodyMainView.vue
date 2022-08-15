@@ -1,4 +1,5 @@
 <template>
+<nav-bar />
   <div class="container">
     <!-- <p class="game-title">몸으로 말해요</p> -->
     <p id="chat-main-title" class="d-flex justify-content-space-around py-2 px-4 mt-8">몸으로 말해요</p>
@@ -37,6 +38,7 @@
 import BodyMainCardList from './components/BodyMainCardList.vue'
 import BodyRoomCreateModal from '../modal/components/BodyRoomCreateModal.vue'
 import HowToBodyGameModal from '../modal/components/HowToBodyGameModal.vue'
+import NavBar from "@/components/NavBar.vue";
 import { mapGetters } from 'vuex';
 import axios from 'axios';
 
@@ -45,7 +47,8 @@ export default {
   components : {
     BodyMainCardList,
     BodyRoomCreateModal,
-    HowToBodyGameModal
+    HowToBodyGameModal,
+    NavBar,
   },
   data (){
     return {

@@ -1,4 +1,5 @@
 <template>
+<nav-bar></nav-bar>
   <div class="container">
 
     <div class="box relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg bg-white rounded">       
@@ -98,13 +99,14 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { PencilAltIcon, AcademicCapIcon } from '@heroicons/vue/outline';
-
+import NavBar from "@/components/NavBar.vue";
 
 export default {
   name: 'MyPageUpdateView',
   components: {
     PencilAltIcon,
     AcademicCapIcon,
+    NavBar,
   },
 
   computed: {

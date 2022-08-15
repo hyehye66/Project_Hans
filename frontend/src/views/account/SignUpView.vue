@@ -1,4 +1,5 @@
 <template>
+<nav-bar></nav-bar>
   <div>
     <h1 class="signup" style="text-align:center">회원가입</h1>
     <account-error-list v-if="authError"></account-error-list>
@@ -26,13 +27,15 @@
 </template>
 
 <script>
-  import { mapActions, mapGetters } from 'vuex'
-  import AccountErrorList from './components/AccountErrorList.vue'
+import NavBar from "@/components/NavBar.vue";
+import { mapActions, mapGetters } from 'vuex'
+import AccountErrorList from './components/AccountErrorList.vue'
 
   export default {
     name: 'SignupView',
     components: {
       AccountErrorList,
+      NavBar,
     },
     data() {
       return {

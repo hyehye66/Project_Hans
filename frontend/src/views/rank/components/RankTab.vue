@@ -1,4 +1,5 @@
 <template>
+<nav-bar></nav-bar>
   <div class="container flex flex-wrap">
     <div class="w-full">
       <ul class="flex mb-0 list-none flex-wrap pt-3 pb-4 flex-row">
@@ -209,7 +210,7 @@
 </template>
 
 <script>
-
+import NavBar from "@/components/NavBar.vue";
 import WordsSearchBar from '@/views/rank/components/WordsSearchBar.vue'
 import BodySearchBar from '@/views/rank/components/BodySearchBar.vue'
 import RankItems from '@/views/rank/components/RankItems.vue'
@@ -222,6 +223,7 @@ export default {
     WordsSearchBar,
     BodySearchBar,
     RankItems,  
+    NavBar,
   },  
   data() {
     return {
@@ -289,7 +291,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .container {  
   display: flex;
   justify-content: center;
@@ -301,7 +303,7 @@ export default {
 .category-tab {
   background: #dfdfdf;
   color: #f16b48;
-  font-size: 1.2em;
+  font-size: 1.2rem;
 }
 
 .category-tab:hover {

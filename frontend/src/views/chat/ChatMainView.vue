@@ -1,4 +1,5 @@
 <template>
+<nav-bar />
   <div class="container">
     <p id="chat-main-title" class="d-flex justify-content-space-around py-2 px-4 mt-8">대화방</p>
     <div class="btn-container py-4 px-4">
@@ -27,13 +28,15 @@
 <script>
 import ChatMainCardList from './components/ChatMainCardList.vue'
 import ChatRoomCreateModal from '../modal/components/ChatRoomCreateModal.vue'
+import NavBar from "@/components/NavBar.vue";
 import { mapGetters } from 'vuex'
 
 export default {
   name : 'ChatMainView',
   components : {
     ChatMainCardList,
-    ChatRoomCreateModal
+    ChatRoomCreateModal,
+    NavBar,
   },
   data (){
     return {
@@ -76,6 +79,10 @@ export default {
 .card-container{
   display : flex;
   justify-content: center;
+}
+
+#button-addon2 {
+  border: transparent;
 }
 
 #chat-main-title {
