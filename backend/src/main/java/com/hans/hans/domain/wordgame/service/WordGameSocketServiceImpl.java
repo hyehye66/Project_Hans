@@ -1,6 +1,8 @@
 package com.hans.hans.domain.wordgame.service;
 
 import com.hans.hans.domain.ranking.service.RankingService;
+import com.hans.hans.domain.room.entity.Room;
+import com.hans.hans.domain.room.repository.RoomRepository;
 import com.hans.hans.domain.room.service.RoomService;
 import com.hans.hans.domain.wordgame.dto.*;
 import com.hans.hans.domain.word.entity.Word;
@@ -16,6 +18,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class WordGameSocketServiceImpl implements WordGameSocketService {
+    private final RoomRepository roomRepository;
     private final WordRepository wordRepository;
     private final WordGameRoomService wordGameRoomService;
     private final RankingService rankingService;
@@ -112,5 +115,12 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
         WordGameResultResponseDto wordGameResultResponseDto = new WordGameResultResponseDto(jsonObject);
 
         return wordGameResultResponseDto;
+    }
+    @Override
+    public WordGameOwnerResponseDto getOwner(Long roomSequence){
+        Room room = roomRepository.findByRoomSequence(roomSequence);
+        String owner = room.getMember().getNickname();
+        WordGameOwnerResponseDto wordGameOwnerResponseDto = new WordGameOwnerResponseDto(owner);
+        return wordGameOwnerResponseDto;
     }
 }

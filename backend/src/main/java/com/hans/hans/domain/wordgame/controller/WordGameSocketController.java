@@ -48,4 +48,10 @@ public class WordGameSocketController {
         return wordGameResultResponseDto;
     }
 
+    @MessageMapping("/word-game/room/{room_seq}/owner")
+    @SendTo("/topic/word-game/{room_seq}")
+    public WordGameOwnerResponseDto getOwner(@DestinationVariable("room_seq") Long roomSequence){
+        WordGameOwnerResponseDto wordGameOwnerResponseDto = wordGameSocketService.getOwner(roomSequence);
+        return wordGameOwnerResponseDto;
+    }
 }
