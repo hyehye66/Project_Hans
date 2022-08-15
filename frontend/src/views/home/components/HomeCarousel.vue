@@ -30,7 +30,7 @@
         <button type="button" 
         class="bg-newBlue1 hover:bg-newGrey2 text-white font-bold py-2 px-5 rounded-full" 
         id="start">
-          Start
+        <router-link :to="{name: 'LoginView'}">Start</router-link>          
         </button>
       </div>      
     </div>
@@ -41,11 +41,11 @@
         <h5 class="c2-t1 font-black">How do you say this in Korean?</h5>
         <br>
         <p class="c2-t2 font-black">적재적소 표현이 궁금하다면</p>
-        <p class="c2-t3 font-black">상황별 한국어 회화
+        <p class="c2-t3 font-black">
           <button type="button" 
           class="bg-newBlue1 hover:bg-newGrey2 text-white font-bold py-2 px-4 rounded-full" 
           id="start">
-            학습하러 가기
+          <router-link :to="{name:'CommunicationView'}" >학습하러 가기</router-link>            
           </button>
         </p>
 

@@ -68,13 +68,13 @@
                   <tbody>
                     <tr>
                       <th scope="row">낱말 퀴즈</th>
-                      <td>{{profile.rankings[1].score}}</td>
-                      <td>{{profile.rankings[1].tier}}</td>
+                      <td>{{profile.rankings[0].score}}</td>
+                      <td>{{profile.rankings[0].tier}}</td>
                     </tr>
                     <tr>
                       <th scope="row">몸으로 말해요</th>
-                      <td>{{profile.rankings[2].score}}</td>
-                      <td>{{profile.rankings[2].tier}}</td>
+                      <td>{{profile.rankings[1].score}}</td>
+                      <td>{{profile.rankings[1].tier}}</td>
                     </tr>
                   </tbody>
                 </table>

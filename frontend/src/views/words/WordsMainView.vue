@@ -1,4 +1,5 @@
 <template>
+<nav-bar />
   <div class="container">
     <p id="chat-main-title" class="d-flex justify-content-space-around py-2 px-4 mt-8">낱말퀴즈</p>
     <div class="btn-container py-4 px-4">
@@ -36,6 +37,7 @@
 import WordsMainCardList from './components/WordsMainCardList.vue'
 import WordsRoomCreateModal from '../modal/components/WordsRoomCreateModal.vue'
 import HowToWordGameModal from '../modal/components/HowToWordGameModal.vue'
+import NavBar from "@/components/NavBar.vue";
 import { mapGetters } from 'vuex';
 import axios from 'axios';
 
@@ -44,7 +46,8 @@ export default {
   components : {
     WordsMainCardList,
     WordsRoomCreateModal,
-    HowToWordGameModal
+    HowToWordGameModal,
+    NavBar,
   },
   data (){
     return {

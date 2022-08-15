@@ -5,13 +5,15 @@
         <!-- chat-alt -->
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z" clip-rule="evenodd" />
-        </svg>
+        </svg>{{english_sentence}}
         <!-- >> -->
         <!-- <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M10.293 15.707a1 1 0 010-1.414L14.586 10l-4.293-4.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd" />
           <path fill-rule="evenodd" d="M4.293 15.707a1 1 0 010-1.414L8.586 10 4.293 5.707a1 1 0 011.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd" />
         </svg> -->
+        
       </div>
+      
       <div class="dialog col-md-12">
         {{sentence}}
       </div>
@@ -21,7 +23,7 @@
       <!-- <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" @click="startSpeechToTxt1">
         listen 
       </button> -->
-      <button class="btn btn-outline btn-secondary" @click="startSpeechToTxt1">
+      <button class="btn btn-outline btn-secondary" @click="startSpeechToTxt(this.sentence)">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
         </svg>
@@ -84,9 +86,15 @@ export default {
     }
   },
   props: {
-    sentence : String
+    sentence : String,
+    english_sentence : String,
   },
   methods: {
+     startSpeechToTxt(sentence) {
+      // start speech to txt
+      let utterance = new SpeechSynthesisUtterance(sentence)
+      window.speechSynthesis.speak(utterance)
+    },
     startSpeechToTxt1() {
       // start speech to txt
       let utterance = new SpeechSynthesisUtterance("얼마예요?")
