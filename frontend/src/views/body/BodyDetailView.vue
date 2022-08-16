@@ -285,7 +285,9 @@ export default {
       totalQuestion : 0,
       timeLimit : 0,
       tempRankList : {},
-      isSolving : []
+      isSolving : [],
+      resultTime : false,
+      gameResult : []
     }
   },
   
@@ -464,8 +466,8 @@ export default {
     setTimeout(() => {this.threecount = 3}, 1000)
     setTimeout(() => {this.threecount = 2}, 2000)
     setTimeout(() => {this.threecount = 1}, 3000)
-    setTimeout(() => {this.threecount = 'START!'}, 4000)
-    setTimeout(() => { this.cnt=false }, 4500)
+    setTimeout(() => {this.threecount = 'start!'}, 4000)
+    setTimeout(() => { this.cnt=false, this.answerTime = false }, 4500)
     setTimeout(() => { this.timerStart(this.timeLimit) }, 4500)
     this.threecount = 3
     setTimeout(() => { this.getProblem() }, 1500)
@@ -486,16 +488,17 @@ export default {
               const response = JSON.parse(res.body)
               let key = Object.keys(response) 
               if ("gameStatus" === key[1]){
-                console.log('잘받아옴!')
+                  this.status = true
                   this.currentPlayers =[],
                   this.joker = '',
                   this.problemNum = 1,
                   this.isSolving = []
-                  this.status = true
                   this.timeLimit = response.timeLimit
                   this.totalQuestion = response.totalQuestion
-                  console.log(this.timeLimit)
-
+                  this.isSolving = []
+                  this.resultTime = false
+                  this.gameResult = []
+                  console.log(this.playerLen, '여기서 갱신되냐?')
                   for (let i of response.players) {
                     this.currentRank.push([0,i])
                   }
@@ -567,11 +570,22 @@ export default {
                 this.isHost = response.owner
                 this.difficulty = response.difficulty
                 this.totalQuestion = response.totalQuestion
+                this.timeLimit = response.timeLimit
+
               } else if (key[0] == 'players'){
                 this.status = false,
                 this.start = false,
                 this.currentRank = [],
                 this.answerTime = false
+                this.resultTime = true
+                for (let i of Object.keys(response.players)) {
+                  console.log(i)
+                  console.log(response.players[`${i}`])
+                  this.gameResult.unshift([response.players[`${i}`],i])
+                }
+                this.gameResult.sort(function(a, b)  {
+                    return b[0] - a[0];
+                  })
               }
           })
             
@@ -580,7 +594,6 @@ export default {
     },
   sendStart(){
     this.start = true
-    this.cnt = true
     
     const gameStatus = {
         total_question : this.totalQuestion,
@@ -592,10 +605,8 @@ export default {
   },
 
   getProblem(){
-    this.answerTime = false
     this.trigger = true
     if (!this.isSolving.includes(this.problemNum)){
-      this.isSolving.push(this.problemNum)
       if (this.problemNum <= this.totalQuestion) {
         this.stompClient.send(
         `/game/body-game/room/${this.$route.params.roomSequence}/problem/${this.problemNum}`, undefined, {}
@@ -606,7 +617,8 @@ export default {
     },
       
   async setCorrect(){
-    let timeout = setTimeout(() => { this.$store.state.games.all = false; this.sendCorrect();clearInterval(interval) }, this.timeLimit * 1000)
+    console.log(this.timeLimit)
+    let timeout = setTimeout(() => { this.$store.state.games.all = false; this.sendCorrect();clearInterval(interval)}, this.timeLimit * 1000 + 0.2*this.timeLimit)
     let interval = setInterval(() => {
       this.allCorrect()
       if(this.$store.state.games.all){
@@ -654,7 +666,7 @@ export default {
 
   sendCorrect(){
 
-    if (!this.isSolving.includes(this.problemNum+1)){
+    if (!this.isSolving.includes(this.problemNum)){
       this.isSolving.push(this.problemNum)
       console.log(this.isSolving, '몇 번 받아오는 중?')
 
@@ -699,7 +711,7 @@ export default {
     } else {
       this.mainStreamManager = this.publisher
     }
-    
+    this.mainStreamManager.stream.audioActive = false
   }
   },
   }

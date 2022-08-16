@@ -42,7 +42,7 @@
             <div v-bind:class="{'hidden': openTab !== 2, 'block': openTab === 2}">
               <ul class="list-group" v-for="situation in situationSentence" :key="situation.situationSequence">
                 <li class="list-group-item" v-if="situation.category==='hospital'">
-                  <one-dialog :sentence="situation.sentence" :english_sentence="situation.eng_sentence"/>
+                  <two-dialog :sentence="situation.sentence" :english_sentence="situation.eng_sentence"/>
                 </li>
               </ul>  
             </div>
@@ -78,11 +78,12 @@
 
 <script>
 import OneDialog from '@/views/communication/components/OneDialog.vue'
-
+import TwoDialog from './TwoDialog.vue'
 export default {
   name: 'CommunicationTab',
   components: {
     OneDialog,
+    TwoDialog
 },
 props : {
   situationSentence : Array
