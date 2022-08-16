@@ -24,14 +24,16 @@
         listen 
       </button> -->
       <button class="btn btn-outline btn-secondary" id="listen-btn" @click="startSpeechToTxt(this.sentence)">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <!-- <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-        </svg>
+        </svg> -->
+        <VolumeUpIcon style="height: 80%; width: 80%" />
       </button>
       <button class="btn  btn-secondary" id="record-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <!-- <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-        </svg>
+        </svg> -->
+        <MicrophoneIcon style="height: 80%; width: 80%;" />
       </button>
 
       <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
@@ -64,13 +66,15 @@
 
 <script>
 import CommunicationRecord from '@/views/communication/components/CommunicationRecord.vue'
-import { XIcon } from '@heroicons/vue/outline';
+import { XIcon, VolumeUpIcon, MicrophoneIcon } from '@heroicons/vue/outline';
 
 export default {  
   name: 'OneDialog',
   components: {
     CommunicationRecord,
     XIcon,
+    VolumeUpIcon,
+    MicrophoneIcon,
   },
   data () {
     return {
