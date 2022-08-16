@@ -587,7 +587,7 @@ export default {
     },
       
   async setCorrect(){
-    let timeout = setTimeout(() => { this.$store.state.games.all = false; this.sendCorrect()}, this.timeLimit * 1000)
+    let timeout = setTimeout(() => { this.$store.state.games.all = false; this.sendCorrect();clearInterval(interval) }, this.timeLimit * 1000)
     let interval = setInterval(() => {
       this.allCorrect()
       if(this.$store.state.games.all){
