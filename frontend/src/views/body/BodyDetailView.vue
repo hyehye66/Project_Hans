@@ -265,7 +265,8 @@ export default {
       changeTagger : false,
       totalQuestion : 0,
       timeLimit : 0,
-      tempRankList : {}
+      tempRankList : {},
+      isSolving : []
     }
   },
   
@@ -440,7 +441,6 @@ export default {
 
     },
   threecountDown(){
-    console.log('시작합니당')
     this.cnt = true
     setTimeout(() => {this.threecount = 3}, 1000)
     setTimeout(() => {this.threecount = 2}, 2000)
@@ -468,6 +468,10 @@ export default {
               let key = Object.keys(response) 
               if ("gameStatus" === key[1]){
                 console.log('잘받아옴!')
+                  this.currentPlayers =[],
+                  this.joker = '',
+                  this.problemNum = 1,
+                  this.isSolving = []
                   this.status = true
                   this.timeLimit = response.timeLimit
                   this.totalQuestion = response.totalQuestion
@@ -485,7 +489,7 @@ export default {
                   console.log(this.currentPlayers, this.playerLen)
 
                   this.joker = this.currentPlayers.shift()
-                  console.log(this.joker, '여기냐?')
+                  console.log(this.joker, '술래확인용')
                   this.currentPlayers.push(this.joker)
 
                   this.getSub(this.joker)
@@ -496,7 +500,7 @@ export default {
                   this.problem = response.problem
 
                   this.changeTagger = false
-
+                  console.log(this.problemNum, '몇 번 문제임?')
 
               } else if (key[0] === 'roomSequence') {
                   this.answer = response.answer
@@ -524,14 +528,12 @@ export default {
                   
                  if (!this.changeTagger){
                   this.joker = this.currentPlayers.shift()
-                  console.log(this.currentPlayers, '뽑은 후')
-                  console.log(this.joker, '어디서 undefined가 뜨는 것?')
+                  console.log(this.joker, '술래확인용?')
                   
                   this.getSub(this.joker)
                   this.currentPlayers.push(this.joker)    
 
 
-                  console.log(this.currentPlayers, 'undefined어디임?')
                   this.changeTagger = true
                  }
 
@@ -548,6 +550,12 @@ export default {
                 this.difficulty = response.difficulty
                 this.totalQuestion = response.totalQuestion
                 this.timeLimit = response.timeLimit
+                
+              } else if (key[0] == 'players'){
+                this.status = false,
+                this.start = false,
+                this.currentRank = [],
+                this.answerTime = false
               }
           })
             
@@ -555,7 +563,6 @@ export default {
       )
     },
   sendStart(){
-    console.log('보낼거임')
     this.start = true
     this.cnt = true
     
@@ -580,9 +587,6 @@ export default {
     },
       
   async setCorrect(){
-
-    console.log('여기서 보냄')
-
     let timeout = setTimeout(() => { this.$store.state.games.all = false; this.sendCorrect()}, this.timeLimit * 1000)
     let interval = setInterval(() => {
       this.allCorrect()
@@ -630,18 +634,23 @@ export default {
     },
 
   sendCorrect(){
-        const questionNum = {question_num : this.problemNum} 
-        this.stompClient.send(`/game/body-game/answer/${this.$route.params.roomSequence}`,
-        JSON.stringify(questionNum), {}
-        )
-        this.problemNum++
-        console.log(this.problemNum, 'e다음 문제 찍어주세용')
-        if (this.problemNum <= this.totalQuestion){
-          console.log('결과까지!')
-          setTimeout(() => {this.threecountDown()}, 3000)
-        } else if (this.problemNum > this.totalQuestion) {
-          this.sendResult()
-        }
+    if (!this.isSolving.includes(this.problemNum)){
+      this.isSolving.push(this.problemNum)
+      console.log(this.isSolving)
+      const questionNum = {question_num : this.problemNum} 
+      this.stompClient.send(`/game/body-game/answer/${this.$route.params.roomSequence}`,
+      JSON.stringify(questionNum), {}
+      )
+      this.problemNum++
+      console.log(this.problemNum, 'e다음 문제 찍어주세용')
+      if (this.problemNum <= this.totalQuestion){
+        console.log('결과까지!')
+        setTimeout(() => {this.threecountDown()}, 3000)
+      } else if (this.problemNum > this.totalQuestion) {
+        this.sendResult()
+      }
+    }
+        
     },
 
   sendResult(){
@@ -649,14 +658,8 @@ export default {
         `/game/body-game/result/${this.$route.params.roomSequence}`,
         undefined,
         {}
-      ),
-      this.status = false,
-      this.start = false,
-      this.currentRank = [],
-      this.currentPlayers =[],
-      this.joker = '',
-      this.problemNum = 1,
-      this.answerTime = false
+      )
+      
   },     
 
   getSub(Sulae){
