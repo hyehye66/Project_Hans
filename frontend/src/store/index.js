@@ -5,11 +5,12 @@ const SERVER_URL = process.env.VUE_APP_SERVER_URL
 import createPersistedState from "vuex-persistedstate";
 import member from './modules/member'
 import games from "./modules/games";
+import ranks from "./modules/ranks";
 
 
 
 export default new Vuex.Store({
-  modules: { member,games
+  modules: { member,games, ranks
   },
   getters: {
   },

@@ -8,7 +8,7 @@
             v-on:click="toggleTabs(1)" 
             v-bind:class="{'text-newOrange bg-white': openTab !== 1, 
             'text-white bg-newOrange': openTab === 1}"
-            @click="getRanking">
+            @click="getRanking(0)">
             <i class="fas fa-space-shuttle text-base mr-1"></i> 낱말게임
           </a>
         </li>
@@ -17,17 +17,8 @@
             v-on:click="toggleTabs(2)" 
             v-bind:class="{'text-blue-500 bg-white': openTab !== 2, 
             'text-white bg-blue-500': openTab === 2}"
-            @click="getRanking">
+            @click="getRanking(0)">
             <i class="fas fa-cog text-base mr-1"></i> 몸으로 말해요
-          </a>
-        </li>
-        <li class="-mb-px mr-2 last:mr-0 flex-auto text-center" style="cursor:pointer">
-          <a class="category-tab text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal" 
-            v-on:click="toggleTabs(3)" 
-            v-bind:class="{'text-blue-500 bg-white': openTab !== 3, 
-            'text-white bg-blue-500': openTab === 3}"
-            @click="getRanking">
-            <i class="fas fa-briefcase text-base mr-1"></i> 가사퀴즈
           </a>
         </li>
       </ul>
@@ -52,87 +43,44 @@
                       <th>티어</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody v-if="!this.$store.state.ranks.isSearch">
                     <!-- row 1 -->
                     <tr v-for="rankData in rankDataList" :key="rankData.rankingSequence">
-                      <th><rank-items :rankingSequence="rankDataList.indexOf(rankData)+1"/></th>
+                      <th><rank-items :rankingSequence="(this.page*10)+rankDataList.indexOf(rankData)+1"/></th>
                       <td><rank-items :nickname="rankData.nickname"/></td>
                       <td><rank-items :score="rankData.score" /></td>
                       <td><rank-items :tier="rankData.tier" /></td>
                     </tr>
                   </tbody>
+                  <tbody v-if="this.$store.state.ranks.isSearch">
+                    <!-- row 1 -->
+                    <tr>
+                      <th><rank-items :rankingSequence="this.$store.state.ranks.rankings.rank"/></th>
+                      <td><rank-items :nickname="this.$store.state.ranks.rankings.nickname"/></td>
+                      <td><rank-items :score="this.$store.state.ranks.rankings.score" /></td>
+                      <td><rank-items :tier="this.$store.state.ranks.rankings.tier" /></td>
+                    </tr>
+                  </tbody>
                 </table>
               </div>
-            </div>
-
-
-              <!-- 기존 리스트 -->
-              <!-- <ul class="title-list-group" style="width: 750px">
-                <li class="title-list-group-items">
-                  <b class="title-list-group-item">순위</b>
-                  <b class="title-list-group-item">닉네임</b>
-                  <b class="title-list-group-item">점수</b>
-                  <b class="title-list-group-item">티어</b>
-                </li>
-              </ul>
-              <ul class="list-group" style="width: 750px" v-for="rankData in rankDataList" :key="rankData.rankingSequence">
-                <li class="list-group-item">
-                  <rank-items :rankingSequence="rankData.rankingSequence"/>                  
-                  <rank-items :nickname="rankData.nickname"/>                  
-                  <rank-items :score="rankData.score" />            
-                  <rank-items :tier="rankData.tier" />
-                </li>
-              </ul>
-            </div> -->
-            <!--  -->
-
-              <!-- <table id="table-group" cellspacing="0" cellpadding="0">
-                <thead>
-                  <tr>
-                    <th><span>순위</span></th>
-                    <th><span>닉네임</span></th>
-                    <th><span>점수</span></th>
-                    <th><span>티어</span></th>
-                  </tr>
-                </thead>
-                <tbody class="list-group" style="width: 750px" 
-                    v-for="rankData in rankDataList" 
-                    :key="rankData.rankingSequence">
-                  <tr>
-                    <td class="lalign"><rank-items :rankingSequence="rankData.rankingSequence" /></td>
-                    <td><rank-items :nickname="rankData.nickname" /></td>
-                    <td><rank-items :score="rankData.score" /></td>
-                    <td><rank-items :tier="rankData.tier" /></td>
-                  </tr>
-                </tbody>
-              </table> -->
-
-              
-              <!-- <div class="table-title-group">
-                <ul class="list-group" style="width: 750px">
-                  <li class="table-title-group-item">
-                    <span>순위</span>            
-                    <span>닉네임</span>                              
-                    <span>점수</span>                              
-                    <span>티어</span>                                          
+              <nav aria-label="Page navigation">
+                <ul class="pagination">
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous"  @click="getRanking(0), this.page=0">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  <li class="page-item"><a class="page-link" @click="getRanking(0), this.page=0" href="#">1</a></li>
+                  <li class="page-item"><a class="page-link" @click="getRanking(1), this.page=1" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" @click="getRanking(2), this.page=2" href="#">3</a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next" @click="getRanking(2), this.page=2">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
                   </li>
                 </ul>
-              </div> -->
-
-              <!-- <ul class="list-group" style="width: 750px" v-for="rankData in rankDataList" :key="rankData.rankingSequence">
-                <li class="list-group-item">
-                  <rank-items :rankingSequence="rankData.rankingSequence" />            
-                  <rank-items :nickname="rankData.nickname" />            
-                  <rank-items :score="rankData.score" />            
-                  <rank-items :tier="rankData.tier" />                  
-                </li>
-              </ul> -->
-            
-
-
-
-
-
+              </nav>
+            </div>
 
             
             <div v-bind:class="{'hidden': openTab !== 2, 'block': openTab === 2}">
@@ -149,17 +97,45 @@
                       <th>티어</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody v-if="!this.$store.state.ranks.isSearch">
                     <!-- row 1 -->
                     <tr v-for="rankData in rankDataList" :key="rankData.rankingSequence">
-                      <th><rank-items :rankingSequence="rankDataList.indexOf(rankData)+1"/></th>
+                      <th><rank-items :rankingSequence="(this.page*10)+rankDataList.indexOf(rankData)+1"/></th>
                       <td><rank-items :nickname="rankData.nickname"/></td>
                       <td><rank-items :score="rankData.score" /></td>
                       <td><rank-items :tier="rankData.tier" /></td>
                     </tr>
                   </tbody>
+                  <tbody v-if="this.$store.state.ranks.isSearch">
+                    <!-- row 1 -->
+                    <tr>
+                      <th><rank-items :rankingSequence="this.$store.state.ranks.rankings.rank"/></th>
+                      <td><rank-items :nickname="this.$store.state.ranks.rankings.nickname"/></td>
+                      <td><rank-items :score="this.$store.state.ranks.rankings.score" /></td>
+                      <td><rank-items :tier="this.$store.state.ranks.rankings.tier" /></td>
+                    </tr>
+             
+                  </tbody>
+                  
                 </table>
               </div>
+              <nav aria-label="Page navigation">
+                <ul class="pagination">
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous" @click="getRanking(0), this.page=0">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  <li class="page-item"><a class="page-link" @click="getRanking(0), this.page=0" href="#">1</a></li>
+                  <li class="page-item"><a class="page-link" @click="getRanking(1), this.page=1" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" @click="getRanking(2), this.page=2" href="#">3</a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next" @click="getRanking(2), this.page=2">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
             </div>
 
 
@@ -175,14 +151,12 @@
             </div> -->
 
 
-            <div v-bind:class="{'hidden': openTab !== 3, 'block': openTab === 3}" @click="getRanking()">
+            <!-- <div v-bind:class="{'hidden': openTab !== 3, 'block': openTab === 3}" @click="getRanking()">
               <body-search-bar />
               <div class="overflow-x-auto">
                 <table class="table table-zebra w-full">
-                  <!-- head -->
                   <thead>
                     <tr>
-                      <!-- <th></th> -->
                       <th>순위</th>
                       <th>닉네임</th>
                       <th>점수</th>
@@ -190,7 +164,6 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <!-- row 1 -->
                     <tr v-for="rankData in rankDataList" :key="rankData.rankingSequence">
                       <th><rank-items :rankingSequence="rankData.rankingSequence"/></th>
                       <td><rank-items :nickname="rankData.nickname"/></td>
@@ -200,7 +173,8 @@
                   </tbody>
                 </table>
               </div>
-            </div>
+            </div> -->
+
           </div>
         </div>
       </div>
@@ -215,7 +189,7 @@ import WordsSearchBar from '@/views/rank/components/WordsSearchBar.vue'
 import BodySearchBar from '@/views/rank/components/BodySearchBar.vue'
 import RankItems from '@/views/rank/components/RankItems.vue'
 import axios from 'axios';
-import {mapGetters} from 'vuex';
+import {mapGetters, mapState} from 'vuex';
 
 export default {
   name: 'RankTab',
@@ -227,9 +201,12 @@ export default {
   },  
   data() {
     return {
+      ...mapState(['rankings']),
       openTab: 1,
       index: 0, 
       rankDataList : [], 
+      isSearch : true,
+      page : 0,
     }
   },
   // props : {
@@ -245,10 +222,12 @@ export default {
     // },
 
     // 탭을 누를 때마다 axios요청하기
-    getRanking () {
-      console.log(this.openTab, typeof(this.openTab))
+    getRanking (page) {
+      this.$store.state.ranks.isSearch = false
+      this.$store.state.ranks.notMember = false
+      console.log(this.$store.state.ranks.notMember)
       axios ( {
-        url: `/api/rankings/${this.openTab+1}`,
+        url: `/api/rankings/${this.openTab+1}?page=${page}`,
         // ?page=${this.index}
         headers: this.authHeader,
         method: "get",
@@ -262,6 +241,7 @@ export default {
         
 
       )
+
       // .then (res=>console.log(res.data))
 
       //인자로 넣어주는 함수니 콜백함수. 함수가 메서드가 아니므로 this는 method다. 콜백함수는 무조건 화살표쓴다

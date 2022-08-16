@@ -2,7 +2,10 @@
   <nav-bar />
   <!-- <div class="communication-bg-img">
   </div> -->
-  <communication-tab :situationSentence="situationSentence" />
+   <div v-if="!isLoggedIn">로그인이 필요한 서비스입니다.</div>
+   <button><router-link :to="{name:'LoginView'}" >로그인하러가기!</router-link></button>
+  <communication-tab :situationSentence="situationSentence"/> 
+ 
 
 </template>
 
@@ -48,7 +51,7 @@ export default {
       this.situationSentence === data
       return this.situationSentence 
     },
-    ...mapGetters(['authHeader'])
+    ...mapGetters(['authHeader','isLoggedIn'])
   }
 }
 </script>

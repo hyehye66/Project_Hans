@@ -42,7 +42,7 @@
 <script>
 import axios from 'axios';
 
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -79,6 +79,7 @@ export default {
     }
   },
     methods : {
+      ...mapActions(['reissuanceToken']),
     isWordCreateClose() {
       console.log(this.wordcreateopen)
       this.$emit('update:wordcreateopen', false)
@@ -86,6 +87,7 @@ export default {
   
   
     createRoom(){
+      console.log('!!!!!!!!!!!!!'+this.authHeader.Authorization)
     axios(
       { url : `/api/word-game/rooms`,
         method : 'post',
@@ -94,7 +96,8 @@ export default {
         restrict_num : this.maxUsercnt,
         total_question : this.problemcnt
        },
-       headers : this.authHeader}, 
+       headers : {Authorization: this.authHeader.Authorization}, 
+      }
     ).
     then(res => {
       this.$router.push({ name: 'WordsDetailView', 
@@ -103,7 +106,43 @@ export default {
       totalQuestion : this.problemcnt, host : this.profile.nickname
       }})
     })
-    .catch(err => console.log(err,1234))
+    .catch(err => {
+      console.log(err.response)
+      if (err.response.data.status === 'sucess'){
+            console.log('성공!!!!!!')
+          }
+          else{
+            console.log('실패!!!!!!!')
+            console.log(this.authHeader)
+            axios({
+             url : `/api/word-game/rooms`,
+            method : 'post',
+            data : {
+            title : this.sessionName,
+            restrict_num : this.maxUsercnt,
+            total_question : this.problemcnt
+            },
+              headers: {Authorization : this.authHeader.Authorization, 
+              refreshToken : this.authHeader.refreshToken},
+
+              
+            }).then(res =>{
+              console.log('재발급시작!')
+              this.$router.push({ name: 'WordsDetailView', 
+              params: { mode : this.mode, sessionName : this.sessionName, 
+              token : res.data.data.token, roomSequence : res.data.data.roomSequence,
+              totalQuestion : this.problemcnt, host : this.profile.nickname
+              }})
+
+              const refreshToken = this.authHeader.refreshToken
+              this.reissuanceToken(refreshToken)
+
+            }).catch(err => {
+              console.log('재발급 실패!')
+              console.log(err.response.data)
+            })
+          }
+    })
         
     
   },

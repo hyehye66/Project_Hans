@@ -1,6 +1,7 @@
 <template>
   <div>
-    <b>{{nickname}} | {{score}} | {{tier}}</b>
+    
+    <b>{{rank}} | {{nickname}} | {{score}} | {{tier}}</b>
   </div>
 </template>
 
@@ -16,7 +17,7 @@ export default {
     nickname: String,
     score: Number,
     tier: String,
-
+    rank : Number,
   }
 
 }
