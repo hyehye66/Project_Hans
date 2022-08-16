@@ -270,7 +270,8 @@ export default {
         currentPlayers : [],
         joker : '',
         isHost : '',
-        totalQuestion : 0
+        totalQuestion : 0,
+        isSolving : []
     }
   },
   
@@ -521,6 +522,10 @@ export default {
     console.log('보낼거임')
     this.start = true
     this.cnt = true
+    this.currentRank = [],
+    this.currentPlayers =[],
+    this.problemNum = 1,
+    this.isSolving = []
     const gameStatus = {
         total_question : this.totalQuestion
     }
@@ -559,8 +564,6 @@ export default {
   allCorrect(){
    
     // let interval = setInterval(() => {
-      console.log('정답자 수 : '+ this.answerList.length)
-      console.log('참여자 수 : '+ this.playerLen)
 
       if (this.answerList.length == this.playerLen){
         this.$store.state.games.TimerChk = true
@@ -588,18 +591,22 @@ export default {
     },
 
   sendCorrect(){
-        const questionNum = {question_num : this.problemNum} 
-        this.stompClient.send(`/game/word-game/answer/${this.$route.params.roomSequence}`,
-        JSON.stringify(questionNum), {}
-        )
-        this.problemNum++
-        
-        if (this.problemNum <= this.totalQuestion){
-          console.log('결과까지!')
-          setTimeout(() => {this.threecountDown()}, 3000)
-        } else if (this.problemNum > this.totalQuestion) {
-          this.sendResult()
+        if (!this.isSolving.includes(this.problemNum)){
+          this.isSolving.push(this.problemNum)
+          const questionNum = {question_num : this.problemNum} 
+          this.stompClient.send(`/game/word-game/answer/${this.$route.params.roomSequence}`,
+          JSON.stringify(questionNum), {}
+          )
+          this.problemNum++
+          
+          if (this.problemNum <= this.totalQuestion){
+            console.log('결과까지!')
+            setTimeout(() => {this.threecountDown()}, 3000)
+          } else if (this.problemNum > this.totalQuestion) {
+            this.sendResult()
+          }
         }
+       
     },
 
   sendResult(){
@@ -611,8 +618,7 @@ export default {
       this.status = false,
       this.start = false,
       this.currentRank = [],
-      this.currentPlayers =[],
-      this.problemNum = 1
+      this.currentPlayers =[]
   },
   
   }
