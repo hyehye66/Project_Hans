@@ -1,120 +1,192 @@
 <template>
-    <div id="session">
-        <div id="session-header">
-            <div class="back-title">
-                <svg class="w-6 h-6" id="buttonLeaveSession" @click="leaveSession" value="Leave session" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z">
-                    </path>
-                </svg>
-            </div>
-            <h1 id="session-title">{{ this.$route.params.sessionName }}</h1>
-            <div class="total-time">
-        <!--  h-30 w-40 p-2 border-2 border-gray-400 bg-gray-200 -->
-            <div class="h-full w-full bg-gray-400">
-                    <h1>총 진행시간 {{ trigger }} </h1>
-                </div>
-            </div>
+<div class="words-detail-bg-img">
+  <div id="session">
+    <div id="words-detail-session-header">
+      <div class="words-detail-back-title">
+        <!-- 뒤로가기 -->
+        <svg id="words-detail-buttonLeaveSession" @click="leaveSession" value="Leave session" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+         <!-- class="w-7 h-7"   -->
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z">
+          </path>
+        </svg>
+        <!-- 방제목 -->
+        <div class="words-detail-session-title">
+          <h1>{{ this.$route.params.sessionName }}</h1>
         </div>
-        <div id="session-header2" style="width: 100%;">
-            <!-- 방안사람들 -->
-            <div id="video-container" class="col-lg12">
-                <WordsDetailRTCItem :stream-manager="publisher" @click.enter="updateMainVideoStreamManager(publisher)"/>
-                <WordsDetailRTCItem v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
-            </div>
-        </div>
-        <div id="session-body-left" class="col-md-6">
-            <!-- 메인화면 -->
-            <div id="problem-box">
-                <div>게임 시간 : {{this.$store.state.games.TimerStr}} 초</div> 
-                <div v-if="!cnt">문제는 : {{ problem }} </div>
-            </div>
-            <!-- 캠,마이크,나가기,설정 -->
-            <div class="cam-buttons">
-                <!-- style="height: 100%" -->
-                <div class="icon-area" @click='muteVideo'>
-                    <VideoCameraIcon style="height: 40; width: 40;" />
-                </div>
-                <div class="icon-area" @click='muteAudio'>
-                    <!-- <MicrophoneIcon style="height: 40; width: 40;"/>							 -->
-                    <div v-if='!publisher.stream.audioActive'>
-                        <h1>음소거제거</h1>
-                        <!-- <img src="@/assets/microphone1.png" alt="mic"> -->
-                    </div>
-                    <div v-else>
-                        <h1>음소거</h1>
-                        <!-- <img src="@/assets/microphone2.png" alt="mic"> -->
-                    </div>
-                </div>
-                <div class="icon-area" @click="leaveSession">
-                    <LogoutIcon style="height: 40; width: 40;"/>
-                </div>
-                <!-- 설정모달창 띄우는 방법 생각하기 -->
-                <div class="icon-area" @click="isOpen" v-if="(isHost === profile.nickname)">
-                    <CogIcon style="height: 40; width: 40;"/>
-                </div>
-            </div>
-        </div>
+      </div>
 
-        <div id="session-body-right" class="col-md-5">
-            <!-- 랭크 -->
-            <div class="overflow-x-auto">
-            <table class="table table-zebra w-full" id="rank-table">
-              <!-- head -->
-              <thead>
-                <tr>
-                  
-                  <th>Nickname</th>
-                  <th>Score</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- row 1 -->
-                <tr class="hover" v-for="idx of currentRank" :key="idx">
-                  <td>{{idx[1]}}</td>
-                  <td>{{idx[0]}}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-            <!-- <br> -->
-            <!-- 현재 문제 남은 시간 타이머 -->
-            <div class="problem-timer" style="width: 30%">남은 시간: 
-            <div v-if="cnt && status">{{threecount}}</div></div>
-            <!-- style="width: 40; height: 40;" -->
-            <!-- 임시시작버튼 -->
-            <div v-if="!status && (profile.nickname == isHost)" class="leader-button">
-                <button @click="sendStart" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
-                    START
-                </button>
-            </div>
-            
-            <!-- 시작버튼자리 -->
-            <!-- <div v-if="!start && !ready">
-                <div class="start-box"> -->
-                    <!-- 방장만 스타트 버튼 보이기 -->
-                    <!-- <div v-if='myUserNick === roominfo.ownerNicknames'>
-                        <button @click="gameStart"
-                        class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
-                            START
-                        </button>
-                    </div> -->
-                    <!-- 방장 아닌 사람은 준비중 -->
-                    <!-- <div v-else>
-                            <p>준비중</p>
-                    </div>
-                </div>
-            </div> -->
-
-                <div class="answer-send">
-                    <input type="text" name="" id="answer-sheet" v-model="temp" size="30"
-                    placeholder="답을 입력해주세요." @keyup.enter="sendAnswer" v-if="!isCorrect"/>
-                    <PaperAirplaneIcon style="height: 35; width: 35;" @click="sendAnswer" />					
-                </div>
-                <!-- 정오답 알림 메시지 -->
-                
-
-        </div>
+      <!-- 총 진행시간 -->
+      <div class="words-detail-total-time">
+      <!--  h-30 w-40 p-2 border-2 border-gray-400 bg-gray-200 -->
+      <!-- <div class="h-full w-full bg-gray-400"> -->
+        <h1>{{ trigger }} </h1>
+        <!-- </div> -->
+      </div>
     </div>
+    <div id="words-detail-session-header2" style="width: 100%;">
+      <!-- 방안사람들 -->
+      <div id="words-detail-video-container" class="col-md-12">
+        <WordsDetailRTCItem :stream-manager="publisher" @click.enter="updateMainVideoStreamManager(publisher)"/>
+        <WordsDetailRTCItem v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
+      </div>
+    </div>
+    <div id="words-detail-session-body-left" class="col-md-5">
+      <!-- 메인화면 -->
+      <div id="words-detail-problem-box">
+      <!-- col-md-8 -->
+        <p>게임 시간 : {{this.$store.state.games.TimerStr}} 초</p>
+        <br>
+        <p v-if="!cnt">문제는 : {{ problem }} </p>
+      </div>
+      <!-- 캠,마이크,나가기,설정 -->
+      <div class="cam-buttons">
+        <!-- style="height: 100%" -->
+        <!-- 캠 -->
+        <span class="words-detail-icon-area" @click='muteVideo'>
+          <div v-if='publisher.stream.videoActive'>
+            <svg xmlns="http://www.w3.org/2000/svg" style="height: 50%; width: 50%;" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+            </svg>
+          </div>
+          <div v-else>
+            <svg xmlns="http://www.w3.org/2000/svg" style="height: 50%; width: 50%;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>          
+          </div>
+        </span>
+        <!-- 마이크 -->
+        <span class="words-detail-icon-area" @click='muteAudio'>
+            <!-- <MicrophoneIcon style="height: 40; width: 40;"/>							 -->
+          <div v-if='!publisher.stream.audioActive'>
+            <!-- <h1>음소거제거</h1> -->
+            <svg xmlns="http://www.w3.org/2000/svg" style="height: 50%; width: 50%;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+            </svg>                
+          </div>
+          <div v-else>
+            <!-- <h1>음소거</h1> -->
+            <svg xmlns="http://www.w3.org/2000/svg" style="height: 50%; width: 50%;" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd" />
+            </svg>           
+            <!-- <img src="@/assets/microphone2.png" alt="mic"> -->
+          </div>
+        </span>
+        <!-- 나가기 -->
+        <span class="words-detail-icon-area" @click="leaveSession">
+            <LogoutIcon style="height: 40; width: 40;"/>
+        </span>
+        <!-- 설정 -->
+        <span class="words-detail-icon-area" @click="isOpen">
+            <CogIcon style="height: 40; width: 40;"/>
+        </span>
+      </div>
+      <div class="words-detail-answer-send">
+          <input type="text" name="" id="words-detail-answer-sheet" v-model="temp" size="30"
+          placeholder="답을 입력해주세요." @keyup.enter="sendAnswer" v-if="!isCorrect"/>
+          <PaperAirplaneIcon style="height: 35; width: 35;" @click="sendAnswer" />					
+      </div>
+      <!-- 정오답 알림 메시지 -->
+
+    </div>
+
+
+    <div id="words-detail-session-body-right" class="col-md-5">
+      <!-- 랭크 -->
+      <div class="card" id="words-right-card">
+        <div class="card-header">
+          실시간 순위
+        </div>
+        <div class="card-body">
+          <div class="words-detail-rank">
+            <div class="overflow-x-auto">
+              <table class="table table-zebra w-full" id="rank-table">
+                <!-- head -->
+                <thead>
+                  <tr>                        
+                    <th>Nickname</th>
+                    <th>Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- row 1 -->
+                  <tr class="hover" v-for="idx of currentRank" :key="idx">
+                    <td>{{idx[1]}}</td>
+                    <td>{{idx[0]}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+        
+      <!-- <div class="overflow-x-auto">
+        <table class="table table-zebra w-full" id="rank-table"> -->
+          <!-- head -->
+          <!-- <thead>
+            <tr>                  
+              <th>Nickname</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody> -->
+            <!-- row 1 -->
+            <!-- <tr class="hover" v-for="idx of currentRank" :key="idx">
+              <td>{{idx[1]}}</td>
+              <td>{{idx[0]}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div> -->
+
+
+      <!-- 시작버튼 & 현재 문제 남은 시간 타이머 -->
+      <div class="words-detail-start-box">
+        <div v-if="!status && (profile.nickname == isHost)" class="words-detail-leader-button">
+          <button id="start-btn" @click="sendStart"     
+          class="bg-transparent hover:bg-yellow-500 text-yellow-700 font-semibold hover:text-white 
+          py-2 px-2 border border-yellow-500 hover:border-transparent rounded-full">
+            START
+          </button>
+        </div>
+        <div v-if="cnt && status" class="words-detail-problem-timer">
+          <h1>{{threecount}}</h1>          
+        </div>
+      </div>
+
+      <!-- <br> -->
+      <!-- 현재 문제 남은 시간 타이머 -->
+      <!-- <div class="problem-timer" style="width: 30%">남은 시간: 
+        <div v-if="cnt">{{threecount}}</div>
+      </div> -->
+      <!-- style="width: 40; height: 40;" -->
+      <!-- 임시시작버튼 -->
+      <!-- <div v-if="!start" class="words-detail-leader-button">
+          <button @click="sendStart" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
+              START
+          </button>
+      </div> -->
+      
+      <!-- 시작버튼자리 -->
+      <!-- <div v-if="!start && !ready">
+          <div class="start-box"> -->
+              <!-- 방장만 스타트 버튼 보이기 -->
+              <!-- <div v-if='myUserNick === roominfo.ownerNicknames'>
+                  <button @click="gameStart"
+                  class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded-full">
+                      START
+                  </button>
+              </div> -->
+              <!-- 방장 아닌 사람은 준비중 -->
+              <!-- <div v-else>
+                      <p>준비중</p>
+              </div>
+          </div>
+      </div> -->                      
+
+    </div>
+  </div>   
+</div>
 		
 
 
@@ -135,9 +207,6 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
 
-
-
-
 // stomp url
 const serverUrl = "https://i7d109.p.ssafy.io/ws/game"
 
@@ -147,7 +216,7 @@ export default {
   components : {
     WordsDetailRTCItem,
     WordsRoomUpdateModal,
-    VideoCameraIcon,
+    // VideoCameraIcon,
     //MicrophoneIcon,
     LogoutIcon,
     CogIcon,
@@ -543,73 +612,151 @@ export default {
 
 </script>
 
-<style scoped>
+<style>
+/* scoped 하면 적용안됨 */
 svg {
-  cursor: pointer;	
+  cursor: pointer;
+  color: #ffff;	
 }
 
-#main-container {
-	margin: auto;
+.words-detail-bg-img {
+  margin: auto;
+  /* background-image: url("@/assets/14.png"); */
+  /* background-size: cover; */
+  width: 100vw;
+  height: 100vh;
+  /* position: absolute; */
+  position: relative;
+  z-index: 1;
+  /* background-color: transparent; */
+
 }
+
+.words-detail-bg-img::after {
+  margin: auto;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  opacity: 0.6;
+  content: "";
+  background: url("@/assets/14.png");
+  background-size: cover;
+  
+}
+
+/* #main-container {
+	margin: auto;
+} */
 
 #join + #session {
 	justify-content: center;
-	width: 100%;
+  align-items: center;
+	/* width: 100%; */
 
 
 }
 
-#session-header {
-	width: 100%;
-	display: flex;
+#words-detail-session-header {
+  margin: auto;
+  padding: 0.3%;
+  width: 96%;
+  height: 10%;
+  display: flex;
   flex-flow: row wrap;
-	justify-content: space-between;
+  justify-content: space-between;
   align-self: center;
 
+  background-color: transparent;
+
 }
 
-.icon-area {
+.words-detail-back-title {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-self: center;
+
+  background-color: transparent;
+}
+
+.body-detail-back-icon {
+  /* width: 40%; */
+}
+
+.words-detail-icon-area {
   border: none;
   display: inline-block;
-	width: 40;
-	height: 40;
+  width: 20%;
+  height: 20%;
+
+  background-color: transparent;
 }
 
-/* svg {
-	width: 6;
-	height: 6;
-} */
-
-#buttonLeaveSession {
-  width: 30px;
-  height: 30px;
+#words-detail-buttonLeaveSession {
+  width: 10%;
   display: block;
 }
 
-#session-header2 {
-	display: flex;
-	/* flex-direction: row;
-	flex-wrap: wrap; */
-	flex-flow: row wrap;
-	justify-content: space-between;
-	/* justify-content: center; */
-	align-self: center;
-	/* right: 0%; */
-	/* margin: 0 2.2vw;
+.words-detail-session-title {
+  padding-left: 2%;
+  font-size: 1rem;
+  display: flex;
+  align-self: center;
+  text-align: center;
+
+  justify-content : center;
+	align-items : center;
+
+  color: #ffff;
+
+}
+
+.words-detail-total-time {
+  /* padding-right: 6%; */
+  font-size: 1rem;
+  display: flex;
+  align-self: center;
+  text-align: center;
+  
+  justify-content : center;
+	align-items : center;
+
+  color: #ffff;
+
+}
+
+#words-detail-session-header2 {
+  display: flex;
+  /* flex-direction: row;
+  flex-wrap: wrap; */
+  flex-flow: row wrap;
+  justify-content: space-between;
+  /* justify-content: center; */
+  align-self: center;
+  align-items : center;
+
+  background-color: transparent;
+
+  /* right: 0%; */
+  /* margin: 0 2.2vw;
   padding: 2vh; */
 }
 
-#video-container {
+#words-detail-video-container {
+  background-color: transparent;
   /* display: flex;
   flex-direction: row;
-	float: left;
+    float: left;
   align-self: center; */
 
   /* justify-content: center; */
-	/* right: 0%; */
+    /* right: 0%; */
 }
 
-#video-container video {
+#words-detail-video-container video {
    /* position: relative; */
    float: left;
    width: 16%;
@@ -622,9 +769,11 @@ svg {
    display: flex;
    align-items: center;
    justify-content: space-around;
+
+   background-color: transparent;
 }
 
-#video-container video + div {
+#words-detail-video-container video + div {
   
   text-align: center;
   /* line-height: 75px; */
@@ -634,9 +783,11 @@ svg {
    margin-left:-28.5%;
    /* display: flex; */
    /* justify-content: space-around; */
+
+   background-color: transparent;
 }
 
-#video-container p {
+#words-detail-video-container p {
   font-family:'IM_Hyemin-Bold';
   display: inline-block;
   background: #f8f8f8;
@@ -645,178 +796,198 @@ svg {
   color: #3c90c9;
   font-weight: bold;
   border-radius: 8px;
-	/* text-align: right; */
+    /* text-align: right; */
 }
 
-video {
-   
-   padding-top: 1vh;
-   /* 맨 아래에 나오는 카메라화면 */
-   /* width: ; */
-    width: 100%;
-   /* height: 48vh; */
-   height: auto;
-   position: relative;
+video {   
+  /* padding-top: 1vh; */
+  /* 맨 아래에 나오는 카메라화면 */
+  /* width: ; */
+  width: 100%;
+  /* height: 48vh; */
+  height: auto;
+  position: relative;
+
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 10% 10% 10% 10%;
 }
 
-#main-video p {
-  /* position: absolute; */
-  display: inline-block;
-  background: #f8f8f8;
-  padding-left: 5px;
-  padding-right: 5px;
-  font-size: 22px;
-  color: #777777;
-  font-weight: bold;
-  border-radius: 5px;
+#words-detail-session-body-left {
+  /* margin-left */
+  padding-left: 3%;  
+  padding-right: 3%;  
+  padding-top: 1%;  
+  display: flex;
+  flex-direction: column;
+  float: left;
+  justify-content: center;
+  align-self: center;
+  align-items: center;
+  
+  background-color: transparent;
 }
 
-user-video {
-	/* margin-left: 20px; */
-	/* width: 200;
-	height: 180; */
+#words-detail-problem-box {
+  width: 30vw;
+  height: 40vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: transparent;
+  
+  border: 0.5rem;
+  border-style: solid;
+  border-radius: 10% 10% 10% 10%;
+  border-color: white;
 
 }
 
-#main-video {
-	/* justify-content: center; */
-
-}
-
-
-/* VideoCameraIcon {
-	width: 6;
-	height: 6;
-} */
-/* MicrophoneIcon
-LogoutIcon
-CogIcon
-PaperAirplaneIcon */
-
-/* .left-right {
-	flex-flow: row wrap;
-	justify-content: space-around;
-} */
-
-#session-body-left {
-	display: flex;
-	flex-direction: column;
-	float: left;
-	justify-content: center;
-	align-self: center;
-	
+#words-detail-problem-box p{
+  font-size: 1.8rem;
+  font-weight: bolder;
 }
 
 .cam-buttons {
-	width: 60%;
-	margin: 0 auto;
+    width: 60%;
+    margin: 0 auto;
+    margin-top: 2%;
 
-	display: flex;
-	/* flex-direction: row; */
-	flex-flow: row wrap;
-	justify-content: space-evenly;
-	align-self: center;
-	/* justify-content: center; */
-	text-align: center;
-	/* width: 400;
-	height: 40; */
-	vertical-align: middle;
-	
-}
-
-img {
-  width : 4vw;
-  height : 6.7vh;
+    display: flex;
+    /* flex-direction: row; */
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    align-self: center;
+    /* justify-content: center; */
+    text-align: center;
+    /* width: 400;
+    height: 40; */
+    vertical-align: middle;
+    
 }
 
 
-#session-body-right {
-	display: flex;
-	flex-direction: column;
-	float: right;
-	/* padding-top: 5px; */
-	margin-top: 10px;
-	justify-content: center;
-	align-self: center;	
+.words-detail-answer-send {
+  padding-top: 2%;
+  display: flex;
+  flex-direction: row;
+  /* align-self: center; */
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+    
 }
 
-.rank {
-	border: thick double #32a1ce;
-	padding-left: 5px;
-  padding-right: 5px;
-	/* width: 20rem; */
-	height: auto;
-	/* text-align: center; */
-	justify-content: center;
-	/* margin: auto; */
-	font-size: 25px;
+#words-detail-answer-sheet {
+    /* border: 1; */
+    border: 1px dotted black;
+    font-size: 2rem;
+    width: 90%;
 }
 
-.problem-timer {
-	align-self: center;
-	/* float: right; */
-	text-align: center;
-	margin-top: 5%;
-	margin-bottom: 3%;
-	/* width: 50 !important;
-	height: 50 !important; */
-	/* border: 1px dotted black;
-	border-radius: 100% 100% 100% 100%; */
-	font-size: 30px;
-	
+.words-detail-check-answer {
+    /* border: 1; */
+    /* border: 1px dotted black; */
+    /* text-align: center; */
+    justify-content: center;
+    /* margin: auto; */
+    align-self: center;
+    font-size: 2rem;
+    color: red;
+    font-style: italic;
+
+    /* background-color: transparent;
+    border: none;
+    background: transparent; */
+
 }
 
-.leader-button {
-	font-size: 40px;
-	text-align: center;
-	/* justify-content: center; */
-	margin-top: 3%;
-	margin-bottom: 3%;
+#words-detail-session-body-right {
+  /* padding-left: 3%;  
+  padding-right: 3%;  
+  padding-top: 1%;   */
+  margin-right: 3%;
+  padding-top: 1%;
+  padding-right: 5%;
+  display: flex;
+  flex-direction: column;
+  float: right;
+  justify-content: center;
+  align-self: center;    
+
+  background-color: transparent;
 }
 
-.leader-button button {
-	width: 30%;
+#words-right-card {
+  /* background-color: transparent;
+  border-color: #ffff; */
+  background-color: rgba(60, 60, 60, 0.26 );
+  color: #ffff;
+  border: none;
 }
 
-.start-box {
-   position: relative;
+.words-detail-rank {
+  /* padding-left: 1%; */
+  /* width: 20rem; */
+  /* text-align: center; */
+  /* margin: auto; */
+
+
+  /* border: thick double #32a1ce;
+  padding-right: 3%; */
+  height: auto;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+#rank-table {
+  color: #ffff;
+}
+
+.words-detail-start-box {
+  /* width: 150%; */
+  /* margin: 0 auto 2.5vh; */
+   
+   /* position: relative;
    width: 33vw;
    height: 48vh;
-   /* width: 150%; */
    background: rgba(192, 192, 199, 0.47);
    border: 3px solid white;
    border-radius:20px;
-   /* margin: 0 auto 2.5vh; */
    display:flex;
    justify-content: center;
-   align-items: center;
+   align-items: center; */
 }
 
-.answer-send {
-	display: flex;
-	flex-direction: row;
-	/* align-self: center; */
-	justify-content: center;
-	margin: auto;
-	
+.words-detail-leader-button {
+    font-size: 2rem;
+    text-align: center;
+    /* justify-content: center; */
+    margin-top: 3%;
+    margin-bottom: 3%;
 }
 
-#answer-sheet {
-	/* border: 1; */
-	border: 1px dotted black;
-	font-size: 30px;
+.words-detail-leader-button button {
+    width: 30%;
 }
 
-.check-answer {
-	/* border: 1; */
-	/* border: 1px dotted black; */
-	/* text-align: center; */
-	justify-content: center;
-	/* margin: auto; */
-	align-self: center;
-	font-size: 30px;
-	color: red;
-	font-style: italic;
+.words-detail-problem-timer {
+  align-self: center;
+  /* float: right; */
+  text-align: center;
+  /* margin-top: 5%;
+  margin-bottom: 3%; */
+  font-size: 2rem;   
 
+  justify-content : center;
+	align-items : center;
+    
 }
+
+
+
+
+
 </style>

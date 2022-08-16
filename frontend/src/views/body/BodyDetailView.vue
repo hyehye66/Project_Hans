@@ -20,7 +20,7 @@
     <div class="body-detail-total-time">
     <!--  h-30 w-40 p-2 border-2 border-gray-400 bg-gray-200 -->
       <!-- <div class="h-full w-full bg-gray-400"> -->
-        <h1>총 진행시간</h1>
+        <h1>{{ trigger }}</h1>
         
       <!-- </div> -->
     </div>
@@ -65,11 +65,6 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
           </svg>          
         </div>
-
-        
-
-
-
       </span>
       <!-- 마이크 -->
       <span class="body-detail-icon-area" @click='muteAudio'>
@@ -122,7 +117,6 @@
       </div>
       <div class="card-body">
         <div class="body-detail-rank">
-
           <div class="overflow-x-auto">
             <table class="table table-zebra w-full" id="rank-table">
               <!-- head -->
@@ -263,6 +257,7 @@ export default {
       isCorrect : false,
       answerTime : false,
       threecount : 3,
+
       point : 0,
       currentPlayers : [],
       joker : '',
@@ -486,7 +481,9 @@ export default {
 
               } else if (key[0] === 'problem') {
                   this.problem = response.problem
+
                   this.changeTagger = false
+
 
               } else if (key[0] === 'roomSequence') {
                   this.answer = response.answer
@@ -520,6 +517,7 @@ export default {
                   this.changeTagger = true
                   this.getSub(this.joker)
                   this.currentPlayers.push(this.joker)
+
                   }
 
               } else if (key[0] === 'players') {
