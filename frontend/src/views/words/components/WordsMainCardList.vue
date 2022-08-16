@@ -1,13 +1,36 @@
 <template>
-  <div class="wordgame-card-list py-3  grid grid-cols-3 gap-6">
-    <div v-for="room in rooms"  :key="room.roomSequence">
+  <div v-if="!this.$store.state.words.isSearch" class="wordgame-card-list py-3  grid grid-cols-2 gap-6">
+    <div v-for="room in rooms"  :key="room.roomSequence" >
       <WordsMainCardListItem v-if="room.mode.modeSequence===2" :mode="room.mode.modeName" :room="room" />  
     </div>
   </div>
-  <div>
+  <div v-if="this.$store.state.words.isSearch" class="wordgame-card-list py-3  grid grid-cols-2 gap-6">
+    <div v-for="room in this.$store.state.words.searchRooms"  :key="room.roomSequence">
+      <WordsMainCardListItem v-if="room.mode.modeSequence===2" :mode="room.mode.modeName" :room="room" />  
+    </div>
+  </div>
+  
+  <!-- <div>
     <input v-model="idx" class="bg-primary" v-on:keyup.enter="getSession(changeIdx)">
     {{changeIdx}}
-  </div>
+  </div> -->
+  <nav aria-label="Page navigation">
+                <ul class="pagination">
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous" @click="getSession(0), this.page=0">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  <li class="page-item"><a class="page-link" @click="getSession(0), this.page=0" href="#">1</a></li>
+                  <li class="page-item"><a class="page-link" @click="getSession(1), this.page=1" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" @click="getSession(2), this.page=2" href="#">3</a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next" @click="getSession(2), this.page=2">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
 </template>
 
 <script>
@@ -33,10 +56,10 @@ export default {
   },
   methods : {
     // 모든 세션 데이터 받아오는 함수 
-      getSession(){
+      getSession(page){
         console.log(this.authHeader)
         axios({
-          url : '/api/word-game/rooms',
+          url : `/api/word-game/rooms?page=${page}`,
           method : 'get',
           headers : {'Authorization':this.authHeader.Authorization}
           }

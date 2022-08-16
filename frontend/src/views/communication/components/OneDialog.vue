@@ -180,6 +180,7 @@ button {
   display: flex;
   flex-flow: row wrap;
 	justify-content: space-between;
+
 	/* align-items: center; */
   /* text-align: center; */
   
@@ -190,6 +191,7 @@ button {
   display: flex;
   flex-flow: column wrap;
 	justify-content: flex-start;
+
 }
 
 

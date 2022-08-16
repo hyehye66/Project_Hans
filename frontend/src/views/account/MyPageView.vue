@@ -60,9 +60,8 @@
                   <thead>
                     <tr>
                       <th scope="col">게임</th>
-                      <!-- &nbsp; -->
                       <th scope="col">점수</th>
-                      <th scope="col">순위</th>
+                      <th scope="col">티어</th>
                     </tr>
                   </thead>
                   <tbody>
