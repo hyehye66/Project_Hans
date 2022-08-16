@@ -498,7 +498,6 @@ export default {
 
               } else if (key[0] === 'problem') {
                   this.problem = response.problem
-
                   this.changeTagger = false
                   console.log(this.problemNum, '몇 번 문제임?')
 
