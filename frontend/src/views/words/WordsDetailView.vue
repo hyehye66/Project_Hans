@@ -494,7 +494,6 @@ export default {
                   this.currentPlayers = response.players
                   this.totalQuestion = response.totalQuestion
                   this.currentRank = [],
-                  this.currentPlayers =[],
                   this.problemNum = 1,
                   this.isSolving = []
                   this.resultTime = false
@@ -512,6 +511,7 @@ export default {
                   console.log(this.answerList)
                   this.answerTime = true
                   this.point = response.point
+                  this.isCorrect = false
                   if (this.answerList.length > 0) {
                     for (let i of this.answerList) {
                       for ( let j of this.currentRank) {
@@ -526,6 +526,7 @@ export default {
                   }}
                   this.answerList= []
                   this.isCorrect = false 
+
               } else if (key[0] === 'players') {
                   this.resultTime = true
                   for (let i of Object.keys(response.players)) {
@@ -539,7 +540,12 @@ export default {
 
               } else if (key[0] == 'correctPlayers') {
                 this.answerList = response.correctPlayers
-                
+                for(let i in this.answerList){
+                  if (i === this.profile.nickname){
+                    this.isCorrect = true
+                    break
+                  }
+                }
                 
                 for(let i of this.answerList){
                   if (i === this.profile.nickname){
@@ -559,10 +565,6 @@ export default {
   sendStart(){
     console.log('보낼거임')
     this.start = true
-    this.currentRank = [],
-    this.currentPlayers =[],
-    this.problemNum = 1,
-    this.isSolving = []
     const gameStatus = {
         total_question : this.totalQuestion
     }
