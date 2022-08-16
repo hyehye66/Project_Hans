@@ -257,6 +257,7 @@ export default {
       isCorrect : false,
       answerTime : false,
       threecount : 3,
+
       point : 0,
       currentPlayers : [],
       joker : '',
@@ -493,6 +494,7 @@ export default {
 
               } else if (key[0] === 'problem') {
                   this.problem = response.problem
+
                   this.changeTagger = false
 
 
@@ -526,7 +528,8 @@ export default {
                   console.log(this.joker, '어디서 undefined가 뜨는 것?')
                   
                   this.getSub(this.joker)
-                  this.currentPlayers.push(this.joker)
+                  this.currentPlayers.push(this.joker)    
+
 
                   console.log(this.currentPlayers, 'undefined어디임?')
                   this.changeTagger = true
