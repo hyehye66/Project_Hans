@@ -19,7 +19,6 @@
       <div class="words-detail-total-time">
       <!--  h-30 w-40 p-2 border-2 border-gray-400 bg-gray-200 -->
       <!-- <div class="h-full w-full bg-gray-400"> -->
-        <h1>{{ trigger }} </h1>
         <!-- </div> -->
       </div>
 
@@ -34,14 +33,40 @@
     <div id="words-detail-session-body-left" class="col-md-5">
       <!-- 메인화면 -->
       <div class="words-quiz-box-timer">제한 시간 : {{this.$store.state.games.TimerStr}} 초</div>
-      <div id="words-detail-quiz-box">
+      <div id="words-detail-quiz-box" v-if="!resultTime">
       <!-- col-md-8 -->        
-        <div class="words-quiz-box-quiz" v-if="!cnt"> 
+        <div class="words-quiz-box-quiz" v-if="!cnt && !answerTime"> 
           <p>문제 :</p>  
           <p>{{ problem }}</p>        
         </div>
-
+        <div class="words-answer-box-quiz" v-if="answerTime">
+          <p>정답 : {{ answer }}</p>
+          <!-- <div v-for="idx in answerList" :key="idx">정답자 : {{ answerList[idx] }}</div> -->
+          <p>점수 : {{ point }}</p>
+        </div>
       </div>
+      <div class="card-body" v-if="resultTime">
+          <div class="words-detail-rank">
+            <div class="overflow-x-auto">
+              <table class="table table-zebra w-full" id="rank-table">
+                <!-- head -->
+                <thead>
+                  <tr>                        
+                    <th>Nickname</th>
+                    <th>Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- row 1 -->
+                  <tr class="hover" v-for="idx of gameResult" :key="idx">
+                    <td>{{idx[1]}}</td>
+                    <td>{{idx[0]}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       <!-- 캠,마이크,나가기,설정 -->
       <div class="cam-buttons">
         <!-- style="height: 100%" -->
@@ -80,13 +105,13 @@
             <LogoutIcon style="height: 50%; width: 50%;"/>
         </span>
         <!-- 설정 -->
-        <span class="words-detail-icon-area" @click="isOpen" v-if="isHost">
+        <span class="words-detail-icon-area" @click="isOpen" v-if="isHost == profile.nickname">
             <CogIcon style="height: 50%; width: 50%;"/>
         </span>
       </div>
       <div class="words-detail-answer-send">
           <input type="text" name="" id="words-detail-answer-sheet" v-model="temp" 
-          placeholder="답을 입력해주세요." @keyup.enter="sendAnswer" v-if="!isCorrect"/>
+          placeholder="답을 입력해주세요." @keyup.enter="sendAnswer" v-if="!isCorrect && !answerTime"/>
           <PaperAirplaneIcon style="height: 8%; width: 8%;" @click="sendAnswer" />					
       </div>
       <!-- 정오답 알림 메시지 -->
@@ -271,7 +296,9 @@ export default {
         joker : '',
         isHost : '',
         totalQuestion : 0,
-        isSolving : []
+        isSolving : [],
+        resultTime : false,
+        gameResult : []
     }
   },
   
@@ -284,14 +311,17 @@ export default {
   },
 
   computed : {
-    ...mapGetters(['authHeader','profile'])
+    ...mapGetters(['authHeader','profile']),
+    correctList (){
+      return this.answerList
+    }
   },
 //this.$route.params.token.slice(39,53)
   methods : {
     setRoomInfo(){
     if (this.$route.params.host == this.profile.nickname){
       this.totalQuestion = this.$route.params.totalQuestion
-      console.log(this.totalQuestion, '잘받아와졌나..? 해치웠나?')
+      
     }},
     ...mapActions(['timerStart']),
     // 오픈비두 세션에 들어가기,created에 실행
@@ -438,7 +468,7 @@ export default {
     setTimeout(() => {this.threecount = 2}, 2000)
     setTimeout(() => {this.threecount = 1}, 3000)
     setTimeout(() => {this.threecount = 'START!'}, 4000)
-    setTimeout(() => { this.cnt=false }, 4500)
+    setTimeout(() => { this.cnt=false,this.answerTime = false }, 4500)
     setTimeout(() => { this.timerStart(15) }, 4500)
     this.threecount = 3
     setTimeout(() => { this.getProblem() }, 1500)
@@ -463,6 +493,12 @@ export default {
                   this.playerLen = response.players.length
                   this.currentPlayers = response.players
                   this.totalQuestion = response.totalQuestion
+                  this.currentRank = [],
+                  this.currentPlayers =[],
+                  this.problemNum = 1,
+                  this.isSolving = []
+                  this.resultTime = false
+                  this.gameResult = []
                   for (let i of response.players) {
                     this.currentRank.push([0,i])
                   }
@@ -470,22 +506,16 @@ export default {
                   this.threecountDown()
               } else if (key[0] === 'problem') {
                   this.problem = response.problem
-                  console.log(this.problem)
-
+                  
               } else if (key[0] === 'roomSequence') {
                   this.answer = response.answer
-                  this.answerList = response.correctPlayers
-                  
+                  console.log(this.answerList)
                   this.answerTime = true
                   this.point = response.point
-                  console.log(this.answerList,'여긴가000')
                   if (this.answerList.length > 0) {
-                    console.log('여긴가 111')
                     for (let i of this.answerList) {
-                      console.log(i,'여긴가2222')
                       for ( let j of this.currentRank) {
                         if (i === j[1]){
-                          console.log(j[1],j[0], '왜 안됨?')
                           j[0] += response.point
                           break
                         }
@@ -497,7 +527,15 @@ export default {
                   this.answerList= []
                   this.isCorrect = false 
               } else if (key[0] === 'players') {
-                  this.difficulty = response.points
+                  this.resultTime = true
+                  for (let i of Object.keys(response.players)) {
+                    console.log(i)
+                    console.log(response.players[`${i}`])
+                    this.gameResult.unshift([response.players[`${i}`],i])
+                  }
+                  this.gameResult.sort(function(a, b)  {
+                      return b[0] - a[0];
+                    })
 
               } else if (key[0] == 'correctPlayers') {
                 this.answerList = response.correctPlayers
@@ -521,7 +559,6 @@ export default {
   sendStart(){
     console.log('보낼거임')
     this.start = true
-    this.cnt = true
     this.currentRank = [],
     this.currentPlayers =[],
     this.problemNum = 1,
@@ -543,9 +580,7 @@ export default {
     },
       
   async setCorrect(){
-
-    
-    let timeout = setTimeout(() => { this.$store.state.games.all = false; this.sendCorrect()}, 15000)
+    let timeout = setTimeout(() => { this.$store.state.games.all = false; this.sendCorrect();clearInterval(interval)}, 18000)
     let interval = setInterval(() => {
       this.allCorrect()
       if(this.$store.state.games.all){
@@ -564,7 +599,6 @@ export default {
   allCorrect(){
    
     // let interval = setInterval(() => {
-
       if (this.answerList.length == this.playerLen){
         this.$store.state.games.TimerChk = true
         this.$store.state.games.all = true
@@ -1045,7 +1079,14 @@ video {
 }
 
 
-
+.words-answer-box-quiz{
+  font-size: 2rem;
+  /* height: 80%; */
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
 
 
 </style>
