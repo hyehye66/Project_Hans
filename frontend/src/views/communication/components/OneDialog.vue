@@ -1,8 +1,10 @@
 <template>
+
   <div class="one-row">
     <div class="icon-sentence col-md-10">
       <div class="dialog-front-icon">
         <!-- chat-alt -->
+        
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z" clip-rule="evenodd" />
         </svg>{{english_sentence}}
@@ -60,11 +62,13 @@
       </button>
     </div>     -->
   </div>
+  
 </template>
 
 <script>
 import CommunicationRecord from '@/views/communication/components/CommunicationRecord.vue'
 import { XIcon } from '@heroicons/vue/outline';
+
 
 export default {  
   name: 'OneDialog',
