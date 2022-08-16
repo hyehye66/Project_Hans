@@ -128,7 +128,7 @@
         <div class="card-body">
           <div class="words-detail-rank">
             <div class="overflow-x-auto">
-              <table class="table table-zebra w-full" id="rank-table">
+              <table class="table w-full" id="rank-table">
                 <!-- head -->
                 <thead>
                   <tr>                        
@@ -1065,7 +1065,7 @@ video {
   text-align: center;
   /* margin-top: 5%;
   margin-bottom: 3%; */
-  font-size: 2rem;   
+  font-size: 3rem;   
 
   justify-content : center;
 	align-items : center;

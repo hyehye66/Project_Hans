@@ -325,6 +325,18 @@ words-search-bar {
   vertical-align: middle;
 } */
 
+.pagination {
+  margin-top: 4%;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  
+}
 
+.page-item {
+  color: #f16b48;
+
+}
 
 </style>
