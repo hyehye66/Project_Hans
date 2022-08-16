@@ -33,14 +33,15 @@ public class BodyGameSocketServiceImpl implements BodyGameSocketService {
         BodyGameRoom bodyGameRoom = bodyGameRoomService.findById(roomSequence);
         List<String> players = new ArrayList<>(bodyGameRoom.getPlayers().keySet());
 
+        roomService.updateRoomStatus(roomSequence,true);
+
         BodyGameStartResponseDto bodyGameStartResponseDto =
                 BodyGameStartResponseDto.builder()
                         .players(players)
                         .gameStatus("ready")
                         .timeLimit(bodyGameStartRequestDto.getTimeLimit())
+                        .totalQuestion(bodyGameStartRequestDto.getTotalQuestion())
                         .build();
-
-        roomService.updateRoomStatus(roomSequence,true);
 
         return bodyGameStartResponseDto;
     }
