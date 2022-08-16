@@ -31,9 +31,14 @@ public class WordGameSocketServiceImpl implements WordGameSocketService {
         WordGameRoom wordGameRoom = wordGameRoomService.findById(roomSequence);
         List<String> players = new ArrayList<>(wordGameRoom.getPlayers().keySet());
 
-        WordGameStartResponseDto wordGameStartResponseDto = new WordGameStartResponseDto(players,"ready");
-
         roomService.updateRoomStatus(roomSequence,true);
+
+        WordGameStartResponseDto wordGameStartResponseDto =
+                WordGameStartResponseDto.builder()
+                        .players(players)
+                        .gameStatus("ready")
+                        .totalQuestion(wordGameStartRequestDto.getTotalQuestion())
+                        .build();
 
         return wordGameStartResponseDto;
     }
