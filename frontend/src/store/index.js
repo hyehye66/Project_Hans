@@ -6,11 +6,12 @@ import createPersistedState from "vuex-persistedstate";
 import member from './modules/member'
 import games from "./modules/games";
 import ranks from "./modules/ranks";
+import words from "./modules/words";
 
 
 
 export default new Vuex.Store({
-  modules: { member,games, ranks
+  modules: { member,games, ranks, words
   },
   getters: {
   },
