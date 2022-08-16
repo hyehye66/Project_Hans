@@ -689,13 +689,15 @@ img {
 
 
 .chat-box {
-  margin-top: 3%;
+  margin-top: 8%;
+  margin-left: 6%;
+  margin-right: 6%;
   padding:6%;
   overflow-y: scroll;
   /* border: 3px solid rgb(255, 255, 255); */
   border-radius:20px;
   align-items: center;
-  height: 73vh;
+  height: 70vh;
   margin-right: 2.2vw;
   background: rgba(0, 0, 0, 0.2);
   color:white;

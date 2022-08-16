@@ -66,7 +66,7 @@ export default {
 
 <style scoped>
 .word-card {
-    width : 300px;
+    width : 275px;
 }
 
 .join-button {

@@ -119,6 +119,7 @@ export default {
 
 .search-btn{
   background-color: #f38e7b;
+  border: transparent;
 }
 
 #chat-main-title {

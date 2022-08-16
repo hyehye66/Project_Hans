@@ -68,10 +68,9 @@ export default {
 <style scoped>
 .wordgame-card-list{
   display : flex;
-  flex-direction: row ; 
-  width : 1200px;
+  flex-flow: row wrap; 
+  width : 100%;
   height : auto;
-  flex-wrap: wrap;
 
 }
 </style>
