@@ -46,7 +46,7 @@
     <!-- col-md-8 -->
       <user-video :stream-manager="mainStreamManager" v-if="!answerTime"/>
       <p v-if="answerTime"> 정답은 : {{answer}}</p>
-      <p v-if="answerTime"> 맞춘 사람 : {{Object.keys(answerList)}}</p>
+      <p v-if="answerTime"> 맞춘 사람 : {{answerList}}</p>
       <p v-if="answerTime"> 점수는 : {{point}}</p>
     </div>
     <!-- 캠,마이크,나가기,설정 -->
@@ -257,7 +257,6 @@ export default {
       isCorrect : false,
       answerTime : false,
       threecount : 3,
-
       point : 0,
       currentPlayers : [],
       joker : '',
@@ -329,7 +328,9 @@ export default {
             
             // 타이머 강제 종료
             this.$store.state.games.all = true
-           this.$store.state.games.TimerChk = true
+
+            this.$store.state.games.TimerChk = true
+
            // axios로 스프링 서버의 방에서 나가기
             axios({
                 url : `/api/body-game/rooms/${this.$route.params.roomSequence}`,
@@ -438,6 +439,7 @@ export default {
 
     },
   threecountDown(){
+    console.log('시작합니당')
     this.cnt = true
     setTimeout(() => {this.threecount = 3}, 1000)
     setTimeout(() => {this.threecount = 2}, 2000)
@@ -464,31 +466,39 @@ export default {
               const response = JSON.parse(res.body)
               let key = Object.keys(response) 
               if ("gameStatus" === key[1]){
+                console.log('잘받아옴!')
                   this.status = true
                   this.timeLimit = response.timeLimit
+                  this.totalQuestion = response.totalQuestion
+                  console.log(this.timeLimit)
+
                   for (let i of response.players) {
                     this.currentRank.push([0,i])
                   }
                   for (let j of response.players) {
                     this.currentPlayers.push(j)
-                  }
-                  this.playerLen = this.currentPlayers
-                  // console.log(typeof(this.currentPlayers,'이거 왜 객체로 되냐?'))
+
+                  } 
+                  
+                  this.playerLen = Object.keys(response.players).length
+                  console.log(this.currentPlayers, this.playerLen)
+
                   this.joker = this.currentPlayers.shift()
-                  console.log(this.joker)
+                  console.log(this.joker, '여기냐?')
                   this.currentPlayers.push(this.joker)
+
+                  this.getSub(this.joker)
+
                   this.threecountDown()
 
               } else if (key[0] === 'problem') {
                   this.problem = response.problem
-
                   this.changeTagger = false
 
 
               } else if (key[0] === 'roomSequence') {
                   this.answer = response.answer
                   this.answerList = response.correctPlayers
-                  console.log(Object.keys(this.answerList).length , '진짜 안먹?')
                   this.answerTime = true
                   this.point = response.point
                   console.log(this.answerList,typeof(response.correctPlayers))
@@ -496,7 +506,7 @@ export default {
                     for (let i of Object.keys(this.answerList)) {
                       for ( let j of this.currentRank) {
                         if (i === j[1]){
-                          j[0] += response.point
+                          j[0] += this.answerList[i]
                           break
                         }
                       }
@@ -506,22 +516,21 @@ export default {
                   }   
 
                   }
-                  console.log(this.currentRank)
+                  
                   this.answerList= []
                   this.isCorrect = false
-                  console.log(this.currentPlayers, '여기요 여기')
-                  if (!this.changeTagger) {
+                  
+                 if (!this.changeTagger){
                   this.joker = this.currentPlayers.shift()
                   console.log(this.currentPlayers, '뽑은 후')
-                  console.log(this.joker)
-                  this.changeTagger = true
+                  console.log(this.joker, '어디서 undefined가 뜨는 것?')
+                  
                   this.getSub(this.joker)
                   this.currentPlayers.push(this.joker)
 
-                  }
-
-              } else if (key[0] === 'players') {
-                  this.difficulty = response.points
+                  console.log(this.currentPlayers, 'undefined어디임?')
+                  this.changeTagger = true
+                 }
 
               } else if (key[0] == 'correctPlayers') {
                 this.answerList = response.correctPlayers
@@ -546,6 +555,7 @@ export default {
     console.log('보낼거임')
     this.start = true
     this.cnt = true
+    
     const gameStatus = {
         total_question : this.totalQuestion,
         difficulty : this.difficulty,
@@ -556,6 +566,7 @@ export default {
   },
 
   getProblem(){
+    console.log('문제 보내는 사람 몇명임?')
     this.answerTime = false
     this.trigger = true
     this.stompClient.send(
@@ -566,6 +577,9 @@ export default {
     },
       
   async setCorrect(){
+
+    console.log('여기서 보냄')
+
     let timeout = setTimeout(() => { this.$store.state.games.all = false; this.sendCorrect()}, this.timeLimit * 1000)
     let interval = setInterval(() => {
       this.allCorrect()
@@ -587,7 +601,7 @@ export default {
    
     // let interval = setInterval(() => {
 
-      if (this.answerList.length == this.playerLen-1){
+      if (Object.keys(this.answerList).length == this.playerLen-1){
         this.$store.state.games.TimerChk = true
         this.$store.state.games.all = true
         // clearInterval(interval)
@@ -618,11 +632,11 @@ export default {
         JSON.stringify(questionNum), {}
         )
         this.problemNum++
-        
-        if (this.problemNum <= 10){
+        console.log(this.problemNum, 'e다음 문제 찍어주세용')
+        if (this.problemNum <= this.totalQuestion){
           console.log('결과까지!')
           setTimeout(() => {this.threecountDown()}, 3000)
-        } else if (this.problemNum > 10) {
+        } else if (this.problemNum > this.totalQuestion) {
           this.sendResult()
         }
     },
@@ -637,17 +651,17 @@ export default {
       this.start = false,
       this.currentRank = [],
       this.currentPlayers =[],
-      this.joker = ''
+      this.joker = '',
+      this.problemNum = 1,
+      this.answerTime = false
   },     
 
   getSub(Sulae){
     if (Sulae != this.profile.nickname) {
       for (let i of this.subscribers) {
-      
       let data = i.stream.connection.data
       let toJson = data.replace('}%/%{', ",")
       let tagger = JSON.parse(toJson)
-      console.log(tagger.clientData)
       if (tagger.clientData == Sulae) {
         this.mainStreamManager = i
         break
@@ -656,12 +670,9 @@ export default {
     } else {
       this.mainStreamManager = this.publisher
     }
-    this.mainStreamManager.publishAudio(false)
+    
   }
   },
-  mounted(){
-    console.log(this.isHost,this.$route.params)
-  } 
   }
   
   

@@ -15,6 +15,8 @@
         </div>
       </div>
 
+
+
       <!-- 총 진행시간 -->
       <div class="words-detail-total-time">
       <!--  h-30 w-40 p-2 border-2 border-gray-400 bg-gray-200 -->
@@ -22,6 +24,7 @@
         <h1>{{ trigger }} </h1>
         <!-- </div> -->
       </div>
+
     </div>
     <div id="words-detail-session-header2" style="width: 100%;">
       <!-- 방안사람들 -->
@@ -456,10 +459,12 @@ export default {
                   this.status = true
                   this.playerLen = response.players.length
                   this.currentPlayers = response.players
+                  this.totalQuestion = response.totalQuestion
                   for (let i of response.players) {
                     this.currentRank.push([0,i])
                   }
                   console.log(this.currentRank)
+                  this.threecountDown()
               } else if (key[0] === 'problem') {
                   this.problem = response.problem
                   console.log(this.problem)
@@ -518,7 +523,7 @@ export default {
         total_question : this.totalQuestion
     }
     this.stompClient.send(`/game/word-game/${this.$route.params.roomSequence}`, JSON.stringify(gameStatus), {})
-    this.threecountDown()
+    
   },
 
   getProblem(){
@@ -604,7 +609,8 @@ export default {
       this.status = false,
       this.start = false,
       this.currentRank = [],
-      this.currentPlayers =[]
+      this.currentPlayers =[],
+      this.problemNum = 1
   },
   
   }
