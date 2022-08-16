@@ -548,8 +548,6 @@ export default {
                 this.isHost = response.owner
                 this.difficulty = response.difficulty
                 this.totalQuestion = response.totalQuestion
-                this.timeLimit = response.timeLimit
-                
               } else if (key[0] == 'players'){
                 this.status = false,
                 this.start = false,
@@ -575,14 +573,17 @@ export default {
   },
 
   getProblem(){
-    console.log('문제 보내는 사람 몇명임?')
     this.answerTime = false
     this.trigger = true
-    this.stompClient.send(
+    if (!this.isSolving.includes(this.problemNum)){
+      this.isSolving.push(this.problemNum)
+      if (this.problemNum <= this.totalQuestion) {
+        this.stompClient.send(
         `/game/body-game/room/${this.$route.params.roomSequence}/problem/${this.problemNum}`, undefined, {}
-    )
-    this.setCorrect()
-    
+        )
+      this.setCorrect()
+      }
+    }
     },
       
   async setCorrect(){
@@ -633,17 +634,21 @@ export default {
     },
 
   sendCorrect(){
-    if (!this.isSolving.includes(this.problemNum)){
+
+    if (!this.isSolving.includes(this.problemNum+1)){
       this.isSolving.push(this.problemNum)
-      console.log(this.isSolving)
+      console.log(this.isSolving, '몇 번 받아오는 중?')
+
       const questionNum = {question_num : this.problemNum} 
       this.stompClient.send(`/game/body-game/answer/${this.$route.params.roomSequence}`,
       JSON.stringify(questionNum), {}
       )
       this.problemNum++
+
       console.log(this.problemNum, 'e다음 문제 찍어주세용')
       if (this.problemNum <= this.totalQuestion){
         console.log('결과까지!')
+
         setTimeout(() => {this.threecountDown()}, 3000)
       } else if (this.problemNum > this.totalQuestion) {
         this.sendResult()
