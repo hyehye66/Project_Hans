@@ -15,8 +15,6 @@
         </div>
       </div>
 
-
-
       <!-- 총 진행시간 -->
       <div class="words-detail-total-time">
       <!--  h-30 w-40 p-2 border-2 border-gray-400 bg-gray-200 -->
@@ -35,11 +33,14 @@
     </div>
     <div id="words-detail-session-body-left" class="col-md-5">
       <!-- 메인화면 -->
-      <div id="words-detail-problem-box">
-      <!-- col-md-8 -->
-        <p>게임 시간 : {{this.$store.state.games.TimerStr}} 초</p>
-        <br>
-        <p v-if="!cnt">문제는 : {{ problem }} </p>
+      <div class="words-quiz-box-timer">제한 시간 : {{this.$store.state.games.TimerStr}} 초</div>
+      <div id="words-detail-quiz-box">
+      <!-- col-md-8 -->        
+        <div class="words-quiz-box-quiz" v-if="!cnt"> 
+          <p>문제 :</p>  
+          <p>{{ problem }}</p>        
+        </div>
+
       </div>
       <!-- 캠,마이크,나가기,설정 -->
       <div class="cam-buttons">
@@ -76,17 +77,17 @@
         </span>
         <!-- 나가기 -->
         <span class="words-detail-icon-area" @click="leaveSession">
-            <LogoutIcon style="height: 40; width: 40;"/>
+            <LogoutIcon style="height: 50%; width: 50%;"/>
         </span>
         <!-- 설정 -->
-        <span class="words-detail-icon-area" @click="isOpen">
-            <CogIcon style="height: 40; width: 40;"/>
+        <span class="words-detail-icon-area" @click="isOpen" v-if="isHost">
+            <CogIcon style="height: 50%; width: 50%;"/>
         </span>
       </div>
       <div class="words-detail-answer-send">
-          <input type="text" name="" id="words-detail-answer-sheet" v-model="temp" size="30"
+          <input type="text" name="" id="words-detail-answer-sheet" v-model="temp" 
           placeholder="답을 입력해주세요." @keyup.enter="sendAnswer" v-if="!isCorrect"/>
-          <PaperAirplaneIcon style="height: 35; width: 35;" @click="sendAnswer" />					
+          <PaperAirplaneIcon style="height: 8%; width: 8%;" @click="sendAnswer" />					
       </div>
       <!-- 정오답 알림 메시지 -->
 
@@ -149,10 +150,11 @@
           <button id="start-btn" @click="sendStart"     
           class="bg-transparent hover:bg-yellow-500 text-yellow-700 font-semibold hover:text-white 
           py-2 px-2 border border-yellow-500 hover:border-transparent rounded-full">
-            START
+            Start
           </button>
         </div>
-        <div v-if="cnt && status" class="words-detail-problem-timer">
+
+        <div v-if="cnt && status" class="words-start-box-timer">
           <h1>{{threecount}}</h1>          
         </div>
       </div>
@@ -434,7 +436,7 @@ export default {
     setTimeout(() => {this.threecount = 3}, 1000)
     setTimeout(() => {this.threecount = 2}, 2000)
     setTimeout(() => {this.threecount = 1}, 3000)
-    setTimeout(() => {this.threecount = 'start!'}, 4000)
+    setTimeout(() => {this.threecount = 'START!'}, 4000)
     setTimeout(() => { this.cnt=false }, 4500)
     setTimeout(() => { this.timerStart(15) }, 4500)
     this.threecount = 3
@@ -667,7 +669,7 @@ svg {
 
 #words-detail-session-header {
   margin: auto;
-  padding: 0.3%;
+  padding: 0.4%;
   width: 96%;
   height: 10%;
   display: flex;
@@ -822,9 +824,9 @@ video {
 
 #words-detail-session-body-left {
   /* margin-left */
-  padding-left: 3%;  
-  padding-right: 3%;  
-  padding-top: 1%;  
+  margin-left: 3%;  
+  /* margin-right: 1%;   */
+  margin-top: 1%;  
   display: flex;
   flex-direction: column;
   float: left;
@@ -835,10 +837,14 @@ video {
   background-color: transparent;
 }
 
-#words-detail-problem-box {
+
+#words-detail-quiz-box {
   width: 30vw;
   height: 40vh;
+  padding: 3%;
+
   display: flex;
+  flex-flow: column;
   justify-content: center;
   align-items: center;
 
@@ -851,10 +857,33 @@ video {
 
 }
 
-#words-detail-problem-box p{
-  font-size: 1.8rem;
+
+#words-detail-quiz-box div{
+  /* font-size: 1.8rem; */
   font-weight: bolder;
+  color: #ffff;
 }
+
+.words-quiz-box-timer {
+  font-size: 1.6rem;
+  font-weight: bolder;
+  color: #ffff;
+  /* height: 16%; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+.words-quiz-box-quiz {
+  font-size: 2rem;
+  /* height: 80%; */
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
+
 
 .cam-buttons {
     width: 60%;
@@ -883,6 +912,7 @@ video {
   justify-content: center;
   align-items: center;
   margin: auto;
+  width: 68%;
     
 }
 
@@ -953,6 +983,8 @@ video {
 }
 
 .words-detail-start-box {
+  position: fixed;
+  bottom: 6%;
   /* width: 150%; */
   /* margin: 0 auto 2.5vh; */
    
@@ -961,25 +993,33 @@ video {
    height: 48vh;
    background: rgba(192, 192, 199, 0.47);
    border: 3px solid white;
-   border-radius:20px;
+   border-radius:20px; */
+
    display:flex;
    justify-content: center;
-   align-items: center; */
+   align-items: center;
+   align-self: center;
 }
 
 .words-detail-leader-button {
-    font-size: 2rem;
+    /* font-size: 2rem; */
+    font-weight: bolder;
     text-align: center;
     /* justify-content: center; */
-    margin-top: 3%;
-    margin-bottom: 3%;
+
+    /* margin-top: 3%;
+    margin-bottom: 3%; */
 }
 
-.words-detail-leader-button button {
-    width: 30%;
+#start-btn {
+  border: 0.5rem solid;
+  font-size: 3rem;
+  font-weight: bolder;
+  text-align: center;
 }
 
-.words-detail-problem-timer {
+
+.words-start-box-timer {
   align-self: center;
   /* float: right; */
   text-align: center;
@@ -990,6 +1030,12 @@ video {
   justify-content : center;
 	align-items : center;
     
+}
+
+.words-start-box-timer h1 {
+  color: rgb(166, 122, 0);
+  font-size: 3rem;
+
 }
 
 
