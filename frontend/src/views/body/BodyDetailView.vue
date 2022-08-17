@@ -707,6 +707,7 @@ export default {
     }
     } else {
       this.mainStreamManager = this.publisher
+      this.publisher.stream.audioActive = false
     }
     this.mainStreamManager.stream.audioActive = false
   }
