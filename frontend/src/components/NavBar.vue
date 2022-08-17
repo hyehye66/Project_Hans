@@ -86,18 +86,18 @@
 
 
 </div>
-<LoginModal v-model:loginOpen="loginOpen" />
+
 
         
 </template>
 
 <script>
-import LoginModal from '@/views/modal/components/LoginModal.vue'
+
 import { mapActions, mapGetters } from 'vuex'
 export default {
   name : 'NavBar',
   components : {
-    LoginModal
+
   },
   computed: {
     ...mapGetters(['isLoggedIn','profile']),
