@@ -2,10 +2,12 @@
   <nav-bar />
   <!-- <div class="communication-bg-img">
   </div> -->
-   <div v-if="!isLoggedIn">로그인이 필요한 서비스입니다.
-   <button><router-link :to="{name:'LoginView'}" >로그인하러가기!</router-link></button>
+   <div v-if="!isLoggedIn">
+    <router-link :to="{name:'LoginView'}" ></router-link>
    </div>
-  <communication-tab :situationSentence="situationSentence"/> 
+   <div v-else>
+    <communication-tab :situationSentence="situationSentence"/>
+   </div>
  
 
 </template>

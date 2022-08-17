@@ -170,5 +170,8 @@ export default {
   background-color: #f7bfb4;
 }
 
+.form-select {
+  
+}
 
 </style>

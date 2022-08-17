@@ -65,7 +65,7 @@ export default {
   visibility: visible;
   opacity: 100;
   border-radius: 3% 3% 3% 3%;
-  border: 0.05rem solid rgb(76,76,76,0.3);
+  border: 0.05rem solid rgb(76,76,76,0.4);
   /* background-color: transparent; */
   
 }

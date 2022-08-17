@@ -154,7 +154,7 @@ export default {
   z-index: 90;
   visibility: visible;
   opacity: 100;
-  border: 0.05rem solid rgb(76,76,76);
+  border: 0.05rem solid rgb(76,76,76,0.4);
   border-radius: 6% 6% 6% 6%;
 }
 

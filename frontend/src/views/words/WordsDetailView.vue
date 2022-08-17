@@ -112,9 +112,19 @@
       <div class="words-detail-answer-send">
           <input type="text" name="" id="words-detail-answer-sheet" v-model="temp" 
           placeholder="답을 입력해주세요." @keyup.enter="sendAnswer" v-if="!isCorrect && !answerTime"/>
-          <PaperAirplaneIcon style="height: 8%; width: 8%;" @click="sendAnswer" />					
+          <PaperAirplaneIcon style="height: 8%; width: 8%;" @click="sendAnswer" v-if="!isCorrect && !answerTime" />					
       </div>
       <!-- 정오답 알림 메시지 -->
+      <div class="body-detail-check-answer">
+        <!-- <input type="text" v-model="answerAlert" size="30" style="border: none; background: transparent;" /> -->
+        <div v-if="isCorrect ">
+          <h1 class="words-correct-answer">정답!</h1>
+        </div>
+        <div v-else-if="!isCorrect && !answerTime && status">
+          <h1 class="words-incorrect-answer">정답을 입력해주세요.</h1>
+        </div>
+    </div>
+
 
     </div>
 
@@ -971,18 +981,37 @@ video {
     /* border: 1; */
     /* border: 1px dotted black; */
     /* text-align: center; */
-    justify-content: center;
     /* margin: auto; */
+
+    /* justify-content: center;
     align-self: center;
     font-size: 2rem;
-    color: red;
-    font-style: italic;
+    color: red; */
+
 
     /* background-color: transparent;
     border: none;
     background: transparent; */
 
 }
+
+.words-correct-answer {
+  justify-content: flex-start;
+  align-self: center;
+  font-size: 2rem;
+  color: red;
+
+}
+
+.words-incorrect-answer {
+  justify-content: flex-start;
+  /* align-self: center; */
+  font-size: 1rem;
+  color: blue;
+  /* font-style: italic; */
+
+}
+
 
 #words-detail-session-body-right {
   /* padding-left: 3%;  
