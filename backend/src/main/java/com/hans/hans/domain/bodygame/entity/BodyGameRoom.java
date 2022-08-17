@@ -44,7 +44,7 @@ public class BodyGameRoom {
         return room;
     }
 
-    public void refreshCorrectPlayers(){
+    public void resetCorrectPlayers(){
         this.correctPlayers = new HashMap<>();
     }
     public void updatePlayersScore(String player, Long score){
