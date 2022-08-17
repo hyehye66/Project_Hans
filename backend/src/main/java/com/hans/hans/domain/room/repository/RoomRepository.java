@@ -11,7 +11,7 @@ import java.util.List;
 
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
-    Page<Room> findRoomsByModeOOrderByRoomDTTMDesc(Mode mode, Pageable pageable);
+    Page<Room> findRoomsByModeOrderByRoomDTTMDesc(Mode mode, Pageable pageable);
     Room findByRoomSequence(Long roomSequence);
     Page<Room> findRoomsByTitleContaining(String nickname, Pageable pageable);
     Page<Room> findRoomByMember(Member member, Pageable pageable);
