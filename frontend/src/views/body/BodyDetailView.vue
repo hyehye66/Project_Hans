@@ -20,7 +20,7 @@
     <div class="body-detail-total-time">
     <!--  h-30 w-40 p-2 border-2 border-gray-400 bg-gray-200 -->
       <!-- <div class="h-full w-full bg-gray-400"> -->
-        <h1>{{ trigger }}</h1>
+        
         
       <!-- </div> -->
     </div>
@@ -41,11 +41,11 @@
   </div>
 
   <div id="body-detail-session-body-left" class="col-md-5">
-    <div class="body-quiz-limit-timer">제한 시간 : {{this.$store.state.games.TimerStr}} 초</div> 
+    <div class="body-quiz-limit-timer" v-if="status && !answerTime">제한 시간 : {{this.$store.state.games.TimerStr}} 초</div> 
     <!-- 메인화면 -->
     <div id="body-detail-main-video">
     <!-- col-md-8 -->
-      <user-video :stream-manager="mainStreamManager" v-if="!answerTime"/>
+      <user-video :stream-manager="mainStreamManager" v-if="!answerTime && status"/>
       <p v-if="answerTime"> 정답은 : {{answer}}</p>
       <p v-if="answerTime"> 맞춘 사람 : {{answerList}}</p>
       <p v-if="answerTime"> 점수는 : {{point}}</p>
@@ -103,8 +103,8 @@
       <div v-else class="body-detail-answer-send">
       
         <input type="text" name="" id="body-detail-answer-sheet" v-model="temp" size="30"
-        placeholder="답을 입력해주세요." @keyup.enter="sendAnswer" v-if="!isCorrect && !(joker == profile.nickname)"/>
-        <PaperAirplaneIcon style="height: 35; width: 35;" @click="sendAnswer" v-if="!isCorrect && !(joker == profile.nickname)"/>
+        placeholder="답을 입력해주세요." @keyup.enter="sendAnswer" v-if="!isCorrect && !(joker == profile.nickname) &&!answerTime"/>
+        <PaperAirplaneIcon style="height: 35; width: 35;" @click="sendAnswer" v-if="!isCorrect && !(joker == profile.nickname)&&!answerTime"/>
       </div>
     </div>
     <!-- 정오답 알림 메시지 -->
@@ -113,7 +113,7 @@
         <div v-if="isCorrect ">
           <h1 class="correct-answer">정답!</h1>
         </div>
-        <div v-else-if="!isCorrect ">
+        <div v-else-if="!isCorrect && !answerTime && status &&!(joker == profile.nickname)">
           <h1 class="incorrect-answer">정답을 입력해주세요.</h1>
         </div>
     </div>
@@ -490,7 +490,6 @@ export default {
               if ("gameStatus" === key[1]){
                   this.status = true
                   this.currentPlayers =[],
-                  this.joker = '',
                   this.problemNum = 1,
                   this.isSolving = []
                   this.timeLimit = response.timeLimit
@@ -540,20 +539,11 @@ export default {
                     console.log('여기임진짜?', this.problemNum)
                     setTimeout(() => {this.threecountDown()}, 3000)
                     this.trigger = true
-                  }
-
-                  // if (this.problemNum <= this.totalQuestion){
-                  //   console.log('결과까지!')
-
-                  //   setTimeout(() => {this.threecountDown()}, 3000)
-                  // } else if (this.problemNum > this.totalQuestion) {
-                  //   this.sendResult()
-                  // }
-                  console.log(this.answerList,typeof(response.correctPlayers))
-                  if (Object.keys(this.answerList).length >0) {
+                    if (Object.keys(this.answerList).length >0) {
                     for (let i of Object.keys(this.answerList)) {
                       for ( let j of this.currentRank) {
                         if (i === j[1]){
+                          console.log('1234567890')
                           j[0] += this.answerList[i]
                           break
                         }
@@ -563,7 +553,8 @@ export default {
                     })
                   }   
                   }
-                  
+                  }
+ 
                   this.answerList= []
                   this.isCorrect = false
                   
@@ -590,11 +581,12 @@ export default {
                 this.timeLimit = response.timeLimit
 
               } else if (key[0] == 'players'){
-                this.status = false,
-                this.start = false,
-                this.currentRank = [],
+                this.status = false
+                this.start = false
+                this.currentRank = []
                 this.answerTime = false
                 this.resultTime = true
+                this.joker = ''
                 for (let i of Object.keys(response.players)) {
                   console.log(i)
                   console.log(response.players[`${i}`])
@@ -646,9 +638,6 @@ export default {
 
     }, 1000)
      
-    // if (!result) {
-    //   this.sendCorrect()
-    // } 
   },
   
   allCorrect(){

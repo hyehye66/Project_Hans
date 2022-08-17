@@ -4,6 +4,7 @@
       <BodyMainCardListItem v-if="room.mode.modeSequence===3" :mode="room.mode.modeName" :room="room" />  
     </div>
   </div>
+
   <div v-if="this.$store.state.rooms.isSearch" class="bodygame-card-list py-3  grid grid-cols-2 gap-6">
     <div v-for="room in this.$store.state.rooms.searchRooms"  :key="room.roomSequence">
       <BodyMainCardListItem v-if="room.mode.modeSequence===3" :mode="room.mode.modeName" :room="room" />  
