@@ -16,36 +16,39 @@ export default {
   },
 
   actions: {
-    searchWordRoom({dispatch},{input, searchSelected}){
-      console.log(searchSelected)
+    searchRoom({dispatch},{input, searchSelected, mode}){
+      console.log(mode, input, searchSelected)
       if (searchSelected == 'title'){
-        dispatch('searchWordRoomTitle', input)
+        dispatch('searchRoomTitle', {title : input, mode : mode})
       }
       if (searchSelected == 'nickname'){
-        dispatch('searchWordRoomNickname', input)
+        dispatch('searchRoomNickname', {nickname : input, mode : mode})
       }
     },
 
-    searchWordRoomTitle({state, getters},title){
+    searchRoomTitle({state, getters},{title, mode}){
       axios ( {
-          url: `/api/word-game/rooms/search-title?title=${title}`,
+          url: `/api/${mode}/rooms/search-title?title=${title}`,
           headers: getters.authHeader,
           method: "get",
         })
       .then(res => {   
-        state.isSearch = true     
+        state.isSearch = true
+        state.searchRooms = ''
         state.searchRooms = res.data.data.listRooms.content
       }).catch(err => console.log('실패!!!!'))
     },
-    searchWordRoomNickname({state, getters},nickname){
+    searchRoomNickname({state, getters}, {nickname, mode}){
       axios ( {
-        url: `/api/word-game/rooms/search-nickname?nickname=${nickname}`,
+        url: `/api/${mode}/rooms/search-nickname?nickname=${nickname}`,
         headers: getters.authHeader,
         method: "get",
       })
     .then(res => {   
       state.isSearch = true     
       state.searchRooms = res.data.data.listRooms.content
+      console.log('ㅇㅇㅇㅇㅇ')
+      console.log(state.searchRooms)
     }).catch(err => console.log('실패!!!!'))
     },
 
