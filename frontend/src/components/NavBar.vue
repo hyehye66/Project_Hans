@@ -55,7 +55,7 @@
         <ul class="p-2 drop-box bg-newGrey1">
           <li><router-link :to="{name:'WordsMainView'}">낱말 퀴즈</router-link></li>
           <li><router-link :to="{name:'BodyMainView'}">몸으로 말해요</router-link></li>
-          <li><router-link :to="{name:'SongMainView'}">가사 퀴즈</router-link></li>
+          <!-- <li><router-link :to="{name:'SongMainView'}">가사 퀴즈</router-link></li> -->
         </ul>
       </li>
       <li class="mx-4"><router-link :to="{name:'ChatMainView'}" >대화</router-link></li>
