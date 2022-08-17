@@ -1,11 +1,11 @@
 <template>
-  <div v-if="!this.$store.state.words.isSearch" class="wordgame-card-list py-3  grid grid-cols-2 gap-6">
+  <div v-if="!this.$store.state.rooms.isSearch" class="wordgame-card-list py-3  grid grid-cols-2 gap-6">
     <div v-for="room in rooms"  :key="room.roomSequence" >
       <WordsMainCardListItem v-if="room.mode.modeSequence===2" :mode="room.mode.modeName" :room="room" />  
     </div>
   </div>
-  <div v-if="this.$store.state.words.isSearch" class="wordgame-card-list py-3  grid grid-cols-2 gap-6">
-    <div v-for="room in this.$store.state.words.searchRooms"  :key="room.roomSequence">
+  <div v-if="this.$store.state.rooms.isSearch" class="wordgame-card-list py-3  grid grid-cols-2 gap-6">
+    <div v-for="room in this.$store.state.rooms.searchRooms"  :key="room.roomSequence">
       <WordsMainCardListItem v-if="room.mode.modeSequence===2" :mode="room.mode.modeName" :room="room" />  
     </div>
   </div>
@@ -76,6 +76,7 @@ export default {
   },
   created(){
     this.getSession()
+    this.$store.state.rooms.isSearch = false
   },
   computed:{
     // 페이지네이션에 사용할 인덱스 변경 함수
