@@ -13,7 +13,7 @@ import java.util.List;
 public interface RoomRepository extends JpaRepository<Room, Long> {
     Page<Room> findRoomsByModeOrderByRoomDTTMDesc(Mode mode, Pageable pageable);
     Room findByRoomSequence(Long roomSequence);
-    Page<Room> findRoomsByTitleContaining(String nickname, Pageable pageable);
-    Page<Room> findRoomByMember(Member member, Pageable pageable);
+    Page<Room> findRoomsByTitleContainingAndMode(String nickname, Pageable pageable, Mode mode);
+    Page<Room> findRoomByMemberAndMode(Member member, Pageable pageable, Mode mode);
     List<Room> findRoomsByModeAndRoomStatus(Mode mode, boolean roomStatus);
 }

@@ -45,14 +45,14 @@ public class WordGameController {
 
     @GetMapping("/search-title")
     public ResponseEntity<?> searchWordGameRoomsByTitle(@RequestParam(value = "title") String title, Pageable pageable){
-        RoomsResponseDto roomsResponseDto = roomService.searchRoomByTitle(title, pageable);
+        RoomsResponseDto roomsResponseDto = roomService.searchRoomByTitle(title, pageable, Modes.WORD);
 
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("낱말게임방 제목으로 검색 조회에 성공하였습니다.", roomsResponseDto));
     }
 
     @GetMapping("/search-nickname")
     public ResponseEntity<?> searchWordGameRoomsByNickname(@RequestParam(value = "nickname") String nickname, Pageable pageable){
-        RoomsResponseDto roomsResponseDto = roomService.searchRoomByNickname(nickname,pageable);
+        RoomsResponseDto roomsResponseDto = roomService.searchRoomByNickname(nickname,pageable, Modes.WORD);
 
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("낱말게임방 닉네임으로 검색 조회에 성공하였습니다.", roomsResponseDto));
     }

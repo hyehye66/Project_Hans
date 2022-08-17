@@ -56,14 +56,14 @@ public class ConversationController {
 
     @GetMapping("/search-title")
     public ResponseEntity<?> searchConversationRoomsByTitle(@RequestParam(value = "title") String title, Pageable pageable){
-        RoomsResponseDto roomsResponseDto = roomService.searchRoomByTitle(title, pageable);
+        RoomsResponseDto roomsResponseDto = roomService.searchRoomByTitle(title, pageable, Modes.TALK);
 
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("대화방 제목으로 검색 조회에 성공하였습니다.", roomsResponseDto));
     }
 
     @GetMapping("/search-nickname")
     public ResponseEntity<?> searchConversationRoomsByNickname(@RequestParam(value = "nickname") String nickname, Pageable pageable){
-        RoomsResponseDto roomsResponseDto = roomService.searchRoomByNickname(nickname,pageable);
+        RoomsResponseDto roomsResponseDto = roomService.searchRoomByNickname(nickname, pageable, Modes.TALK);
 
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("대화방 닉네임으로 검색 조회에 성공하였습니다.", roomsResponseDto));
     }
