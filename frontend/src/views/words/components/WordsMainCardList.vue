@@ -1,6 +1,6 @@
 <template>
   <div v-if="!this.$store.state.rooms.isSearch" class="wordgame-card-list py-3  grid grid-cols-2 gap-6">
-    <div v-for="room in rooms"  :key="room.roomSequence" >
+    <div v-for="room in this.$store.state.rooms.rooms"  :key="room.roomSequence" >
       <WordsMainCardListItem v-if="room.mode.modeSequence===2" :mode="room.mode.modeName" :room="room" />  
     </div>
   </div>
@@ -9,23 +9,20 @@
       <WordsMainCardListItem v-if="room.mode.modeSequence===2" :mode="room.mode.modeName" :room="room" />  
     </div>
   </div>
-  
-  <!-- <div>
-    <input v-model="idx" class="bg-primary" v-on:keyup.enter="getSession(changeIdx)">
-    {{changeIdx}}
-  </div> -->
+
   <nav aria-label="Page navigation">
                 <ul class="pagination">
                   <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous" @click="getSession(0), this.page=0">
+                    <a class="page-link" href="#" aria-label="Previous" @click="chkRange(this.$store.state.rooms.currentPage-1)">
                       <span aria-hidden="true">&laquo;</span>
                     </a>
                   </li>
-                  <li class="page-item"><a class="page-link" @click="getSession(0), this.page=0" href="#">1</a></li>
-                  <li class="page-item"><a class="page-link" @click="getSession(1), this.page=1" href="#">2</a></li>
-                  <li class="page-item"><a class="page-link" @click="getSession(2), this.page=2" href="#">3</a></li>
+                  <ul v-for="idx in this.$store.state.rooms.range" :key="idx">
+                    <li class="page-item"><a class="page-link" @click="getSession({page : idx, mode : 'word-game'})" href="#">{{idx+1}}</a></li>
+                  </ul>
+
                   <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next" @click="getSession(2), this.page=2">
+                    <a class="page-link" href="#" aria-label="Next" @click="chkRange(this.$store.state.rooms.currentPage+1)">
                       <span aria-hidden="true">&raquo;</span>
                     </a>
                   </li>
@@ -34,57 +31,29 @@
 </template>
 
 <script>
-import axios from 'axios';
 import WordsMainCardListItem from './WordsMainCardListItem.vue';
-import { mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 
 
 
 export default {
   data () {
     return {
-      rooms : '',
-      temp : '',
-      mode : '',
-      totalRoomPage : {},
-      getRoom : true,
-      idx : 0
+      
     }
   },
   components : {
     WordsMainCardListItem
   },
   methods : {
-    // 모든 세션 데이터 받아오는 함수 
-      getSession(page){
-        console.log(this.authHeader)
-        axios({
-          url : `/api/word-game/rooms?page=${page}`,
-          method : 'get',
-          headers : {'Authorization':this.authHeader.Authorization}
-          }
-          
-        )
-            .then(res =>{this.rooms = res.data.data.listRooms.content, console.log(this.rooms)})
-            .catch(err => {
-            console.log(err.status)
-            console.log(err,'error here')})
-      }
-            
-  
-
+    ...mapActions(['chkRange', 'getSession']),
+     
   },
   created(){
-    this.getSession()
+    this.getSession({page: 0, mode : 'word-game'})
     this.$store.state.rooms.isSearch = false
-  },
-  computed:{
-    // 페이지네이션에 사용할 인덱스 변경 함수
-    changeIdx() {
-      return this.idx
-    },
-    ...mapGetters(['authHeader'])
-  }}
+   },
+}
   
 
 </script>
@@ -96,5 +65,13 @@ export default {
   width : 100%;
   height : auto;
 
+}
+.pagination {
+  margin-top: 4%;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  
 }
 </style>
