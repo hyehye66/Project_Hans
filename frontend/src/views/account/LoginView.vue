@@ -1,6 +1,7 @@
 <template>
 <nav-bar />
 <!-- <account-error-list v-if="authError"></account-error-list> -->
+<!-- <img :src="require(`@/assets/65837-clouds-in-the-sky (1).gif`)" alt=""> -->
 <div class="hero min-h-screen bg-base-200">
   <div class="hero-content flex-col lg:flex-row-reverse">
     <!-- <div class="main-img">
