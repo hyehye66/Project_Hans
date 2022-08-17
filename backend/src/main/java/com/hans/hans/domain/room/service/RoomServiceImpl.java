@@ -64,7 +64,7 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public RoomsResponseDto getRooms(RoomGetRequestDto roomGetRequestDto, Pageable pageable) {
-        Page<Room> rooms = roomRepository.findRoomsByModeOOrderByRoomDTTMDesc(roomGetRequestDto.toEntity(), pageable);
+        Page<Room> rooms = roomRepository.findRoomsByModeOrderByRoomDTTMDesc(roomGetRequestDto.toEntity(), pageable);
         RoomsResponseDto roomsResponseDto = new RoomsResponseDto(rooms);
 
         return roomsResponseDto;
