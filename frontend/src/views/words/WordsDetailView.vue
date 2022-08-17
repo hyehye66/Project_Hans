@@ -692,7 +692,9 @@ svg {
   z-index: -1;
   opacity: 0.6;
   content: "";
-  background: url("@/assets/14.png");
+  /* background: url("@/assets/14.png"); */
+  /* background-image: url("@/assets/word-game-bg.jpg"); */
+  background-image : url("@/assets/word-game-bg2.jpg.jpg");
   background-size: cover;
   
 }

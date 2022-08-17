@@ -732,6 +732,7 @@ svg {
 .body-detail-bg-img {
   margin: auto;
   /* background-image: url("@/assets/12.png"); */
+  
   /* background-size: cover; */
   width: 100vw;
   height: 100vh;
@@ -752,7 +753,8 @@ svg {
   z-index: -1;
   opacity: 0.6;
   content: "";
-  background: url("@/assets/12.png");
+  /* background: url("@/assets/12.png"); */
+  background-image : url("@/assets/body-game-bg.jpg");
   background-size: cover;
   
 }

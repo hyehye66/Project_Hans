@@ -343,7 +343,8 @@ svg {
   z-index: -1;
   opacity: 0.6;
   content: "";
-  background: url("@/assets/15.png");
+  /* background: url("@/assets/15.png"); */
+  background-image : url("@/assets/conversation-room-bg2.jpg");
   background-size: cover;
   
 }
