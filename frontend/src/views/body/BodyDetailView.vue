@@ -350,7 +350,7 @@ export default {
             // 우리 소켓 통신 연결 해제 
             
             // 타이머 강제 종료
-            this.$store.state.games.all = true
+            this.$store.state.games.all = false
 
             this.$store.state.games.TimerChk = true
 
@@ -467,7 +467,7 @@ export default {
     setTimeout(() => {this.threecount = 2}, 2000)
     setTimeout(() => {this.threecount = 1}, 3000)
     setTimeout(() => {this.threecount = 'start!'}, 4000)
-    setTimeout(() => { this.cnt=false, this.answerTime = false }, 4500)
+    setTimeout(() => { this.cnt=false, this.answerTime = false,this.trigger=false }, 4500)
     setTimeout(() => { this.timerStart(this.timeLimit) }, 4500)
     this.threecount = 3
     setTimeout(() => { this.getProblem() }, 1500)
@@ -495,10 +495,9 @@ export default {
                   this.isSolving = []
                   this.timeLimit = response.timeLimit
                   this.totalQuestion = response.totalQuestion
-                  this.isSolving = []
                   this.resultTime = false
                   this.gameResult = []
-                  console.log(this.playerLen, '여기서 갱신되냐?')
+                  
                   for (let i of response.players) {
                     this.currentRank.push([0,i])
                   }
@@ -528,6 +527,28 @@ export default {
                   this.answerList = response.correctPlayers
                   this.answerTime = true
                   this.point = response.point
+                  
+                  if (!this.isSolving.includes(this.answer) && this.problemNum == this.totalQuestion){
+                    // this.problemNum++
+                    
+                    this.sendResult()
+                  } else if (!this.isSolving.includes(this.answer)&& !this.trigger){
+                    console.log('여기를 두번 온다고?', this.problemNum)
+                    this.isSolving.push(this.answer)
+                    this.isSolving.push(this.problemNum)
+                    this.problemNum++
+                    console.log('여기임진짜?', this.problemNum)
+                    setTimeout(() => {this.threecountDown()}, 3000)
+                    this.trigger = true
+                  }
+
+                  // if (this.problemNum <= this.totalQuestion){
+                  //   console.log('결과까지!')
+
+                  //   setTimeout(() => {this.threecountDown()}, 3000)
+                  // } else if (this.problemNum > this.totalQuestion) {
+                  //   this.sendResult()
+                  // }
                   console.log(this.answerList,typeof(response.correctPlayers))
                   if (Object.keys(this.answerList).length >0) {
                     for (let i of Object.keys(this.answerList)) {
@@ -541,7 +562,6 @@ export default {
                       return b[0] - a[0];
                     })
                   }   
-
                   }
                   
                   this.answerList= []
@@ -549,12 +569,9 @@ export default {
                   
                  if (!this.changeTagger){
                   this.joker = this.currentPlayers.shift()
-                  console.log(this.joker, '술래확인용?')
                   
                   this.getSub(this.joker)
                   this.currentPlayers.push(this.joker)    
-
-
                   this.changeTagger = true
                  }
 
@@ -605,23 +622,22 @@ export default {
   },
 
   getProblem(){
-    this.trigger = true
-    if (!this.isSolving.includes(this.problemNum)){
-      if (this.problemNum <= this.totalQuestion) {
-        this.stompClient.send(
-        `/game/body-game/room/${this.$route.params.roomSequence}/problem/${this.problemNum}`, undefined, {}
-        )
-      this.setCorrect()
-      }
+    console.log('여기 몇 번 오나요?', this.problemNum)
+    if (this.problemNum <= this.totalQuestion) {
+      this.stompClient.send(
+      `/game/body-game/room/${this.$route.params.roomSequence}/problem/${this.problemNum}`, undefined, {}
+      )
+    this.setCorrect()
     }
     },
       
   async setCorrect(){
-    console.log(this.timeLimit)
-    let timeout = setTimeout(() => { this.$store.state.games.all = false; this.sendCorrect();clearInterval(interval)}, this.timeLimit * 1000 + 0.2*this.timeLimit)
+    console.log('셋 커렉트 몇번 함?', this.problemNum)
+    let timeout = setTimeout(() => { this.$store.state.games.all = false; this.sendCorrect();clearInterval(interval),console.log('여기서 터짐?')}, this.timeLimit * 1000 + 3000)
     let interval = setInterval(() => {
       this.allCorrect()
       if(this.$store.state.games.all){
+        console.log('여기서 터지냐?')
         clearTimeout(timeout)
         this.sendCorrect()
         this.$store.state.games.all = false
@@ -638,13 +654,11 @@ export default {
   allCorrect(){
    
     // let interval = setInterval(() => {
-
       if (Object.keys(this.answerList).length == this.playerLen-1){
         this.$store.state.games.TimerChk = true
         this.$store.state.games.all = true
         // clearInterval(interval)
       }
-      
     // }, 1000)
     
    
@@ -667,23 +681,17 @@ export default {
   sendCorrect(){
 
     if (!this.isSolving.includes(this.problemNum)){
-      this.isSolving.push(this.problemNum)
-      console.log(this.isSolving, '몇 번 받아오는 중?')
+      
+      console.log(this.isSolving, '몇 번 받아오는 중?', this.totalQuestion)
 
       const questionNum = {question_num : this.problemNum} 
       this.stompClient.send(`/game/body-game/answer/${this.$route.params.roomSequence}`,
       JSON.stringify(questionNum), {}
       )
-      this.problemNum++
+      
 
       console.log(this.problemNum, 'e다음 문제 찍어주세용')
-      if (this.problemNum <= this.totalQuestion){
-        console.log('결과까지!')
-
-        setTimeout(() => {this.threecountDown()}, 3000)
-      } else if (this.problemNum > this.totalQuestion) {
-        this.sendResult()
-      }
+      
     }
         
     },

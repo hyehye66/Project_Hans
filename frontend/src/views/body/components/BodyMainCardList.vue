@@ -4,43 +4,23 @@
       <BodyMainCardListItem v-if="room.mode.modeSequence===3" :mode="room.mode.modeName" :room="room" />  
     </div>
   </div>
-  <div>
-    <input v-model="idx" class="bg-primary" v-on:keyup.enter="getSession(changeIdx)">
-    {{changeIdx}}
-  </div>
-
-  <!-- <div class="btn-cover">
-    <button :disabled="pageNum === 0" @click="prevPage" class="page-btn">
-      이전
-    </button>
-    <span class="page-count">{{ pageNum + 1 }} / {{ pageCount }} 페이지</span>
-    <button :disabled="pageNum >= pageCount - 1" @click="nextPage" class="page-btn">
-      다음
-    </button>
-  </div> -->
-
-
-
-
-  <!-- bootstrap 페이지네이션 틀 -->
-  <!-- <nav aria-label="Page navigation example">
-    <ul class="pagination">
-      <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-      <li class="page-item"><a class="page-link" href="#">1</a></li>
-      <li class="page-item"><a class="page-link" href="#">2</a></li>
-      <li class="page-item"><a class="page-link" href="#">3</a></li>
-      <li class="page-item"><a class="page-link" href="#">Next</a></li>
-    </ul>
-  </nav> -->
-
-  <!-- daisyUI 페이지네이션 틀 -->
-  <!-- <div class="btn-group">
-    <button class="btn">«</button>
-    <button class="btn">1</button>
-    <button class="btn">2</button>
-    <button class="btn">3</button>
-    <button class="btn">»</button>
-  </div> -->
+  <nav aria-label="Page navigation">
+                <ul class="pagination">
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous" @click="getSession(0), this.page=0">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  <li class="page-item"><a class="page-link" @click="getSession(0), this.page=0" href="#">1</a></li>
+                  <li class="page-item"><a class="page-link" @click="getSession(1), this.page=1" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" @click="getSession(2), this.page=2" href="#">3</a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next" @click="getSession(2), this.page=2">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
 
   
 
@@ -69,10 +49,10 @@ export default {
   },
   methods : {
     // 모든 세션 데이터 받아오는 함수 
-      getSession(){
+      getSession(page){
         console.log(this.authHeader)
         axios({
-          url : '/api/body-game/rooms',
+          url : `/api/body-game/rooms?page=${page}`,
           method : 'get',
           headers : {'Authorization':this.authHeader.Authorization}
           }
