@@ -1,5 +1,5 @@
 <template>
-<div v-if="open" class="modal"  tabindex="-1" >
+<div v-if="open" class="bodymodal bg-white"  tabindex="-1" >
   <div class="modal-content">
     <div class="modal-header">
       <h5 class="modal-title" id="staticBackdropLabel">낱말퀴즈 방 설정</h5>
@@ -10,8 +10,8 @@
     <div class="modal-body">
       <div class="row_box">
         <h6>방 이름 : </h6>
-        <input type="text" v-model="sessionName" placeholder="방 이름을 입력해주세요" />
-        <p v-if="!sessionName" style="color:red; font-size:13px; font-style:italic; margin-top:10px;">방 이름을 입력해주세요.</p>
+        <input type="text" v-model="sessionName" placeholder="방 이름을 입력해주세요" class="title-input"/>
+        <!-- <p v-if="!sessionName" style="color:red; font-size:13px; font-style:italic; margin-top:10px;">방 이름을 입력해주세요.</p> -->
       </div>
       <br>
       <div class="row_box">
@@ -34,11 +34,12 @@
       <br>
 
     </div>
-    <div class="modal-footer flex">
-      <button class="mt-3" v-if="sessionName" @click="joinSession">
-      <!-- @click 추후수정 필요 -->
-      <span class='btn-animate' @click="updateRoom">완료</span>
-      </button>
+    <div class="modal-footer">
+      <span  class="mt-3 btn-animate" data-bs-dismiss="modal" type="button" 
+      cursor="pointer" v-if="sessionName" @click="updateRoom" >변경</span>
+      <!-- <button class="mt-3" v-if="sessionName" @click="joinSession">
+      <span class='btn-animate' @click="updateRoom">변경</span>
+      </button> -->
       <!-- <button @click="$emit('update:open', !open)" type="button" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-3 rounded" data-bs-dismiss="modal">Close</button> -->
     </div>
   </div>
@@ -56,8 +57,8 @@ export default {
   data () {
     return {
     // 방설졍 변경시 선택한 수를 백으로 넘기는 변수
-    maxUsercnt : 0,
-    problemcnt : 0 ,
+    maxUsercnt : 2,
+    problemcnt : 10,
     sessionName : '',
       contents: {
         maxUser: [
@@ -77,11 +78,7 @@ export default {
     }
   },
   props :{
-    open : {
-      type : Boolean,
-      require : true,
-      default : false,
-      }
+    open: Boolean,
   },
     computed : {
     ...mapGetters(['authHeader'])
@@ -144,10 +141,12 @@ export default {
 
 
 <style scoped>
-.modal { 
+.bodymodal { 
+  padding: 2%;
   position: absolute;
   display : flex; 
-  top: 20%;
+  /* top: 20%; */
+  bottom: 16%;
   left: 50%;
   width: 300px;
   margin-left: -150px; 
@@ -155,6 +154,12 @@ export default {
   z-index: 90;
   visibility: visible;
   opacity: 100;
+  border: 0.05rem solid rgb(76,76,76);
+  border-radius: 6% 6% 6% 6%;
+}
+
+.title-input {
+  font-size: 1.3rem;
 }
 
 .roomTitle{
@@ -166,6 +171,7 @@ export default {
    
 }
 .modal_content {
+  padding: 1%;
   width: 38%;
   height:58vh;
   border-radius: 15px;
@@ -177,9 +183,10 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content:space-around;
-  padding: 10px 0 10px 0;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  /* padding: 10px 0 10px 0; */
+  /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); */
 }
+
 .row_box {
   width: 26vw;
   height: 60px;

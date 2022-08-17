@@ -15,8 +15,7 @@
           <li>- 문제는 랜덤한 난이도로 출제된다</li>
           <li>- 사용자는 한 문제가 끝날 때마다 화면 중앙에 정답, 맞춘 사람 리스트, 난이도(점수)를 볼 수 있다.</li>
           <li>- 사용자는 게임중 점수 집계에 따라, 등수를 확인할 수 있다.</li>
-          <li>- 사용자는 게임이 끝나면 게임 참여자들의 점수와 등수를 최종적으로 볼 수 있다.
-</li>
+          <li>- 사용자는 게임이 끝나면 게임 참여자들의 점수와 등수를 최종적으로 볼 수 있다.</li>
         </ul>
       </div>
       <div class="modal-footer">
@@ -51,16 +50,19 @@ export default {
 </script>
 <style scoped>
 .modal { 
+  padding: 2%;
   position: absolute;
   display : flex; 
-  top: 20%;
+  top: 16%;
   left: 50%;
   width: 550px;
-  margin-left: -150px; 
+  margin-left: -230px; 
   height : 500px;
   z-index: 90;
   visibility: visible;
   opacity: 100;
+  background-color: transparent;
+
 }
 
 .modal_content {
@@ -76,7 +78,8 @@ export default {
   align-items: center;
   justify-content:space-around;
   padding: 10px 0 10px 0;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); */
+  /* background-color: transparent; */
 }
 .row_box {
   width: 26vw;

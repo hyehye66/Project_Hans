@@ -2,15 +2,16 @@
   <div v-if="chatcreateopen" class="chatmodal bg-white"  tabindex="-1" >
   <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="staticBackdropLabel">방생성하기</h5>
+        <h5 class="modal-title" id="staticBackdropLabel">대화방 방 생성</h5>
         <button @click="$emit('update:chatcreateopen', !chatcreateopen)" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <br>
       <div class="modal-body">
         <div class="row_box">
           <h6>제목 : </h6>
-          <input type="text" v-model="sessionName" placeholder="방 이름을 입력해주세요" />
-          <p v-if="!sessionName" style="color:red; font-size:13px; font-style:italic; margin-top:10px;">방 이름을 입력해주세요.</p>
+          <input type="text" v-model="sessionName" placeholder="방 이름을 입력해주세요" class="title-input" />
+          <!-- style="height: 5vh" -->
+          <!-- <p v-if="!sessionName" style="color:red; font-size:13px; font-style:italic; margin-top:10px;">방 이름을 입력해주세요.</p> -->
         </div>
         <br>
         <div class="row_box">
@@ -19,13 +20,13 @@
             <option v-for="m in maxUser" :value="m.value" :key="m.value">
               {{ m.text }}
             </option>
-          </select>명
+          </select>명          
         </div>
         <br>
       </div>
       <div class="modal-footer">
-        <span class="mt-3 btn-animate" data-bs-dismiss="modal" type="button" cursor="pointer"  @click="createRoom" >생성하기</span>
-        <span @click="$emit('update:chatcreateopen', !chatcreateopen)" type="button" class="btn-animate" data-bs-dismiss="modal">Close</span>        
+        <span class="mt-3 btn-animate" data-bs-dismiss="modal" type="button" cursor="pointer"  @click="createRoom" >시작</span>
+        <!-- <span @click="$emit('update:chatcreateopen', !chatcreateopen)" type="button" class="btn-animate" data-bs-dismiss="modal">Close</span>        -->
       </div>
     </div>
 </div>
@@ -93,7 +94,7 @@ computed : {...mapGetters(['authHeader','profile'])}
 .chatmodal { 
   position: absolute;
   display : flex; 
-  top: 20%;
+  top: 16%;
   left: 50%;
   width: 300px;
   margin-left: -150px; 
@@ -101,7 +102,14 @@ computed : {...mapGetters(['authHeader','profile'])}
   z-index: 90;
   visibility: visible;
   opacity: 100;
+  border: 0.05rem solid rgb(76,76,76);
+  border-radius: 6% 6% 6% 6%;
 }
+
+.modal-content {
+  padding: 8%;
+}
+
 .roomTitle{
   text-shadow: 5px 5px 70px rgba(190, 209, 212, 0.582);
   font-size: 70px;
@@ -110,6 +118,11 @@ computed : {...mapGetters(['authHeader','profile'])}
    -webkit-text-fill-color: transparent;
    
 }
+
+.title-input {
+  font-size: 1.3rem;
+}
+
 .modal_content {
   width: 38%;
   height:58vh;
