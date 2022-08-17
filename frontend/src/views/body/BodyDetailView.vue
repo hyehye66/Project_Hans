@@ -111,10 +111,10 @@
     <div class="body-detail-check-answer">
         <!-- <input type="text" v-model="answerAlert" size="30" style="border: none; background: transparent;" /> -->
         <div v-if="isCorrect ">
-          <h1 class="correct-answer">정답!</h1>
+          <h1 class="body-correct-answer">정답!</h1>
         </div>
         <div v-else-if="!isCorrect && !answerTime && status &&!(joker == profile.nickname)">
-          <h1 class="incorrect-answer">정답을 입력해주세요.</h1>
+          <h1 class="body-incorrect-answer">정답을 입력해주세요.</h1>
         </div>
     </div>
 
@@ -1076,7 +1076,7 @@ img {
 
 }
 
-.correct-answer {
+.body-correct-answer {
   justify-content: flex-start;
   align-self: center;
   font-size: 2rem;
@@ -1084,7 +1084,7 @@ img {
 
 }
 
-.incorrect-answer {
+.body-incorrect-answer {
   justify-content: flex-start;
   align-self: center;
   font-size: 1rem;

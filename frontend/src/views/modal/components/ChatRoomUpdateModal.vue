@@ -99,7 +99,7 @@ export default {
 
 
 <style scoped>
-/* .modal { 
+.modal { 
   position: absolute;
   display : flex; 
   top: 20%;
@@ -110,7 +110,9 @@ export default {
   z-index: 90;
   visibility: visible;
   opacity: 100;
-} */
+  border: 0.05rem solid rgb(76,76,76,0.4);
+  border-radius: 6% 6% 6% 6%;
+}
 
 .roomTitle{
   text-shadow: 5px 5px 70px rgba(190, 209, 212, 0.582);
