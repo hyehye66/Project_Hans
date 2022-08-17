@@ -69,8 +69,8 @@ public class JwtServiceImpl implements JwtService{
     }
 
     @Override
-    public boolean compareRefreshToken(String refreshToken, String email){
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("존재하는 회원정보가 없음."));
+    public boolean compareRefreshToken(String refreshToken){
+        Member member = memberRepository.findByRefreshToken(refreshToken).orElseThrow(() -> new NoSuchElementException("존재하는 회원정보가 없음."));
         String refreshTokenInDBMS = member.getRefreshToken();
 
         if(refreshToken.equals(refreshTokenInDBMS)){
