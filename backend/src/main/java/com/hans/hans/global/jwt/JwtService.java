@@ -7,5 +7,5 @@ public interface JwtService {
     String createRefreshToken();
     boolean validateToken(String accessToken);
     String getEmailFromPayload(String accessToken) throws JsonProcessingException;
-    boolean compareRefreshToken(String refreshToken, String email);
+    boolean compareRefreshToken(String refreshToken);
 }
