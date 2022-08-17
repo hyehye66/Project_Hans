@@ -159,11 +159,13 @@ export default {
         chattingList : [],
 
         open : false,
+        isHost : this.$route.params.host,
     }
   },
   
   created(){
-    this.joinSession()
+    this.joinSession(),
+    this.isHost = this.$route.params.host
   },
 
   computed : {

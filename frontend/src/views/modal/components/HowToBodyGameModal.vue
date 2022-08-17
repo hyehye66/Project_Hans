@@ -1,6 +1,5 @@
 <template>
-  <div v-if="bodyhowopen" class="modal" tabindex="-1">
-  <div class="modal-dialog">
+  <div v-if="bodyhowopen" class="bodymodal bg-white" tabindex="-1">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">낱말게임 설명</h5>
@@ -19,8 +18,7 @@
           <li>- 술래의 화면에 단어가 표시 된 이후 3초간 카운팅이 되고 문제의 제한시간이 흐르기 시작한다.</li>
           <li>- 술래가 아닌 사용자는 문제의 답안을 계속해서 제출할 수 있다.</li>
           <li>- 사용자는 게임중 점수 집계에 따라, 등수를 확인할 수 있다.</li>
-          <li>- 사용자는 게임이 끝나면 게임 참여자들의 점수와 등수를 최종적으로 볼 수 있다.
-</li>
+          <li>- 사용자는 게임이 끝나면 게임 참여자들의 점수와 등수를 최종적으로 볼 수 있다.</li>
         </ul>
       </div>
       <div class="modal-footer">
@@ -28,7 +26,7 @@
       </div>
     </div>
   </div>
-</div>
+
 </template>
 
 <script>
@@ -54,20 +52,26 @@ export default {
 }
 </script>
 <style scoped>
-.modal { 
+.bodymodal { 
+  padding: 2%;
   position: absolute;
   display : flex; 
-  top: 20%;
+  top: 16%;
   left: 50%;
   width: 550px;
-  margin-left: -150px; 
+  margin-left: -230px; 
   height : 500px;
   z-index: 90;
   visibility: visible;
   opacity: 100;
+  border-radius: 3% 3% 3% 3%;
+  border: 0.05rem solid rgb(76,76,76,0.3);
+  /* background-color: transparent; */
+  
 }
 
 .modal_content {
+  padding: 2%;
   width: 50%;
   height:58vh;
   border-radius: 15px;
@@ -79,8 +83,10 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content:space-around;
-  padding: 10px 0 10px 0;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 6% 6% 6% 6%;
+  /* border: 0.05rem solid rgb(76,76,76); */
+  /* padding: 10px 0 10px 0; */
+  /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); */
 }
 .row_box {
   width: 26vw;

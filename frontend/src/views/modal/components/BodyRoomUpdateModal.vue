@@ -1,16 +1,16 @@
 <template>
-<div v-if="open" class="modal" tabindex="-1" >
+<div v-if="open" class="bodymodal bg-white" tabindex="-1" >
   <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="staticBackdropLabel">방생성하기</h5>
-        <button @click="$emit('update:bodycreateopen', !bodycreateopen)" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title" id="staticBackdropLabel">몸으로 말해요 방 설정</h5>
+        <button @click="$emit('update:open', !open)" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <br>
       <div class="modal-body">
         <div class="row_box">
           <h6>제목 : </h6>
-          <input type="text" v-model="sessionName" placeholder="방 이름을 입력해주세요" />
-          <p v-if="!sessionName" style="color:red; font-size:13px; font-style:italic; margin-top:10px;">방 이름을 입력해주세요.</p>
+          <input type="text" v-model="sessionName" placeholder="방 이름을 입력해주세요" class="title-input" />
+          <!-- <p v-if="!sessionName" style="color:red; font-size:13px; font-style:italic; margin-top:10px;">방 이름을 입력해주세요.</p> -->
         </div>
         <br>
         <div class="row_box">
@@ -47,13 +47,18 @@
       </div>
       <br>
       </div>
-      <div class="modal-footer flex">
+      <div class="modal-footer" >
+        <span  class="mt-3 btn-animate" data-bs-dismiss="modal" type="button" cursor="pointer" v-if="sessionName" @click="updateRoom" >변경</span>
+        <!-- <span @click="$emit('update:bodycreateopen', !bodycreateopen)" type="button" class="btn-animate" data-bs-dismiss="modal">Close</span>         -->
+      </div>
+
+
+      <!-- <div class="modal-footer">
       <button class="mt-3" v-if="sessionName" @click="updateRoom">
-      <!-- @click 추후수정 필요 -->
-      <span class='btn-animate'>완료</span>
-      </button>
+      <span class='btn-animate'>변경</span>
+      </button> -->
       <!-- <button @click="$emit('update:open', !open)" type="button" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-3 rounded" data-bs-dismiss="modal">Close</button> -->
-    </div>
+      <!-- </div> -->
   </div>
 </div>
 </template>
@@ -71,11 +76,10 @@ export default {
   data () {
     return {
     maxUsercnt : 0,
-    problemcnt : 0 ,
+    problemcnt : 0,
     levelcnt : 0,
-    timecnt : 0,	
+    timecnt : 0,
     contents: {
-        roomTitle: '',
         maxUser: [
           { text: '2', value: 2 },
           { text: '3', value: 3 },
@@ -111,11 +115,7 @@ export default {
     }
   },
   props :{
-    open : {
-      type : Boolean,
-      require : true,
-      default : false,
-      }
+    open : Boolean,
   },
 computed : {
     ...mapGetters(['authHeader'])},
@@ -177,10 +177,12 @@ computed : {
 
 
 <style scoped>
-.modal { 
+.bodymodal { 
+  padding: 2%;
   position: absolute;
   display : flex; 
-  top: 20%;
+  /* top: 16%; */
+  bottom: 6%;
   left: 50%;
   width: 300px;
   margin-left: -150px; 
@@ -188,6 +190,17 @@ computed : {
   z-index: 90;
   visibility: visible;
   opacity: 100;
+  border: 0.05rem solid rgb(76,76,76);
+  border-radius: 6% 6% 6% 6%;
+  /* background-color: transparent; */
+}
+
+.modal-content {
+  /* padding: 8%; */
+}
+
+.title-input {
+  font-size: 1.3rem;
 }
 
 .roomTitle{
@@ -210,8 +223,8 @@ computed : {
   flex-direction: column;
   align-items: center;
   justify-content:space-around;
-  padding: 10px 0 10px 0;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  /* padding: 10px 0 10px 0; */
+  /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); */
 }
 .row_box {
   width: 26vw;

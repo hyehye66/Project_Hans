@@ -2,15 +2,15 @@
   <div v-if="bodycreateopen" class="bodymodal bg-white"  tabindex="-1" >
   <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="staticBackdropLabel">방생성하기</h5>
+        <h5 class="modal-title" id="staticBackdropLabel">몸으로 말해요 방 생성</h5>
         <button @click="$emit('update:bodycreateopen', !bodycreateopen)" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <br>
       <div class="modal-body">
         <div class="row_box">
           <h6>제목 : </h6>
-          <input type="text" v-model="sessionName" placeholder="방 이름을 입력해주세요" />
-          <p v-if="!sessionName" style="color:red; font-size:13px; font-style:italic; margin-top:10px;">방 이름을 입력해주세요.</p>
+          <input type="text" v-model="sessionName" placeholder="방 이름을 입력해주세요" class="title-input" />
+          <!-- <p v-if="!sessionName" style="color:red; font-size:13px; font-style:italic; margin-top:10px;">방 이름을 입력해주세요.</p> -->
         </div>
         <br>
         <div class="row_box">
@@ -30,7 +30,7 @@
         </select>
       </div>
       <br>
-<div class="row_box">
+      <div class="row_box">
         난이도 : <select v-model="levelcnt" name="" id="">
           <option v-for="lev in contents.level" :value="lev.value" :key="lev.value">
             {{ lev.text }}
@@ -38,7 +38,7 @@
         </select>
       </div>
       <br>
-<div class="row_box">
+      <div class="row_box">
         제한시간 : <select v-model="timecnt" name="" id="">
           <option v-for="time in contents.timeLimit" :value="time.value" :key="time.value">
             {{ time.text }}
@@ -47,9 +47,9 @@
       </div>
       <br>
       </div>
-      <div class="modal-footer">
-        <span class="mt-3 btn-animate" data-bs-dismiss="modal" type="button" cursor="pointer"  @click="createBodyRoom" >생성하기</span>
-        <span @click="$emit('update:bodycreateopen', !bodycreateopen)" type="button" class="btn-animate" data-bs-dismiss="modal">Close</span>        
+      <div class="modal-footer" >
+        <span  class="mt-3 btn-animate" data-bs-dismiss="modal" type="button" cursor="pointer" @click="createBodyRoom" >시작</span>
+        <!-- <span @click="$emit('update:bodycreateopen', !bodycreateopen)" type="button" class="btn-animate" data-bs-dismiss="modal">Close</span>         -->
       </div>
     </div>
 </div>
@@ -76,10 +76,10 @@ export default {
     myUserName: '영택임' + Math.floor(Math.random() * 100),
     mode : 'body-game',
     // 방생성시 선택한 수를 백으로 넘기는 변수
-    maxUsercnt : 0,
-    problemcnt : 0 ,
-    levelcnt : 0,
-    timecnt : 0,	
+    maxUsercnt : 2,
+    problemcnt : 3,
+    levelcnt : 1,
+    timecnt : 15,	
     contents: {
         roomTitle: '',
         maxUser: [
@@ -153,10 +153,12 @@ computed : {...mapGetters(['authHeader','profile'])}
 }
 </script>
 <style scoped>
-.bodymodal { 
+.bodymodal {
+  padding: 2%;
   position: absolute;
   display : flex; 
-  top: 20%;
+  /* top: 16%; */
+  bottom: 6%;
   left: 50%;
   width: 300px;
   margin-left: -150px; 
@@ -164,7 +166,14 @@ computed : {...mapGetters(['authHeader','profile'])}
   z-index: 90;
   visibility: visible;
   opacity: 100;
+  border: 0.05rem solid rgb(76,76,76);
+  border-radius: 6% 6% 6% 6%;
 }
+
+.title-input {
+  font-size: 1.3rem;
+}
+
 .roomTitle{
   text-shadow: 5px 5px 70px rgba(190, 209, 212, 0.582);
   font-size: 70px;
@@ -174,6 +183,7 @@ computed : {...mapGetters(['authHeader','profile'])}
    
 }
 .modal_content {
+  /* padding: 8%; */
   width: 38%;
   height:58vh;
   border-radius: 15px;
@@ -185,8 +195,8 @@ computed : {...mapGetters(['authHeader','profile'])}
   flex-direction: column;
   align-items: center;
   justify-content:space-around;
-  padding: 10px 0 10px 0;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  /* padding: 10px 0 10px 0; */
+  /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); */
 }
 .row_box {
   width: 26vw;
