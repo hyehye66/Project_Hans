@@ -2,6 +2,9 @@
 <nav-bar />
 <!-- <account-error-list v-if="authError"></account-error-list> -->
 <!-- <img :src="require(`@/assets/65837-clouds-in-the-sky (1).gif`)" alt=""> -->
+
+<!-- <img src="@/assets/login_24.jpg" alt="..." id="login_screen"> -->
+
 <div class="hero min-h-screen bg-base-200">
   <div class="hero-content flex-col lg:flex-row-reverse">
     <!-- <div class="main-img">
@@ -102,8 +105,11 @@ export default {
 
 
 <style scoped>
+
+
 .hero {
   background-image: url("@/assets/login5.png");
+  /* background-image : url("@/assets/login_24.jpg"); */
   background-size: cover;
   /* background: #f1c4d9; */
   width: 100vw;
