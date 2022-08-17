@@ -23,7 +23,7 @@ public class Ranking {
     @Column(name = "SCORE", nullable = false)
     private Long score;
 
-    @Column(name = "Tier", nullable = false)
+    @Column(name = "TIER", nullable = false)
     private String tier;
 
     @ManyToOne
