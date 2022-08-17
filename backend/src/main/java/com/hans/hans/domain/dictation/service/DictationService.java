@@ -4,5 +4,5 @@ import com.hans.hans.domain.dictation.dto.DictationResponseDto;
 
 
 public interface DictationService {
-    DictationResponseDto getDictationList();
+    DictationResponseDto getDictationList(Long difficulty);
 }
