@@ -102,7 +102,7 @@ public class BodyGameSocketServiceImpl implements BodyGameSocketService {
                         .point(word.getDifficulty())
                         .build();
 
-        bodyGameRoom.refreshCorrectPlayers();
+        bodyGameRoom.resetCorrectPlayers();
 
         return bodyGameAnswerResponseDto;
     }
