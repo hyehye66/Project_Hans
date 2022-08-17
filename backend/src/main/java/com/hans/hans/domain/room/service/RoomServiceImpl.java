@@ -7,6 +7,7 @@ import com.hans.hans.domain.bodygame.dto.BodyGameUpdateResponseDto;
 import com.hans.hans.domain.conversation.dto.ConversationCreateResponseDto;
 import com.hans.hans.domain.conversation.dto.ConversationUpdateRequestDto;
 import com.hans.hans.domain.conversation.dto.ConversationUpdateResponseDto;
+import com.hans.hans.domain.mode.entity.Mode;
 import com.hans.hans.domain.mode.repository.ModeRepository;
 import com.hans.hans.domain.conversation.dto.ConversationCreateRequestDto;
 import com.hans.hans.domain.room.dto.*;
@@ -197,8 +198,9 @@ public class RoomServiceImpl implements RoomService{
     }
 
     @Override
-    public RoomsResponseDto searchRoomByTitle(String title, Pageable pageable){
-        Page<Room> rooms = roomRepository.findRoomsByTitleContaining(title, pageable);
+    public RoomsResponseDto searchRoomByTitle(String title, Pageable pageable, Modes modes){
+        Mode mode = modeRepository.findByModeSequence(modes.getModeSequence());
+        Page<Room> rooms = roomRepository.findRoomsByTitleContainingAndMode(title, pageable,mode);
         if(rooms.getContent().size()==0) throw new NoExistRoomSearchByTitleException("현재 검색한 방 제목으로 개설된 방이 없습니다.");
 
         RoomsResponseDto roomsResponseDto = new RoomsResponseDto(rooms);
@@ -207,10 +209,11 @@ public class RoomServiceImpl implements RoomService{
     }
 
     @Override
-    public RoomsResponseDto searchRoomByNickname(String nickname, Pageable pageable){
+    public RoomsResponseDto searchRoomByNickname(String nickname, Pageable pageable, Modes modes){
         Member member = memberRepository.findByNickname(nickname);
 
-        Page<Room> rooms = roomRepository.findRoomByMember(member,pageable);
+        Mode mode = modeRepository.findByModeSequence(modes.getModeSequence());
+        Page<Room> rooms = roomRepository.findRoomByMemberAndMode(member,pageable,mode);
         if(rooms.getContent().size()==0) throw new NoExistRoomSearchByNicknameException("현재 검색한 방장 닉네임으로 개설된 방이 없습니다.");
 
         RoomsResponseDto roomsResponseDto = new RoomsResponseDto(rooms);

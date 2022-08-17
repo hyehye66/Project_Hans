@@ -44,14 +44,14 @@ public class BodyGameController {
 
     @GetMapping("/search-title")
     public ResponseEntity<?> searchBodyGameRoomsByTitle(@RequestParam(value = "title") String title, Pageable pageable){
-        RoomsResponseDto roomsResponseDto = roomService.searchRoomByTitle(title, pageable);
+        RoomsResponseDto roomsResponseDto = roomService.searchRoomByTitle(title, pageable, Modes.BODY);
 
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("몸으로 말해요 게임방 제목으로 검색 조회에 성공하였습니다.", roomsResponseDto));
     }
 
     @GetMapping("/search-nickname")
     public ResponseEntity<?> searchBodyGameRoomsByNickname(@RequestParam(value = "nickname") String nickname, Pageable pageable){
-        RoomsResponseDto roomsResponseDto = roomService.searchRoomByNickname(nickname,pageable);
+        RoomsResponseDto roomsResponseDto = roomService.searchRoomByNickname(nickname, pageable, Modes.BODY);
 
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.createSuccess("몸으로 말해요 게임방 닉네임으로 검색 조회에 성공하였습니다.", roomsResponseDto));
     }

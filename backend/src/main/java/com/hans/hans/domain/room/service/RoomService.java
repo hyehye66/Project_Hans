@@ -26,8 +26,8 @@ public interface RoomService {
     WordGameCreateResponseDto createWordGameRoom(String email, WordGameCreateRequestDto wordGameCreateRequestDto);
     BodyGameCreateResponseDto createBodyGameRoom(String email, BodyGameCreateRequestDto bodyGameCreateRequestDto);
     boolean checkEnterRoom(Long roomSequence);
-    RoomsResponseDto searchRoomByTitle(String title, Pageable pageable);
-    RoomsResponseDto searchRoomByNickname(String nickname, Pageable pageable);
+    RoomsResponseDto searchRoomByTitle(String title, Pageable pageable, Modes modes);
+    RoomsResponseDto searchRoomByNickname(String nickname, Pageable pageable, Modes modes);
     ConversationUpdateResponseDto updateConversationRoom(Long roomSequence, ConversationUpdateRequestDto conversationUpdateRequestDto);
     WordGameUpdateResponseDto updateWordGameRoom(Long roomSequence, WordGameUpdateRequestDto wordGameUpdateRequestDto);
     BodyGameUpdateResponseDto updateBodyGameRoom(Long roomSequence, BodyGameUpdateRequestDto bodyGameUpdateRequestDto);
