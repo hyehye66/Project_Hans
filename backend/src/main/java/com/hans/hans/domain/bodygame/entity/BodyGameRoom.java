@@ -52,6 +52,6 @@ public class BodyGameRoom {
     }
 
     public void updateCorrectPlayers(String player, Long score){
-        this.correctPlayers.put(player,players.get(player)+score);
+        this.correctPlayers.put(player,score);
     }
 }
