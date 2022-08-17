@@ -52,7 +52,20 @@
       </div>
     </div>
     <div class="carousel-item">
-      <img src="@/assets/6.png" class="d-block w-100" alt="...">
+      <img src="@/assets/carousel4.png" class="d-block w-100" alt="...">
+      <div class="carousel-caption-three text-black d-none d-md-block">
+        <h5 class="c3-t1 font-black">a More Effective Way to Improve Your Vocabulary</h5>
+        <br>
+        <p class="c3-t2 font-black">한국 문화를 엿볼 수 있는</p>
+        <span class="c3-t3 font-black">          
+          <button type="button" 
+          class="carousel3-btn bg-newPink1 hover:bg-newPink1 text-white font-bold py-2 px-6 rounded-full" 
+          id="start">
+          <router-link :to="{name:'WordsMainView'}" >낱말퀴즈</router-link>            
+          </button>
+        </span>
+
+      </div>
       <!-- <div class="carousel-caption d-none d-md-block">
         <h5>Third slide label</h5>
         <p>Some representative placeholder content for the third slide.</p>
@@ -126,6 +139,19 @@ img {
   width: 100vw;
   height: 100vh;
  }
+.carousel-item3 {
+  /* position:relative; */
+
+  /* transition: .5s ease; 필수는 아님 */
+
+  /* width: 100vw;
+  height: 100vh;
+  background-image: url('@/assets/65837-clouds-in-the-sky(1).gif');
+  background-size: cover;
+  padding:0;
+  margin:0; */
+
+ }
 
 .carousel-caption {
   /* padding: 10px 20px; */
@@ -152,6 +178,27 @@ img {
 
 }
 
+.carousel-caption-three {
+  /* padding: 10px 20px; */
+  width: 60%;
+  height: 65%;
+  /* background-color: #FFEEBC; */
+  text-align: center;
+  position: absolute;
+  top: 30%;
+  left: 21%;
+  border-radius: 15% 50%;
+}
+
+.carousel3-btn {
+  background-color: #f1c4d9;
+  color: white;
+}
+.carousel3-btn :hover {
+  color: #f1c4d9;
+  background-color: #f1c4d9;
+}
+
 .c1-t1 {
   font-size: 5rem;
   /* font-size: clamp(2rem, 10vw, 5rem); */
@@ -175,6 +222,17 @@ img {
 }
 .c2-t3 {
   font-size: 2rem;
+}
+
+.c3-t1 {
+  font-size: 2.3rem;
+  /* font-size: clamp(2rem, 10vw, 5rem); */
+}
+.c3-t2 {
+  font-size: 3rem;
+}
+.c3-t3 {
+  font-size: 3rem;
 }
 
 /* 기본으로 작성되는 CSS는 576px보다 작은 화면에서 작동 됩니다.  */
