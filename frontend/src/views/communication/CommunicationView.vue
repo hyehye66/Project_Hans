@@ -2,12 +2,8 @@
   <nav-bar />
   <!-- <div class="communication-bg-img">
   </div> -->
-   <div v-if="!isLoggedIn">
-    <router-link :to="{name:'LoginView'}" ></router-link>
-   </div>
-   <div v-else>
-    <communication-tab :situationSentence="situationSentence"/>
-   </div>
+  <communication-tab :situationSentence="situationSentence"/> 
+
  
 
 </template>

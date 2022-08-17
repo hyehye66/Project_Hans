@@ -25,7 +25,6 @@
         <ul class="p-2 drop-box bg-newGrey1">
           <li><router-link :to="{name:'WordsMainView'}">낱말 퀴즈</router-link></li>
           <li><router-link :to="{name:'BodyMainView'}">몸으로 말해요</router-link></li>
-          <li><router-link :to="{name:'SongMainView'}">가사 퀴즈</router-link></li>
         </ul>
       </li>
       <li><router-link :to="{name:'ChatMainView'}" >대화</router-link></li>
@@ -43,8 +42,8 @@
           <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/></svg>
         </router-link>
         <ul class="p-2 drop-box bg-newGrey1">
-          <li><router-link :to="{name:'CommunicationView'}" >상황별 한국어 회화</router-link></li>
-          <li><router-link :to="{name: 'DictationView'}">받아쓰기</router-link></li>
+          <li><router-link @click="comClick" :to="{name:'CommunicationView'}" >상황별 한국어 회화</router-link></li>
+          <li><router-link @click="comClick" :to="{name: 'DictationView'}">받아쓰기</router-link></li>
         </ul>
       </li>
       <li class="mx-4" tabindex="0">
@@ -55,7 +54,6 @@
         <ul class="p-2 drop-box bg-newGrey1">
           <li><router-link :to="{name:'WordsMainView'}">낱말 퀴즈</router-link></li>
           <li><router-link :to="{name:'BodyMainView'}">몸으로 말해요</router-link></li>
-          <!-- <li><router-link :to="{name:'SongMainView'}">가사 퀴즈</router-link></li> -->
         </ul>
       </li>
       <li class="mx-4"><router-link :to="{name:'ChatMainView'}" >대화</router-link></li>
@@ -87,6 +85,7 @@
 
 </div>
 
+
         
 </template>
 
@@ -95,9 +94,7 @@
 import { mapActions, mapGetters } from 'vuex'
 export default {
   name : 'NavBar',
-  components : {
 
-  },
   computed: {
     ...mapGetters(['isLoggedIn','profile']),
   },
@@ -110,8 +107,14 @@ export default {
     ...mapActions(['logout']),
     login (){
       this.$router.push('/login')
-
+    },
+    comClick(){
+      if(!this.isLoggedIn){
+        alert('로그인이 필요합니다!!')
+        this.$router.push('/login')
+      }
     }
+    
   },
 }
 </script>
