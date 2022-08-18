@@ -47,8 +47,29 @@
     <!-- col-md-8 -->
       <user-video :stream-manager="mainStreamManager" v-if="!answerTime && status"/>
       <p v-if="answerTime"> 정답은 : {{answer}}</p>
-      <p v-if="answerTime"> 맞춘 사람 : {{answerList}}</p>
-      <p v-if="answerTime"> 점수는 : {{point}}</p>
+      <p v-if="answerTime"> 난이도는 : {{point}}</p>
+      <div class="card-body" v-if="resultTime">
+          <div class="words-detail-rank">
+            <div class="overflow-x-auto">
+              <table class="table table-zebra w-full" id="rank-table">
+                <!-- head -->
+                <thead>
+                  <tr>                        
+                    <th>Nickname</th>
+                    <th>Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- row 1 -->
+                  <tr class="hover" v-for="idx of gameResult" :key="idx">
+                    <td>{{idx[1]}}</td>
+                    <td>{{idx[0]}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
     </div>
     <!-- 캠,마이크,나가기,설정 -->
     <div class="cam-buttons">
@@ -97,7 +118,7 @@
     <!-- 정답 적는 란 -->
     <div>
       <!-- <div v-if="!cnt">제한 시간 : {{this.$store.state.games.TimerStr}} 초</div> -->      
-      <div v-if="!cnt && (joker == profile.nickname)" class="body-joker-quiz">
+      <div v-if="!cnt && (joker == profile.nickname)&& !answerTime" class="body-joker-quiz">
         문제 : {{ problem }}
       </div>
       <div v-else class="body-detail-answer-send">
@@ -287,7 +308,8 @@ export default {
       tempRankList : {},
       isSolving : [],
       resultTime : false,
-      gameResult : []
+      gameResult : [],
+      result : false
     }
   },
   
@@ -496,7 +518,7 @@ export default {
                   this.totalQuestion = response.totalQuestion
                   this.resultTime = false
                   this.gameResult = []
-                  
+                  this.result = false
                   for (let i of response.players) {
                     this.currentRank.push([0,i])
                   }
@@ -587,11 +609,15 @@ export default {
                 this.answerTime = false
                 this.resultTime = true
                 this.joker = ''
-                for (let i of Object.keys(response.players)) {
+                if (!this.result) {
+                  this.result = true
+                  for (let i of Object.keys(response.players)) {
                   console.log(i)
                   console.log(response.players[`${i}`])
                   this.gameResult.unshift([response.players[`${i}`],i])
                 }
+                }
+                
                 this.gameResult.sort(function(a, b)  {
                     return b[0] - a[0];
                   })
@@ -935,11 +961,10 @@ video {
 #body-detail-main-video p {
   /* position: absolute; */
   display: inline-block;
-  background: #f8f8f8;
   padding-left: 5px;
   padding-right: 5px;
   font-size: 22px;
-  color: #777777;
+  color: black;
   font-weight: bold;
   border-radius: 5px;
 }

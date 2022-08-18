@@ -11,23 +11,23 @@
   </div>
 
   <nav aria-label="Page navigation">
-                <ul class="pagination">
-                  <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous" @click="chkRange(this.$store.state.rooms.currentPage-1)">
-                      <span aria-hidden="true">&laquo;</span>
-                    </a>
-                  </li>
-                  <ul v-for="idx in this.$store.state.rooms.range" :key="idx">
-                    <li class="page-item"><a class="page-link" @click="getSession({page : idx, mode : 'word-game'})" href="#">{{idx+1}}</a></li>
-                  </ul>
+    <ul class="pagination">
+      <li class="page-item">
+        <a class="page-link" href="#" aria-label="Previous" @click="chkRange(this.$store.state.rooms.currentPage-1)">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      <ul v-for="idx in this.$store.state.rooms.range" :key="idx">
+        <li class="page-item"><a class="page-link" @click="getSession({page : idx, mode : 'word-game'})" href="#">{{idx+1}}</a></li>
+      </ul>
 
-                  <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next" @click="chkRange(this.$store.state.rooms.currentPage+1)">
-                      <span aria-hidden="true">&raquo;</span>
-                    </a>
-                  </li>
-                </ul>
-              </nav>
+      <li class="page-item">
+        <a class="page-link" href="#" aria-label="Next" @click="chkRange(this.$store.state.rooms.currentPage+1)">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
 </template>
 
 <script>
@@ -51,6 +51,7 @@ export default {
   },
   created(){
     this.getSession({page: 0, mode : 'word-game'})
+    
     this.$store.state.rooms.isSearch = false
    },
 }
