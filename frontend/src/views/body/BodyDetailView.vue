@@ -126,9 +126,10 @@
       <div v-if="!cnt && (joker == profile.nickname)&& !answerTime" class="body-joker-quiz">
         문제 : {{ problem }}
       </div>
-      <div v-else-if="cnt && !answerTime" class="body-joker-quiz">
+      <!-- <div v-else-if="cnt && !answerTime" class="body-joker-quiz">
         술래 : {{ joker }}
-      </div>
+      </div> -->
+
       <div v-else class="body-detail-answer-send">
       
         <input type="text" name="" id="body-detail-answer-sheet" v-model="temp" size="26"
