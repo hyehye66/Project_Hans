@@ -35,7 +35,7 @@
             <div v-bind:class="{'hidden': openTab !== 1, 'block': openTab === 1}">
             <ul class="list-group" v-for="situation in situationSentence" :key="situation.situationSequence">
               <li class="list-group-item" v-if="situation.category==='shopping'">
-                <one-dialog :sentence="situation.sentence" :english_sentence="situation.eng_sentence"/>
+                <two-dialog :sentence="situation.sentence" :english_sentence="situation.eng_sentence"/>
               </li>
             </ul>  
             </div>
@@ -49,21 +49,21 @@
             <div v-bind:class="{'hidden': openTab !== 3, 'block': openTab === 3}">
             <ul class="list-group" v-for="situation in situationSentence" :key="situation.situationSequence">
               <li class="list-group-item" v-if="situation.category==='restaurant'">
-                <one-dialog :sentence="situation.sentence" :english_sentence="situation.eng_sentence"/>
+                <two-dialog :sentence="situation.sentence" :english_sentence="situation.eng_sentence"/>
               </li>
             </ul>  
             </div>
             <div v-bind:class="{'hidden': openTab !== 4, 'block': openTab === 4}">
             <ul class="list-group" v-for="situation in situationSentence" :key="situation.situationSequence">
               <li class="list-group-item" v-if="situation.category==='travel'">
-                <one-dialog :sentence="situation.sentence" :english_sentence="situation.eng_sentence"/>
+                <two-dialog :sentence="situation.sentence" :english_sentence="situation.eng_sentence"/>
               </li>
             </ul>  
             </div>
             <div v-bind:class="{'hidden': openTab !== 5, 'block': openTab === 5}">
             <ul class="list-group" v-for="situation in situationSentence" :key="situation.situationSequence">
               <li class="list-group-item" v-if="situation.category==='call'">
-                <one-dialog :sentence="situation.sentence" :english_sentence="situation.eng_sentence"/>
+                <two-dialog :sentence="situation.sentence" :english_sentence="situation.eng_sentence"/>
               </li>
             </ul>  
             </div>
@@ -82,8 +82,8 @@ import TwoDialog from './TwoDialog.vue'
 export default {
   name: 'CommunicationTab',
   components: {
-    OneDialog,
-    TwoDialog
+    // OneDialog,
+    TwoDialog,
 },
 props : {
   situationSentence : Array

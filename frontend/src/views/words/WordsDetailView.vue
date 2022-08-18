@@ -39,16 +39,16 @@
           <p>문제 :</p>  
           <p>{{ problem }}</p>        
         </div>
-        <div class="words-answer-box-quiz" v-if="answerTime">
+        <div class="words-quiz-box-answer" v-if="answerTime">
           <p>정답 : {{ answer }}</p>
           <!-- <div v-for="idx in answerList" :key="idx">정답자 : {{ answerList[idx] }}</div> -->
           <p>점수 : {{ point }}</p>
         </div>
       </div>
-      <div class="card-body" v-if="resultTime">
+      <!-- <div class="card-body">
           <div class="words-detail-rank">
-            <div class="overflow-x-auto">
-              <table class="table w-full" id="rank-table">
+            <div class="overflow-x-auto"> -->
+              <table class="table w-full" id="words-quiz-box-rank-table" v-if="resultTime">
                 <!-- head -->
                 <thead>
                   <tr>                        
@@ -64,9 +64,9 @@
                   </tr>
                 </tbody>
               </table>
-            </div>
+            <!-- </div>
           </div>
-        </div>
+        </div> -->
       <!-- 캠,마이크,나가기,설정 -->
       <div class="cam-buttons">
         <!-- style="height: 100%" -->
@@ -956,6 +956,7 @@ video {
 }
 
 
+
 .cam-buttons {
     width: 60%;
     margin: 0 auto;
@@ -1070,6 +1071,8 @@ video {
 
 #rank-table {
   color: #ffff;
+  /* 테이블 넘치면 지우기 */
+  font-size: 1.3rem;
 }
 
 .words-detail-start-box {
@@ -1134,8 +1137,29 @@ video {
 
 }
 
+#words-quiz-box-rank-table {
+  color: black;
+  width: 30vw;
+  height: 40vh;
+  padding: 3%;
 
-.words-answer-box-quiz{
+  /* display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center; */
+
+  background-color: white;
+  
+  /* border: 0.5rem;
+  border-style: solid;
+  border-radius: 10% 10% 10% 10%;
+  border-color: white; */
+
+  font-size: 1.6rem;
+}
+
+
+.words-quiz-box-answer{
   font-size: 2rem;
   /* height: 80%; */
   display: flex;
