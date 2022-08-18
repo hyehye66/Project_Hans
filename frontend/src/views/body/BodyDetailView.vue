@@ -41,12 +41,13 @@
   </div>
 
   <div id="body-detail-session-body-left" class="col-md-5">
-    <div class="body-quiz-limit-timer">제한 시간 : {{this.$store.state.games.TimerStr}} 초</div> 
+    <div class="body-quiz-limit-timer" v-if="status">제한 시간 : {{this.$store.state.games.TimerStr}} 초</div> 
      <!-- v-if="status && !answerTime" -->
     <!-- 메인화면 -->
     <div id="body-detail-main-video">
     <!-- col-md-8 -->
       <user-video :stream-manager="mainStreamManager" v-if="!answerTime && status"/>
+
       <span id="the-answer" v-if="answerTime"> 정답 : {{answer}}</span>
       &nbsp; &nbsp;
       <span id="difficulty" v-if="answerTime"> 난이도 : {{point}}</span>
@@ -54,6 +55,7 @@
           <div class="words-detail-rank"> -->
             <!-- <div class="overflow-x-auto"> -->
               <table class="table w-full" id="main-video-rank-table" v-if="resultTime">
+
                 <!-- head -->
                 <thead>
                   <tr>                        
@@ -69,9 +71,7 @@
                   </tr>
                 </tbody>
               </table>
-            <!-- </div> -->
-          <!-- </div>
-        </div> -->
+
     </div>
     <!-- 캠,마이크,나가기,설정 -->
     <div class="cam-buttons">
@@ -322,7 +322,8 @@ export default {
     this.joinSession(),
     this.socketStart(),
     this.setRoomInfo(),
-    this.isHost = this.$route.params.host
+    this.isHost = this.$route.params.host,
+    this.$store.state.games.TimerStr = ''
   },
 
   computed : {
@@ -495,7 +496,7 @@ export default {
     setTimeout(() => {this.threecount = 1}, 3000)
     setTimeout(() => {this.threecount = 'START!'}, 4000)
     setTimeout(() => { this.cnt=false, this.answerTime = false,this.trigger=false }, 4500)
-    setTimeout(() => { this.timerStart(this.timeLimit) }, 4500)
+    setTimeout(() => { this.timerStart(this.timeLimit), console.log(this.$store.state.games.TimerStr) }, 4500)
     this.threecount = 3
     setTimeout(() => { this.getProblem() }, 1500)
   },
@@ -515,6 +516,7 @@ export default {
               const response = JSON.parse(res.body)
               let key = Object.keys(response) 
               if ("gameStatus" === key[1]){
+                  
                   this.status = true
                   this.currentPlayers =[],
                   this.problemNum = 1,
@@ -1241,8 +1243,6 @@ img {
   color: rgb(166, 122, 0);
   font-size: 3rem;
   font-weight: 900;
-
-
 }
 
 </style>

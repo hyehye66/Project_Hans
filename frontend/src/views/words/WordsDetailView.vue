@@ -32,7 +32,7 @@
     </div>
     <div id="words-detail-session-body-left" class="col-md-5">
       <!-- 메인화면 -->
-      <div class="words-quiz-box-timer">제한 시간 : {{this.$store.state.games.TimerStr}} 초</div>
+      <div class="words-quiz-box-timer" v-if="status">제한 시간 : {{this.$store.state.games.TimerStr}} 초</div>
       <div id="words-detail-quiz-box" v-if="!resultTime">
       <!-- col-md-8 -->        
         <div class="words-quiz-box-quiz" v-if="!cnt && !answerTime"> 
@@ -319,6 +319,7 @@ export default {
     this.socketStart()
     this.isHost = this.$route.params.host
     console.log(this.isHost),
+    this.$store.state.games.TimerStr = ''
     this.setRoomInfo()
   },
 
@@ -480,7 +481,7 @@ export default {
     setTimeout(() => {this.threecount = 2}, 2000)
     setTimeout(() => {this.threecount = 1}, 3000)
     setTimeout(() => {this.threecount = 'START!'}, 4000)
-    setTimeout(() => { this.cnt=false,this.answerTime = false,this.trigger=false }, 4500)
+    setTimeout(() => { this.cnt=false,this.answerTime = false,this.trigger=false,console.log(this.$store.state.games.TimerStr) }, 4500)
     setTimeout(() => { this.timerStart(15) }, 4500)
     this.threecount = 3
     setTimeout(() => { this.getProblem() }, 1500)
@@ -510,6 +511,7 @@ export default {
                   this.isSolving = []
                   this.resultTime = false
                   this.gameResult = [],
+                  
                   this.result = false
                   for (let i of response.players) {
                     this.currentRank.push([0,i])
