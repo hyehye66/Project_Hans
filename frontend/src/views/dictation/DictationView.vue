@@ -1,13 +1,15 @@
 <template>
     <NavBar />
+       
     <div class="container">
+    
       <!-- <div id="dictation-bg"> -->
-        <div class="box relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg bg-white rounded"> 
-          <svg style="cursor: pointer" @click="this.$router.go()" id="dictation-Leavebutton"  fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z">
-          </path>
-        </svg>      
-      <div class="px-4 py-5 flex-auto" style="width: 70%;">
+        <div class="box relative flex flex-col min-w-0 break-words w-full  shadow-lg bg-white rounded"> 
+           <svg style="cursor: pointer" @click="this.$router.go()" id="dictation-Leavebutton"  fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z"/>
+          
+        </svg> 
+      <div class="px-4 py-5 flex-auto" style="width: 100%;">
         <div class="content tab-space" >
           <h1>받아쓰기</h1>
           <br>
@@ -15,32 +17,32 @@
 
             <h1 v-if="cnt">{{this.threecount}}</h1>
           <div v-if="isFinal">
-        <h2>{{this.answercnt}} / 5 고생하셨습니다!! </h2>
+        <h2>{{this.answercnt}} / 2 고생하셨습니다!! </h2>
         <br>
         </div>
           <div v-if="submitAnswer">
-        <h1 class="my-3">{{answer}}</h1>
+        <h1 class="my-3" style="color:red">{{answer}}</h1>
         <h2 class="my-3">내가 입력한 답: {{input}}</h2>
         <h2 class="my-3">정답 : {{this.finalqustions[idx]}}</h2>
-        <button  @click="repeat(this.finalqustions[idx])"> <span class='btn-animate'>다시듣기</span></button>
-        <button class="mx-3" v-if="start && !isFinal" @click="nextProblem"><span class='btn-animate'>NEXT</span></button>
+        <button class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded"  @click="repeat(this.finalqustions[idx])"> 다시듣기</button>
+        <button class="mx-3 bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded" v-if="start && !isFinal" @click="nextProblem">NEXT</button>
           </div>
         </div>
         <div>
-        <button v-if="isFinal" @click="this.$router.go()"><span class='btn-animate'>다시하기</span></button>
+        <button class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded"  v-if="isFinal" @click="this.$router.go()">다시하기</button>
           
           </div>
 
-        <div class="mb-3"  v-if="!start">
-          <div  class="row_box">
-          난이도 : <select v-model="difficulty" name="" id="selectbox">
+        <div id="selectboxs" class="mb-3" style="font-size:30px;"  v-if="!start">
+          <div  class="row_box my-3" >
+          난이도 : <select v-model="difficulty" name="" id="selectbox" class="pl">
             <option  v-for="lev in contents.level" :value="lev.value" :key="lev.value">
               {{ lev.text }}
             </option>
           </select>
         </div>
-                <div class="row_box">
-          재생속도 : <select v-model="speed" name="" id="selectbox">
+          <div class="row_box my-3">
+          재생속도 : <select v-model="speed" name="" id="selectbox" class="pl">
             <option v-for="sp in contents.speeds" :value="sp.value" :key="sp.value">
               {{ sp.text }}
             </option>
@@ -54,17 +56,19 @@
             <input  type="text" name="" id="dictaion-answer-sheet" 
             placeholder="답을 입력해주세요." v-model="input" @keyup.enter="submitProblem">
             <br/>
-            <button class="my-3" @click="submitProblem">
-            <span class='btn-animate'>제출</span></button>
+            <button class="my-3 bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded" @click="submitProblem">
+            제출</button>
 
       </div>
-
-
-
-
-          <div class="buttons">
-            <button v-if="!start" @click="threecountDown">
-            <span class='btn-animate'>Start</span></button>
+      <br>
+      <br>
+      <br>
+      <br>
+         <div class="start-btn">
+            <button class="btn-lg bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded"
+            style="width:200px;"
+             v-if="!start" @click="threecountDown">
+            Start</button>
           </div>
         </div>
       </div>
@@ -186,7 +190,7 @@ export default {
   nextProblem(){
     this.submitAnswer = false
     this.input = ''
-    if(this.idx <4){
+    if(this.idx <1){
       this.idx ++
       setTimeout(() => { this.startSpeechToTxt(this.speed) }, 2500)
     }
@@ -204,8 +208,14 @@ export default {
 
 
 <style scoped>
+#dictation-Leavebutton{
+  width: 10%;
+}
 #selectbox{
-  border-width : 3px;
+  border-width : 2px;
+  justify-content: center;
+  align-self: center;
+  align-items: center;
 }
 #dictation-bg{
   margin: auto;
@@ -228,7 +238,18 @@ export default {
 #dictaion-answer-sheet {
     border: 1px dotted black;
     font-size: 2rem;
-    width: 110%;
+    width: 80%;
+}
+.start-btn{
+  display: flex;
+  justify-content: center;
+  margin-right : 100px;
+}
+
+
+#selectboxs{
+  margin-right: 10%;
+  margin-top: 10%;
 }
 /*
 #dictation-main {
@@ -243,7 +264,11 @@ export default {
   align-items: center;
   background-color: transparent;
 } */
-
+.row_box{
+  justify-content: center;
+  align-self: center;
+  align-items: center;
+}
 h1 {
   font-size: 3em;
 }
@@ -254,8 +279,7 @@ h2 {
   display: flex;
   justify-content: center;
   margin-top: 2%;
-  
-  
+   
 }
 
 .box {
@@ -263,12 +287,8 @@ h2 {
   height: 600px;
   display: flex;
   justify-content: center;
-  
-}
-
-.content {
-  /* display: flex; */
-  /* justify-content: space-around; */
+  background-image : url("@/assets/dictation-bg.gif");
+  background-size: 100% 100%;
 }
 
 .text-box {
@@ -276,13 +296,29 @@ h2 {
   flex-flow: column wrap;
 }
 
-.form-label {
-
+/* .pl{
+    width: 200px;
+    border: 1px solid #C4C4C4;
+    box-sizing: border-box;
+    border-radius: 10px;
+    padding: 12px 13px;
+    font-family: 'Roboto';
+    font-weight: 400;
+    line-height: 16px;
 }
 
+.pl:focus{
+    border: 1px solid #9B51E0;
+    box-sizing: border-box;
+    border-radius: 10px;
+    outline: 3px solid #F8E4FF;
+    border-radius: 10px;
+} */
+
 svg {
-  width: 10%;
-  height: 10%;
+  margin-top : 20px;
+  width: 8px;
+  height: 50px;
 }
 
 b {
@@ -302,7 +338,7 @@ b {
   padding-right: 3%;
 }
 
-.btn-animate {
+/* .btn-animate {
   text-decoration: none;
   color: #fff;
   font-size: 14px;
@@ -321,6 +357,7 @@ b {
   overflow: hidden;
   outline: none;
   transform: translateZ(0);
+  
 }
 .btn-animate span {
   position: relative;
@@ -330,7 +367,7 @@ b {
   border-radius: 8px;
   content: "";
   z-index: -1;
-  background: linear-gradient(100deg, #0cccd6, #9e158f);
+  background: linear-gradient(100deg, #021d6e,#021d6e);
   
   content: "";
   position: absolute;
@@ -341,7 +378,7 @@ b {
 }
 .btn-animate:after {
   
-  background: linear-gradient(100deg, #0cccd6, #9e158f);
+  background: linear-gradient(100deg, #4c4c4d, #4c4c4d);
   transform: scaleY(0);
   transform-origin: top;
   transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
@@ -358,5 +395,5 @@ b {
 .btn-animate:active {
   transform: translateY(4px) translateZ(0);
   box-shadow: 0px 8px 10px -6px  #cda6ee;
-}
+} */
 </style>
