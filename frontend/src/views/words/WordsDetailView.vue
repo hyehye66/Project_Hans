@@ -293,7 +293,7 @@ export default {
         isConnect : false,
         stompClient : {},
         status : null,
-        problemNum : 1,
+        problemNum : 0,
         temp : '',
         currentRank : [],
         trigger : true,
@@ -308,7 +308,8 @@ export default {
         totalQuestion : 0,
         isSolving : [],
         resultTime : false,
-        gameResult : []
+        gameResult : [],
+        result : false
     }
   },
   
@@ -474,11 +475,11 @@ export default {
 
   threecountDown(){
     this.cnt = true
-    setTimeout(() => {this.threecount = 3}, 1000)
+    setTimeout(() => {this.threecount = 3,this.problemNum++}, 1000)
     setTimeout(() => {this.threecount = 2}, 2000)
     setTimeout(() => {this.threecount = 1}, 3000)
     setTimeout(() => {this.threecount = 'START!'}, 4000)
-    setTimeout(() => { this.cnt=false,this.answerTime = false }, 4500)
+    setTimeout(() => { this.cnt=false,this.answerTime = false,this.trigger=false }, 4500)
     setTimeout(() => { this.timerStart(15) }, 4500)
     this.threecount = 3
     setTimeout(() => { this.getProblem() }, 1500)
@@ -504,10 +505,11 @@ export default {
                   this.currentPlayers = response.players
                   this.totalQuestion = response.totalQuestion
                   this.currentRank = [],
-                  this.problemNum = 1,
+                  this.problemNum = 0,
                   this.isSolving = []
                   this.resultTime = false
-                  this.gameResult = []
+                  this.gameResult = [],
+                  this.result = false
                   for (let i of response.players) {
                     this.currentRank.push([0,i])
                   }
@@ -518,14 +520,23 @@ export default {
                   
               } else if (key[0] === 'roomSequence') {
                   this.answer = response.answer
-                  console.log(this.answerList)
                   this.answerTime = true
                   this.point = response.point
-                  this.isCorrect = false
-                  if (this.answerList.length > 0) {
+                  this.answerList = response.correctPlayers
+                  if (!this.isSolving.includes(this.answer) && this.problemNum == this.totalQuestion){
+                    this.sendResult()
+                  } else if (!this.isSolving.includes(this.answer)&& !this.trigger){
+                    console.log('여기를 두번 온다고?', this.problemNum)
+                    this.isSolving.push(this.answer)
+                    this.isSolving.push(this.problemNum)
+                    console.log('여기임진짜?', this.problemNum)
+                    setTimeout(() => {this.threecountDown()}, 3000)
+                    this.trigger = true
+                    if (this.answerList.length >0) {
                     for (let i of this.answerList) {
                       for ( let j of this.currentRank) {
                         if (i === j[1]){
+                          console.log('1234567890')
                           j[0] += response.point
                           break
                         }
@@ -533,17 +544,27 @@ export default {
                     this.currentRank.sort(function(a, b)  {
                       return b[0] - a[0];
                     })
-                  }}
+                  }   
+                  }
+                  }
                   this.answerList= []
                   this.isCorrect = false 
 
               } else if (key[0] === 'players') {
                   this.resultTime = true
-                  for (let i of Object.keys(response.players)) {
-                    console.log(i)
-                    console.log(response.players[`${i}`])
-                    this.gameResult.unshift([response.players[`${i}`],i])
-                  }
+                  this.status = false
+                  this.start = false
+                  this.currentRank = []
+                  this.answerTime = false
+                  this.resultTime = true
+                  if (!this.result) {
+                    this.result = true
+                    for (let i of Object.keys(response.players)) {
+                      console.log(this.gameResult)
+                      console.log(this.gameResult.includes([response.players[`${i}`],i]))
+                      this.gameResult.unshift([response.players[`${i}`],i])
+                    } }
+                   
                   this.gameResult.sort(function(a, b)  {
                       return b[0] - a[0];
                     })
@@ -600,6 +621,7 @@ export default {
         this.sendCorrect()
         this.$store.state.games.all = false
         clearInterval(interval)
+        console.log('왜 한 명 맞추면 3초후에 터지는거지?')
       }
     }, 1000)
      
@@ -643,14 +665,6 @@ export default {
           this.stompClient.send(`/game/word-game/answer/${this.$route.params.roomSequence}`,
           JSON.stringify(questionNum), {}
           )
-          this.problemNum++
-          
-          if (this.problemNum <= this.totalQuestion){
-            console.log('결과까지!')
-            setTimeout(() => {this.threecountDown()}, 3000)
-          } else if (this.problemNum > this.totalQuestion) {
-            this.sendResult()
-          }
         }
        
     },
