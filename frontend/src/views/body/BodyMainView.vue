@@ -100,14 +100,36 @@ export default {
         axios({
             url : `/api/body-game/rooms/random`,
             method : 'post',
-            headers : this.authHeader})
+           headers: {Authorization : this.$store.getters.authHeader.Authorization}})
         .then(res => {
         this.$router.push({ name: 'BodyDetailView', 
         params: { mode : res.data.data.room.mode.modeSequence, 
         sessionName : res.data.data.room.title, token : res.data.data.token, 
         roomSequence : res.data.data.room.roomSequence}})})
 
-        .catch(err => alert('입장 가능한 방이 없습니다!'))
+      .catch(err => {alert('입장 가능한 방이 없습니다!')
+      if (err.response.data.status === 'sucess'){
+            console.log('성공!!!!!!')
+          }
+          else{
+            console.log('실패!!!!!!!')
+            axios({
+              url : `/api/body-game/rooms/random`,
+               method : 'post',
+              headers: this.$store.getters.authHeader,
+              
+            }).then(res =>{
+               this.$router.push({ name: 'BodyDetailView', 
+        params: { mode : res.data.data.room.mode.modeSequence, 
+        sessionName : res.data.data.room.title, token : res.data.data.token, 
+        roomSequence : res.data.data.room.roomSequence}})
+              const accessToken = res.headers.authorization
+              this.$store.actions.member.reissuanceToken(accessToken)
+            }).catch(err => {
+              console.log(err.response.data)
+            })
+          }
+      })
       }
     },
     isHowtobodyOpen(){

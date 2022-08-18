@@ -46,13 +46,38 @@ export default {
           axios({
             url : `/api/word-game/rooms/`+this.room.roomSequence,
             method : 'post',
-            headers : this.authHeader})
+            headers: {Authorization : this.$store.getters.authHeader.Authorization}})
         .then(res => {console.log(res.data.data),
         this.$router.push({ name: 'WordsDetailView', 
         params: { mode : this.mode, sessionName : this.room.title, 
         token : res.data.data.token,roomSequence : this.room.roomSequence, 
         problemIdx : this.room.totalQuestion, host : this.room.member}})})
-        .catch(err => console.log(err,123 ))
+         .catch(err => {
+          console.log('에러발생!')
+          if (err.response.data.status === 'sucess'){
+            console.log('성공!!!!!!')
+          }
+          else{
+            console.log('실패!!!!!!!')
+            axios({
+              url : `/api/word-game/rooms/`+this.room.roomSequence,
+              method : 'post',
+              headers: this.$store.getters.authHeader,
+              
+            }).then(res =>{
+             this.$router.push({ name: 'WordsDetailView', 
+        params: { mode : this.mode, sessionName : this.room.title, 
+        token : res.data.data.token,roomSequence : this.room.roomSequence, 
+        problemIdx : this.room.totalQuestion, host : this.room.member}})
+
+              const accessToken = res.headers.authorization
+              this.$store.actions.member.reissuanceToken(accessToken)
+            }).catch(err => {
+              console.log(err.response.data)
+            })
+          }
+
+        })
         }
       else{
         alert('로그인이 필요합니다!')

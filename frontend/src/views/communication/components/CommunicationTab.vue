@@ -77,12 +77,10 @@
 </template>
 
 <script>
-import OneDialog from '@/views/communication/components/OneDialog.vue'
 import TwoDialog from './TwoDialog.vue'
 export default {
   name: 'CommunicationTab',
   components: {
-    // OneDialog,
     TwoDialog,
 },
 props : {

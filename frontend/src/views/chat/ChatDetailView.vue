@@ -222,8 +222,30 @@ export default {
             axios({
                 url : `/api/conversation/rooms/${this.$route.params.roomSequence}`,
                 method : 'delete',
-                headers : this.authHeader
+               headers: {Authorization : this.$store.getters.authHeader.Authorization}
             }).then(this.$router.push({name : 'ChatMainView'}))
+            .catch(err => {
+           if (err.response.data.status === 'sucess'){
+            console.log('성공!!!!!!')
+          }
+          else{
+            console.log('실패!!!!!!!')
+            axios({
+              url : `/api/conversation/rooms/${this.$route.params.roomSequence}`,
+              method : 'delete',
+              headers: this.$store.getters.authHeader,
+              
+            }).then(res =>{
+             this.$router.push({name : 'ChatMainView'})
+
+              const accessToken = res.headers.authorization
+              this.$store.actions.member.reissuanceToken(accessToken)
+            }).catch(err => {
+              console.log(err.response.data)
+            })
+          }
+
+        })
             // 그 후 세션에서 나가기 
             if (this.session) this.session.disconnect();
 

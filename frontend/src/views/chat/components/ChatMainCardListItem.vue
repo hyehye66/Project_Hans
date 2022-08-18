@@ -39,10 +39,32 @@ export default {
         axios({
             url : `/api/conversation/rooms/`+this.room.roomSequence,
             method : 'post',
-            headers : this.authHeader})
-        .then(res => {console.log(res),
+            headers: {Authorization : this.$store.getters.authHeader.Authorization}})
+        .then(res => {
         this.$router.push({ name: 'ChatDetailView', params: { mode : this.mode, sessionName : this.room.title, token : res.data.data.token,roomSequence : this.room.roomSequence,restrict_num : res.data.data.restrictNum}})})
-        .catch(err => console.log(err,123 ))
+        .catch(err => {
+          if (err.response.data.status === 'sucess'){
+            console.log('성공!!!!!!')
+          }
+          else{
+            console.log('실패!!!!!!!')
+            axios({
+              url : `/api/conversation/rooms/`+this.room.roomSequence,
+              method : 'post',
+              headers: this.$store.getters.authHeader,
+              
+            }).then(res =>{
+             this.$router.push({ name: 'ChatDetailView', params: { mode : this.mode, sessionName : this.room.title, token : res.data.data.token,roomSequence : this.room.roomSequence,restrict_num : res.data.data.restrictNum}})
+
+              const accessToken = res.headers.authorization
+              this.$store.actions.member.reissuanceToken(accessToken)
+            }).catch(err => {
+              console.log(err.response.data)
+            })
+          }
+
+
+        })
         }
       else{
         alert('로그인이 필요합니다!')

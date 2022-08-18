@@ -196,7 +196,7 @@ export default {
       axios({
         url: '/api/members',
         method: 'put',
-        headers : getters.authHeader,
+        headers: {Authorization : getters.authHeader.Authorization},
         data : {nickname, introduction},
       }).then(res => {
         commit('SET_PROFILE', res.data.data)

@@ -15,10 +15,10 @@ export default {
     
   },
   actions: {
-    searchStart ({state, getters},{searchNickname, modeSequence}) {
+    searchStart ({state, getters, dispatch},{searchNickname, modeSequence}) {
       axios ( {
           url: `/api/rankings/search?nickname=${searchNickname}&modeSequence=${modeSequence}`,
-          headers: getters.authHeader,
+          headers: {Authorization : getters.authHeader.Authorization},
           method: "get",
           data: {
             nickname: searchNickname,
@@ -33,9 +33,40 @@ export default {
         state.rankings = res.data.data
         state.searchFinish = true
         state.isSearch = true
-      }).catch(err => {console.error(err); })
+      }).catch(err => 
+      {
+        if (err.response.data.status === 'sucess'){
+          console.log('성공!!!!!!')
+        }
+        else{
+          console.log('실패!!!!!!!')
+          axios ({
+            url: `/api/rankings/search?nickname=${searchNickname}&modeSequence=${modeSequence}`,
+            headers: {Authorization : getters.authHeader.Authorization},
+            method: "get",
+            data: {
+              nickname: searchNickname,
+              modeSequence: modeSequence,
+            },
+          },
+        ).then(res => {        
+          if(res.data.status=='ERROR'){
+            state.notMember = true
+            console.log(state.notMember)
+          }
+          state.rankings = res.data.data
+          state.searchFinish = true
+          state.isSearch = true
 
-  },
+            const accessToken = res.headers.authorization
+            dispatch('reissuanceToken', accessToken)
+          }).catch(err => {
+            console.log(err.response.data)
+          })
+        }
+    })
+  }
+  
 },
   modules: {
 

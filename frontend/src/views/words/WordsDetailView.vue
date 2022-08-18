@@ -383,7 +383,7 @@ export default {
             axios({
                 url : `/api/word-game/rooms/${this.$route.params.roomSequence}`,
                 method : 'delete',
-                headers : this.authHeader
+                headers: {Authorization : this.$store.getters.authHeader.Authorization}
             })
 
             .then(() =>{
@@ -406,6 +406,44 @@ export default {
             window.removeEventListener('beforeunload', this.leaveSession);
               this.$router.push({name : 'WordsMainView'})
             })
+             .catch(err => {
+          if (err.response.data.status === 'sucess'){
+            console.log('성공!!!!!!')
+          }
+          else{
+            console.log('실패!!!!!!!')
+            axios({
+              url : `/api/word-game/rooms/${this.$route.params.roomSequence}`,
+              method : 'delete',
+              headers: this.$store.getters.authHeader,
+              
+            }).then(res =>{
+              if (this.isHost === this.profile.nickname) {
+              const gameInfo = {totalQuestion:10}
+              this.stompClient.send(`/game/word-game/room/${this.$route.params.roomSequence}/owner/${this.totalQuestion}`, 
+              JSON.stringify(gameInfo), {})
+            }
+            
+            if(this.session) {this.session.disconnect();}
+            if (this.stompClient) {this.stompClient.disconnect()}
+            this.stompClient = null;
+
+            this.session = undefined;
+            this.mainStreamManager = undefined;
+            this.publisher = undefined;
+            this.subscribers = [];
+            this.OV = undefined;
+            window.removeEventListener('beforeunload', this.leaveSession);
+              this.$router.push({name : 'WordsMainView'})
+
+              const accessToken = res.headers.authorization
+              this.$store.actions.member.reissuanceToken(accessToken)
+            }).catch(err => {
+              console.log(err.response.data)
+            })
+          }
+
+        })
             // 그 후 세션에서 나가기 
             
             // 나가는 일련의 과정이 끝나면 MainView로 라우터 이동

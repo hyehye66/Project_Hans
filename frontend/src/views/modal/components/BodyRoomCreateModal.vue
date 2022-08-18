@@ -134,17 +134,46 @@ export default {
         difficulty	: this.levelcnt,
         timeLimit :  this.timecnt
        },
-       headers : this.authHeader}, 
+       headers: {Authorization : this.$store.getters.authHeader.Authorization}}, 
     ).
     then(res => {
 
-      console.log(res.data,'뭐받아옴?')
+      
       this.$router.push({ name: 'BodyDetailView', params: { mode : this.mode, sessionName : this.sessionName, token : res.data.data.token, roomSequence : res.data.data.roomSequence,
       host : this.profile.nickname, difficulty : this.levelcnt, totalQuestion : this.problemcnt, timeLimit : this.timecnt}})
       
 
     })
-    .catch(err => console.log(err,1234))
+    .catch(err => {
+          if (err.response.data.status === 'sucess'){
+            console.log('성공!!!!!!')
+          }
+          else{
+            console.log('실패!!!!!!!')
+            axios({
+            url : `/api/body-game/rooms`,
+            method : 'post',
+            data : {
+            title : this.sessionName,
+            restrict_num : this.maxUsercnt,
+            total_question : this.problemcnt,
+            difficulty	: this.levelcnt,
+            timeLimit :  this.timecnt
+          },
+              headers: this.$store.getters.authHeader,
+              
+            }).then(res =>{
+             this.$router.push({ name: 'BodyDetailView', params: { mode : this.mode, sessionName : this.sessionName, token : res.data.data.token, roomSequence : res.data.data.roomSequence,
+              host : this.profile.nickname, difficulty : this.levelcnt, totalQuestion : this.problemcnt, timeLimit : this.timecnt}})
+
+              const accessToken = res.headers.authorization
+              this.$store.actions.member.reissuanceToken(accessToken)
+            }).catch(err => {
+              console.log(err.response.data)
+            })
+          }
+
+        })
         
     
   },

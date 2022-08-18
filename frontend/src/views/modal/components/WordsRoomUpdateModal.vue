@@ -98,14 +98,42 @@ export default {
         restrict_num : this.maxUsercnt,
         problem_num : this.problemcnt
        },
-       headers : this.authHeader
+       headers: {Authorization : this.$store.getters.authHeader.Authorization}
        })
     .then(res => {
       alert('방설정 변경완료!')
       this.isClose()
 
     })
-    .catch(err => console.log(err))
+    .catch(err => {
+          console.log('에러발생!')
+          if (err.response.data.status === 'sucess'){
+            console.log('성공!!!!!!')
+          }
+          else{
+            console.log('실패!!!!!!!')
+            axios({
+            url : `/api/word-game/rooms/${this.$route.params.roomSequence}`,
+            method : 'put',
+            data : {
+            title : this.sessionName,
+            restrict_num : this.maxUsercnt,
+            problem_num : this.problemcnt
+          },
+              headers: this.$store.getters.authHeader,
+              
+            }).then(res =>{
+              alert('방설정 변경완료!')
+              this.isClose()
+
+              const accessToken = res.headers.authorization
+              this.$store.actions.member.reissuanceToken(accessToken)
+            }).catch(err => {
+              console.log(err.response.data)
+            })
+          }
+
+        })
         
     
   },
