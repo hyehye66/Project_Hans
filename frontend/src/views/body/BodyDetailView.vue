@@ -47,10 +47,9 @@
     <div id="body-detail-main-video">
     <!-- col-md-8 -->
       <user-video :stream-manager="mainStreamManager" v-if="!answerTime && status"/>
-
-      <span id="the-answer" v-if="answerTime"> 정답 : {{answer}}</span>
-      &nbsp; &nbsp;
-      <span id="difficulty" v-if="answerTime"> 난이도 : {{point}}</span>
+      <span id="the-answer" v-if="answerTime"> 정답 : {{answer}} <br> 난이도 : {{point}}</span>
+      <!-- &nbsp; &nbsp; -->
+      <!-- <span id="difficulty" v-if="answerTime"> </span> -->
       <!-- <div class="card-body" >
           <div class="words-detail-rank"> -->
             <!-- <div class="overflow-x-auto"> -->
@@ -71,7 +70,9 @@
                   </tr>
                 </tbody>
               </table>
-
+            <!-- </div> -->
+          <!-- </div>
+        </div> -->
     </div>
     <!-- 캠,마이크,나가기,설정 -->
     <div class="cam-buttons">
@@ -125,12 +126,16 @@
       <div v-if="!cnt && (joker == profile.nickname)&& !answerTime" class="body-joker-quiz">
         문제 : {{ problem }}
       </div>
+      <div v-else-if="cnt && !answerTime" class="body-joker-quiz">
+        술래 : {{ joker }}
+      </div>
       <div v-else class="body-detail-answer-send">
       
         <input type="text" name="" id="body-detail-answer-sheet" v-model="temp" size="26"
         placeholder="답을 입력해주세요." @keyup.enter="sendAnswer" v-if="!isCorrect && !(joker == profile.nickname) &&!answerTime"/>
         <button class="btn btn-active" @click="sendAnswer" v-if="!isCorrect && !(joker == profile.nickname) && !answerTime">submit</button>
         <!-- <PaperAirplaneIcon style="height: 35; width: 35;" @click="sendAnswer" v-if="!isCorrect && !(joker == profile.nickname)&&!answerTime"/> -->
+        <p v-if="answerTime"></p>
       </div>
     </div>
     <!-- 정오답 알림 메시지 -->
@@ -967,14 +972,16 @@ video {
 
 #body-detail-main-video p {
   /* position: absolute; */
-  display: inline-block;
+  /* display: inline-block;
   background: transparent;
   padding-left: 5px;
   padding-right: 5px;
-  font-size: 2.6rem;
-  color: black;
+  font-size: 2.6rem; */
+  color: white;
   font-weight: bold;
-  border-radius: 5px;
+  /* border-radius: 5px; */
+  display: flex;
+  flex-flow: column wrap;
 }
 
 user-video {
