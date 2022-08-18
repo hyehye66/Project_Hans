@@ -100,7 +100,7 @@ export default {
   data(){
     return {
       loginOpen : false,
-      thisNick : this.$store.state.member.profile.nickname
+      
     }
   },
   methods : {

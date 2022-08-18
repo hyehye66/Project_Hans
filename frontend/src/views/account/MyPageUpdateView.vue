@@ -37,7 +37,7 @@
               <PencilAltIcon />            
               <b>닉네임</b>
             </label>
-            <input type="email" class="form-control" id="nickname" v-model="this.$store.state.member.profile.nickname">
+            <input type="email" class="form-control" id="nickname" v-model="thisNick">
           </div>
           <div class="mb-3">
             <label for="introduction" class="form-label">
@@ -110,7 +110,11 @@ export default {
     AcademicCapIcon,
     NavBar,
   },
-
+  data(){
+    return {
+      thisNick : ''
+      }
+  },
   computed: {
     ...mapGetters(['profile'])
   },
@@ -119,7 +123,7 @@ export default {
     clickUpdate(){
       var bool = confirm('수정하시겠습니까?')
       const payload = {
-            nickname : this.profile.nickname,
+            nickname : this.thisNick,
             introduction : this.profile.introduction
         }
       if (bool === true){
