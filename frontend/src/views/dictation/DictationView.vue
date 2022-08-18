@@ -13,23 +13,10 @@
         <div class="content tab-space" >
           <h1>받아쓰기</h1>
           <br>
-          <div class="mb-3">
+          
 
-            <h1 v-if="cnt">{{this.threecount}}</h1>
-          <div v-if="isFinal">
-        <h2>{{this.answercnt}} / 2 고생하셨습니다!! </h2>
-        <br>
-        </div>
-          <div v-if="submitAnswer">
-        <h1 class="my-3" style="color:red">{{answer}}</h1>
-        <h2 class="my-3">내가 입력한 답: {{input}}</h2>
-        <h2 class="my-3">정답 : {{this.finalqustions[idx]}}</h2>
-        <button class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded"  @click="repeat(this.finalqustions[idx])"> 다시듣기</button>
-        <button class="mx-3 bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded" v-if="start && !isFinal" @click="nextProblem">NEXT</button>
-          </div>
-        </div>
         <div>
-        <button class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded"  v-if="isFinal" @click="this.$router.go()">다시하기</button>
+        
           
           </div>
 
@@ -53,22 +40,47 @@
  
           <div  class="mb-3" v-if="!submitAnswer && start && !isFinal">
           <h2 class="my-3">내가 입력한 답 : {{input}}</h2>
-            <input  type="text" name="" id="dictaion-answer-sheet" 
+            <br>
+            <br>
+            <br>
+            <div id="answer-input-box" class="row_box my-3">
+            <input type="text" name="" id="dictaion-answer-sheet" 
             placeholder="답을 입력해주세요." v-model="input" @keyup.enter="submitProblem">
-            <br/>
-            <button class="my-3 bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded" @click="submitProblem">
+            <button style="height:48px;" class=" bg-newBlue1 hover:bg-newBlue2 text-white font-bold px-4 rounded" @click="submitProblem">
             제출</button>
-
+            </div>
       </div>
       <br>
       <br>
       <br>
       <br>
+      
          <div class="start-btn">
             <button class="btn-lg bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded"
             style="width:200px;"
              v-if="!start" @click="threecountDown">
             Start</button>
+            <h1 v-if="cnt">{{this.threecount}}</h1>
+          <div v-if="isFinal">
+        <h2 style="text-align: center">{{this.answercnt}} / 2 </h2> 
+        <h2 text-align: center> 고생하셨습니다!! </h2>
+        <br>
+          <div style="display: flex; justify-content: center">
+            <button class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded"  v-if="isFinal" @click="this.$router.go()">다시하기</button>
+          </div>
+        </div>
+        <div class="mb-3 c" v-if="submitAnswer">
+        <h1 class="my-3" style="color:red; text-align: center">{{answer}}</h1>
+        <h2 class="my-3">내가 입력한 답: {{input}}</h2>
+        <h2 class="my-3">정답 : {{this.finalqustions[idx]}}</h2>
+        <br>
+        <br>
+        <br>
+        <div style="margin-left:70px;">
+        <button  class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded"  @click="repeat(this.finalqustions[idx])"> 다시듣기</button>
+        <button class="mx-3 bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded" v-if="start && !isFinal" @click="nextProblem">NEXT</button>
+          </div>
+          </div>
           </div>
         </div>
       </div>
@@ -208,6 +220,10 @@ export default {
 
 
 <style scoped>
+#answer-input-box{
+  display : flex;
+  justify-content: left;
+}
 #dictation-Leavebutton{
   width: 10%;
 }
@@ -236,9 +252,11 @@ export default {
 }
 */
 #dictaion-answer-sheet {
-    border: 1px dotted black;
+    border-radius: 8px;
+    border-width : 2px;
+    border-color : black;
     font-size: 2rem;
-    width: 80%;
+    width: 60%;
 }
 .start-btn{
   display: flex;
