@@ -79,7 +79,9 @@
         </div>
 
         <div class="chat-detail-session-right col-md-4">
+
           <div id="chat-box">
+
             <!-- <div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-offset="0" class="scrollspy-example" tabindex="0"> -->
               <!-- <h4 id="scrollspyHeading1">First heading</h4>
               <p>...</p>
@@ -97,6 +99,7 @@
               <ul v-for="idx in chattingList" :key="idx" v-chat-scroll>
                 <li class="one-chat">{{idx}}</li>
               </ul>
+
             <!-- </div> -->
             <!-- </div> -->
 
@@ -181,9 +184,21 @@ export default {
     this.joinSession(),
     this.isHost = this.$route.params.host
   },
-
+  watch : {
+    
+  },
   computed : {
-    ...mapGetters(['authHeader','profile'])
+    ...mapGetters(['authHeader','profile']),
+    chat :()=> {
+      setTimeout(() => {
+        let chatBox = document.getElementById("for-chat-scroll")
+        console.log(chatBox, '여기에요')
+        chatBox.scrollTo({
+          top : chatBox.scrollHeight,
+          behavior : "smooth"
+        })
+      }, 50);
+    } 
   },
 //this.$route.params.token.slice(39,53)
   methods : {
@@ -331,18 +346,7 @@ export default {
 		},
     
   },
-  watch: {
-      chat() {
-         setTimeout(() => {
-         var chatDiv = document.getElementById("chat-box");
-         chatDiv.scrollTo({
-            // document.body.scrollTop = document.body.scrollHeight;
-            top: chatDiv.scrollHeight - chatDiv.clientHeight,
-            behavior: 'smooth'
-         })
-         }, 50);
-      },
-   },
+  
 } 
 
 </script>
@@ -661,6 +665,7 @@ img {
 }
 
 .chat-box {
+  overflow-y: scroll;
   /* background-color: transparent;
   border-color: #ffff; */
 

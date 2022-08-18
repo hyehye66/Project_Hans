@@ -63,7 +63,7 @@
     </ul>
   </div>
   <div class="navbar-end">
-    <button class="welcome" v-if="isLoggedIn"> <router-link :to="{name:'MyPageView'}" >{{thisNick}} 님 환영합니다</router-link></button>
+    <button class="welcome" v-if="isLoggedIn"> <router-link :to="{name:'MyPageView'}" >{{profile.nickname}} 님 환영합니다</router-link></button>
       <button v-if="!isLoggedIn" 
       class="bg-newBlue1 hover:bg-newBlue2 text-white font-bold py-2 px-4 rounded"  @click="login"
       style="cursor: pointer">
