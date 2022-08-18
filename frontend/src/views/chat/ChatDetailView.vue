@@ -79,9 +79,7 @@
         </div>
 
         <div class="chat-detail-session-right col-md-4">
-
           <div id="chat-box">
-
             <!-- <div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-offset="0" class="scrollspy-example" tabindex="0"> -->
               <!-- <h4 id="scrollspyHeading1">First heading</h4>
               <p>...</p>
@@ -94,15 +92,11 @@
               <h4 id="scrollspyHeading5">Fifth heading</h4>
               <p>...</p> -->
 
-            <!-- <div v-scroll:#chat-box="handleScroll"> -->
-
-              <ul v-for="idx in chattingList" :key="idx" v-chat-scroll>
+              <ul v-for="idx in chattingList" :key="idx" >
+                <!-- v-chat-scroll -->
                 <li class="one-chat">{{idx}}</li>
               </ul>
-
-            <!-- </div> -->
-            <!-- </div> -->
-
+            <!-- </div>               -->
           </div>
           <div class="my-chat-input">
               <input v-model="myChat" type="text" @keyup.enter="startChatting"  class="my-chatting"/>
@@ -124,7 +118,7 @@
         <ul v-for="idx in chattingList" :key="idx">
             <li>{{idx}}</li>
         </ul> -->
-    </div>
+  </div>
 </div>
 
 <ChatRoomUpdateModal v-model:open="open" />   
@@ -145,8 +139,6 @@ import ChatRoomUpdateModal from '@/views/modal/components/ChatRoomUpdateModal.vu
 
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
-
-
 
 export default {
   name : 'ChatDetailView',
@@ -183,22 +175,11 @@ export default {
   created(){
     this.joinSession(),
     this.isHost = this.$route.params.host
-  },
-  watch : {
     
   },
+
   computed : {
-    ...mapGetters(['authHeader','profile']),
-    chat :()=> {
-      setTimeout(() => {
-        let chatBox = document.getElementById("for-chat-scroll")
-        console.log(chatBox, '여기에요')
-        chatBox.scrollTo({
-          top : chatBox.scrollHeight,
-          behavior : "smooth"
-        })
-      }, 50);
-    } 
+    ...mapGetters(['authHeader','profile'])
   },
 //this.$route.params.token.slice(39,53)
   methods : {
@@ -346,7 +327,21 @@ export default {
 		},
     
   },
-  
+  watch: {
+      chattingList() {
+         setTimeout(() => {
+         let chatDiv = document.getElementById("chat-box");
+         chatDiv.scrollTo({
+            // document.body.scrollTop = document.body.scrollHeight;
+            // top: chatDiv.scrollHeight,
+            // top: chatDiv.scrollHeight - chatDiv.clientHeight,
+            bottom: chatDiv.scrollHeight - chatDiv.clientHeight,
+            behavior: 'smooth'
+         })
+         }, 50);
+      },
+   },
+
 } 
 
 </script>
@@ -665,7 +660,6 @@ img {
 }
 
 .chat-box {
-  overflow-y: scroll;
   /* background-color: transparent;
   border-color: #ffff; */
 
