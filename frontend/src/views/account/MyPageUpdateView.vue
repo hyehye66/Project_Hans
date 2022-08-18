@@ -37,7 +37,7 @@
               <PencilAltIcon />            
               <b>닉네임</b>
             </label>
-            <input type="email" class="form-control" id="nickname" v-model="profile.nickname">
+            <input type="email" class="form-control" id="nickname" v-model="this.$store.state.member.profile.nickname">
           </div>
           <div class="mb-3">
             <label for="introduction" class="form-label">

@@ -4,8 +4,8 @@
       <p class="text-gray-600 leading-6 tracking-normal">방장 : {{ room.member.nickname }}</p>
       <p class="text-gray-600 leading-6 tracking-normal">참여인원 : {{ room.currentNum }}/{{room.restrictNum}}</p>
       <div></div>
-      <button class="py-2 px-4 mt-8 text-white rounded-md shadow-xl join-button" @click="joinBodyRoom" v-if="!room.gameStatus && !(room.currentNum === room.restrictNum)">입장하기</button>
-      <button class="py-2 px-4 mt-8 text-white rounded-md shadow-xl nojoin-button" @click="cantJoin" v-if="room.gameStatus || room.currentNum == room.restrictNum">입장불가</button>
+      <button class="py-2 px-4 mt-8 text-white rounded-md shadow-xl join-button" @click="joinBodyRoom" v-if="!room.roomStatus && !(room.currentNum === room.restrictNum)">입장하기</button>
+      <button class="py-2 px-4 mt-8 text-white rounded-md shadow-xl nojoin-button" @click="cantJoin" v-if="room.roomStatus || room.currentNum == room.restrictNum">입장불가</button>
       <div>
         <span class="absolute py-2 px-8 text-sm text-white top-0 right-0 rounded-md transform translate-x-2 -translate-y-3 shadow-xl mode-name">{{ mode }}</span>
       </div>
