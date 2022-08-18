@@ -58,7 +58,7 @@ export default {
     return {
     // 방설졍 변경시 선택한 수를 백으로 넘기는 변수
     maxUsercnt : 2,
-    problemcnt : 10,
+    problemcnt : 3,
     sessionName : '',
       contents: {
         maxUser: [
@@ -69,6 +69,7 @@ export default {
           { text: '6', value: 6 },
         ],
         problems: [
+          { text: '3' , value : 3},
           { text: '10', value: 10 },
           { text: '15', value: 15 },
           { text: '20', value: 20 },
