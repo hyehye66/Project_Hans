@@ -59,7 +59,7 @@
         <p class="c3-t2 font-black">한국 문화를 엿볼 수 있는</p>
         <span class="c3-t3 font-black">          
           <button type="button" 
-          class="carousel3-btn bg-newPink1 hover:bg-newPink1 text-white font-bold py-2 px-6 rounded-full" 
+          class="carousel3-btn bg-newBlue1 hover:bg-newBlue1 text-white font-bold py-2 px-6 rounded-full" 
           id="start">
           <router-link :to="{name:'WordsMainView'}" >낱말퀴즈</router-link>            
           </button>
@@ -191,12 +191,12 @@ img {
 }
 
 .carousel3-btn {
-  background-color: #f1c4d9;
+  background-color: #2657a7;
   color: white;
 }
 .carousel3-btn :hover {
-  color: #f1c4d9;
-  background-color: #f1c4d9;
+  color: #2657a7;
+  background-color: #2657a7;
 }
 
 .c1-t1 {

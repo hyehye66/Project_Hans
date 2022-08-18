@@ -48,7 +48,7 @@
       <div class="card-body" v-if="resultTime">
           <div class="words-detail-rank">
             <div class="overflow-x-auto">
-              <table class="table table-zebra w-full" id="rank-table">
+              <table class="table w-full" id="rank-table">
                 <!-- head -->
                 <thead>
                   <tr>                        
@@ -110,9 +110,10 @@
         </span>
       </div>
       <div class="words-detail-answer-send">
-          <input type="text" name="" id="words-detail-answer-sheet" v-model="temp" 
-          placeholder="답을 입력해주세요." @keyup.enter="sendAnswer" v-if="!isCorrect && !answerTime"/>
-          <PaperAirplaneIcon style="height: 8%; width: 8%;" @click="sendAnswer" v-if="!isCorrect && !answerTime" />					
+        <input type="text" name="" id="words-detail-answer-sheet" v-model="temp" tabindex="0" 
+        placeholder="답을 입력해주세요." @keyup.enter="sendAnswer" v-if="!isCorrect && !answerTime"/>
+        <button class="btn btn-active" @click="sendAnswer" v-if="!isCorrect && !(joker == profile.nickname) && !answerTime">submit</button>
+        <!-- <PaperAirplaneIcon style="height: 8%; width: 8%;" @click="sendAnswer" v-if="!isCorrect && !answerTime" />-->
       </div>
       <!-- 정오답 알림 메시지 -->
       <div class="body-detail-check-answer">
@@ -183,8 +184,8 @@
       <div class="words-detail-start-box">
         <div v-if="!status && (profile.nickname == isHost)" class="words-detail-leader-button">
           <button id="start-btn" @click="sendStart"     
-          class="bg-transparent hover:bg-yellow-500 text-yellow-700 font-semibold hover:text-white 
-          py-2 px-2 border border-yellow-500 hover:border-transparent rounded-full">
+          class="bg-yellow-500 hover:bg-transparent text-yellow-700 font-semibold hover:text-white 
+          py-2 px-4 border border-yellow-500 hover:border-transparent rounded-full">
             START
           </button>
         </div>
@@ -260,7 +261,7 @@ export default {
     //MicrophoneIcon,
     LogoutIcon,
     CogIcon,
-    PaperAirplaneIcon,
+    // PaperAirplaneIcon,
 },
   data () {
     return {
@@ -690,36 +691,38 @@ export default {
 /* scoped 하면 적용안됨 */
 svg {
   cursor: pointer;
-  color: #ffff;	
+  color: black;	
 }
 
 .words-detail-bg-img {
   margin: auto;
+  background-image : url("@/assets/word-game-bg2.jpg.jpg");
   /* background-image: url("@/assets/14.png"); */
-  /* background-size: cover; */
+  background-size: cover;
   width: 100vw;
   height: 100vh;
   /* position: absolute; */
-  position: relative;
+  /* position: relative; */
+  position: absoulute;
   z-index: 1;
   /* background-color: transparent; */
 
 }
 
 .words-detail-bg-img::after {
-  margin: auto;
+  /* margin: auto;
   width: 100vw;
   height: 100vh;
   position: absolute;
   top: 0;
   left: 0;
-  z-index: -1;
-  opacity: 0.6;
-  content: "";
+  z-index: -1; */
+  /* opacity: 0.6; */
+  /* content: ""; */
   /* background: url("@/assets/14.png"); */
   /* background-image: url("@/assets/word-game-bg.jpg"); */
-  background-image : url("@/assets/word-game-bg2.jpg.jpg");
-  background-size: cover;
+  /* background-image : url("@/assets/word-game-bg2.jpg.jpg"); */
+  /* background-size: cover; */
   
 }
 
@@ -786,7 +789,7 @@ svg {
   justify-content : center;
 	align-items : center;
 
-  color: #ffff;
+  color: black;
 
 }
 
@@ -800,7 +803,7 @@ svg {
   justify-content : center;
 	align-items : center;
 
-  color: #ffff;
+  color: black;
 
 }
 
@@ -916,7 +919,7 @@ video {
   justify-content: center;
   align-items: center;
 
-  background-color: transparent;
+  background-color: white;
   
   border: 0.5rem;
   border-style: solid;
@@ -929,13 +932,13 @@ video {
 #words-detail-quiz-box div{
   /* font-size: 1.8rem; */
   font-weight: bolder;
-  color: #ffff;
+  color: black;
 }
 
 .words-quiz-box-timer {
   font-size: 1.6rem;
   font-weight: bolder;
-  color: #ffff;
+  color: black;
   /* height: 16%; */
   display: flex;
   justify-content: center;
@@ -986,7 +989,7 @@ video {
 
 #words-detail-answer-sheet {
     /* border: 1; */
-    border: 1px dotted black;
+    border: 3px solid black;
     font-size: 2rem;
     width: 90%;
 }
@@ -1071,7 +1074,7 @@ video {
 
 .words-detail-start-box {
   position: fixed;
-  bottom: 6%;
+  bottom: 2%;
   /* width: 150%; */
   /* margin: 0 auto 2.5vh; */
    
@@ -1099,10 +1102,13 @@ video {
 }
 
 #start-btn {
-  border: 0.5rem solid;
+  /* border: 0.5rem solid; */
   font-size: 3rem;
-  font-weight: bolder;
+  font-weight: 900;
   text-align: center;
+  background-color: rgb(166, 122, 0);
+  color: #ffff;
+  border: none;
 }
 
 
@@ -1120,8 +1126,11 @@ video {
 }
 
 .words-start-box-timer h1 {
+  /* color: rgb(166, 122, 0); */
+  font-size: 3rem;
   color: rgb(166, 122, 0);
   font-size: 3rem;
+  font-weight: 900;
 
 }
 

@@ -5,6 +5,7 @@
         <h5 class="modal-title">낱말게임 설명</h5>
         <button @click="$emit('update:bodyhowopen', !bodyhowopen)" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+      <br>
       <div class="modal-body">
         <ul>
           <li>- 문제 수는 3문제 이상, 10 문제 이하이다.</li>
@@ -68,6 +69,10 @@ export default {
   border: 0.05rem solid rgb(76,76,76,0.4);
   /* background-color: transparent; */
   
+}
+
+.modal-title {
+  font-size: 1.2rem;
 }
 
 .modal_content {

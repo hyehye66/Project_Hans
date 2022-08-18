@@ -168,6 +168,10 @@ computed : {...mapGetters(['authHeader','profile'])}
   border-radius: 6% 6% 6% 6%;
 }
 
+.modal-title {
+  font-size: 1.2rem;
+}
+
 .modal-content {
   padding: 8%;
 }
