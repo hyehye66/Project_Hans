@@ -1,7 +1,7 @@
 <template>
   <nav-bar />
-  <!-- <div class="communication-bg-img">
-  </div> -->
+  <div class="container">
+  <p id="communication-main-title" class="d-flex justify-content-space-around py-2 px-4 mt-8">상황별 한국어 회화</p></div>
   <communication-tab :situationSentence="situationSentence"/> 
 
  
@@ -56,6 +56,9 @@ export default {
 </script>
 
 <style scoped>
-
+#communication-main-title {
+  font-size: 3rem;
+  line-height: 1;
+}
 
 </style>
