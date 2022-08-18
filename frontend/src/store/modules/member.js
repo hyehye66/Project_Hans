@@ -92,7 +92,7 @@ export default {
         })
         .catch(err => {
           localStorage.setItem('email',useremail)
-          console.log('회원가입안되있습니다!')
+          alert('회원가입이 필요합니다!')
           commit('SET_EMAIL',useremail)
           console.error(err.response.data)
           router.push({ name: 'SignUpView' })
@@ -128,6 +128,9 @@ export default {
           router.push({ name: 'Home' })
         })
         .catch(err => {
+          if(credentials.nickname == ''){
+            alert('닉네임은 필수사항입니다!!')
+          }
           console.error(err.response.data.message)
           commit('SET_AUTH_ERROR', err.response.data.message)
         })
