@@ -108,7 +108,7 @@ export default {
 
 
 .hero {
-  background-image: url("@/assets/login5.png");
+  background-image: url("@/assets/login_page.png");
   /* background-image : url("@/assets/login_24.jpg"); */
   background-size: cover;
   /* background: #f1c4d9; */
@@ -136,13 +136,12 @@ export default {
 }
 
 .card {
-  margin-right: 8%;
-  margin-top: 5%;
-  width: 29%;
+  margin-right: 33%;
+  margin-top: 10%;
+  width: 35%;
   float: right;
-  border-radius: 5% 5% 5% 5%;
-  /* background-color: rgba( 201, 212, 231, 0.6 ); */
-  background-color: transparent;
+  background-color: #DFE9F4;
+  border: transparent;
 }
 
 .card-body {

@@ -56,10 +56,10 @@ export default {
       localStorage.setItem('refreshToken','')
     },
     
-    reissuanceToken({commit}, refreshToken){
+    reissuanceToken({commit}, accessToken){
       console.log('토큰변경완료!')
-      commit('SET_REFRESH_TOKEN', refreshToken)
-      localStorage.setItem('refreshToken',refreshToken)
+      commit('SET_ACCESS_TOKEN', accessToken)
+      localStorage.setItem('accessToken',accessToken)
     },
 
 
@@ -176,10 +176,11 @@ export default {
               
             }).then(res =>{
               console.log('재발급시작!')
+              console.log(res.headers.authorization)
               commit('SET_PROFILE',res.data.data)
 
-              const refreshToken = getters.authHeader.refreshToken
-              dispatch('reissuanceToken', refreshToken)
+              const accessToken = res.headers.authorization
+              dispatch('reissuanceToken', accessToken)
             }).catch(err => {
               console.log(err.response.data)
             })

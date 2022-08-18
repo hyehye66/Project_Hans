@@ -1,50 +1,362 @@
 <template>
     <NavBar />
     <div class="container">
-      <p id="dictation-main-title" class="d-flex justify-content-space-around py-2 px-4 mt-8">받아쓰기</p>
-      <button class="btn btn-outline btn-secondary" id="listen-btn" @click="startSpeechToTxt()"></button>
+      <!-- <div id="dictation-bg"> -->
+        <div class="box relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg bg-white rounded"> 
+          <svg style="cursor: pointer" @click="this.$router.go()" id="dictation-Leavebutton"  fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z">
+          </path>
+        </svg>      
+      <div class="px-4 py-5 flex-auto" style="width: 70%;">
+        <div class="content tab-space" >
+          <h1>받아쓰기</h1>
+          <br>
+          <div class="mb-3">
+
+            <h1 v-if="cnt">{{this.threecount}}</h1>
+          <div v-if="isFinal">
+        <h2>{{this.answercnt}} / 5 고생하셨습니다!! </h2>
+        <br>
+        </div>
+          <div v-if="submitAnswer">
+        <h1 class="my-3">{{answer}}</h1>
+        <h2 class="my-3">내가 입력한 답: {{input}}</h2>
+        <h2 class="my-3">정답 : {{this.finalqustions[idx]}}</h2>
+        <button  @click="repeat(this.finalqustions[idx])"> <span class='btn-animate'>다시듣기</span></button>
+        <button class="mx-3" v-if="start && !isFinal" @click="nextProblem"><span class='btn-animate'>NEXT</span></button>
+          </div>
+        </div>
+        <div>
+        <button v-if="isFinal" @click="this.$router.go()"><span class='btn-animate'>다시하기</span></button>
+          
+          </div>
+
+        <div class="mb-3"  v-if="!start">
+          <div  class="row_box">
+          난이도 : <select v-model="difficulty" name="" id="selectbox">
+            <option  v-for="lev in contents.level" :value="lev.value" :key="lev.value">
+              {{ lev.text }}
+            </option>
+          </select>
+        </div>
+                <div class="row_box">
+          재생속도 : <select v-model="speed" name="" id="selectbox">
+            <option v-for="sp in contents.speeds" :value="sp.value" :key="sp.value">
+              {{ sp.text }}
+            </option>
+          </select>
+        </div>
+          </div>
+
+ 
+          <div  class="mb-3" v-if="!submitAnswer && start && !isFinal">
+          <h2 class="my-3">내가 입력한 답 : {{input}}</h2>
+            <input  type="text" name="" id="dictaion-answer-sheet" 
+            placeholder="답을 입력해주세요." v-model="input" @keyup.enter="submitProblem">
+            <br/>
+            <button class="my-3" @click="submitProblem">
+            <span class='btn-animate'>제출</span></button>
+
+      </div>
+
+
+
+
+          <div class="buttons">
+            <button v-if="!start" @click="threecountDown">
+            <span class='btn-animate'>Start</span></button>
+          </div>
+        </div>
+      </div>
     </div>
+  <!-- </div> -->
+</div>
+
 </template>
 
 <script>
-
-import { mapActions } from 'vuex';
+import axios from 'axios'
+import { mapGetters } from 'vuex'
 import NavBar from '@/components/NavBar.vue';
 
-    export default {
-      data(){
-        return{
-        questions: ['사과','바나나','호랑이','원숭이','돼지']
-        } 
-      },
-        components: {
-    NavBar
+
+export default {
+  
+  name : 'DictationView',
+  data(){
+  return{
+    idx : 0,
+    start: false,
+    cnt : false,
+    submitAnswer : false,
+    isFinal : false,
+    threecount : 3,
+    difficulty : 1,
+    speed : 1,
+    answercnt : 0,
+    answer : '',
+    input : '',
+    questions: [],
+    question : {},
+    finalqustions : [],
+    contents : {
+       level: [
+          { text: '1', value: 1 },
+          { text: '2', value: 2 },
+          { text: '3', value: 3 },
+          { text: '4', value: 4 },
+          { text: '5', value: 5 },        
+        ],
+        speeds: [
+          { text: '0.5배속', value: 0.5 },
+          { text: '0.7배속', value: 0.7 },
+          { text: '1배속', value: 1 },
+          { text: '1.5배속', value: 1.5 },
+          { text: '2배속', value: 2 },
+          { text: '5배속', value: 5 },        
+        ],
+    },
+  }
 },
-        methods: {
-         startSpeechToTxt() {
-        {
-          for(let question of this.questions){
-            for (var i = 0; i < 2; i++ ){
-            let utterance = new SpeechSynthesisUtterance(question)
-            utterance.rate = 0.8
-            window.speechSynthesis.speak(utterance)
-            setTimeout({}, 2000);
-
-            }
-          }
-        }  
-        
-    }, 
+  computed:{
+    ...mapGetters(['authHeader'])
+    },
+  components: {
+    NavBar,
+    },
+  methods: {
+    repeat(sentence){
+       let utterance = new SpeechSynthesisUtterance(sentence)
+          utterance.rate = 1
+          window.speechSynthesis.speak(utterance)
           
-
-        }
+    },
+    startSpeechToTxt(speed) {
+    {
+          let utterance = new SpeechSynthesisUtterance(this.finalqustions[this.idx])
+          utterance.rate = speed
+          window.speechSynthesis.speak(utterance)
+          setTimeout(function(){window.speechSynthesis.speak(utterance)},2000)
     }
+  },
+
+    getProblem(){
+      axios({
+        url : `/api/dictations?difficulty=${this.difficulty}`,
+        method : 'get',
+        headers : {'Authorization' :this.authHeader.Authorization}
+      }).then(res=> {
+        console.log(res)
+        this.questions = res.data.data.dictations
+        this.finalqustions = []
+        for(this.question of this.questions){
+          if(this.question.difficulty==this.difficulty){
+            this.finalqustions.push(this.question.sentence)
+          }
+        }
+        
+        }).catch(err => console.err(err))
+      
+    },
+    threecountDown(){
+    this.cnt = true
+    this.start = true
+    this.getProblem()
+    setTimeout(() => {this.threecount = 3}, 1000)
+    setTimeout(() => {this.threecount = 2}, 2000)
+    setTimeout(() => {this.threecount = 1}, 3000)
+    setTimeout(() => {this.threecount = 'START!'}, 3500)
+    setTimeout(() => { this.cnt=false}, 4000)
+    setTimeout(() => { this.startSpeechToTxt(this.speed) }, 4000)
+    this.threecount = 3
+       
+  },
+  
+  submitProblem(){
+    this.submitAnswer=true
+    if(this.input==this.finalqustions[this.idx]){
+      this.answer = '정답!!!!!'
+      this.answercnt ++
+    }
+    else{
+      this.answer = '오답!!!!'
+    }
+  },
+ 
+  nextProblem(){
+    this.submitAnswer = false
+    this.input = ''
+    if(this.idx <4){
+      this.idx ++
+      setTimeout(() => { this.startSpeechToTxt(this.speed) }, 2500)
+    }
+    else{
+      this.finalResult()
+    }
+  },
+
+  finalResult(){
+    this.isFinal = true
+  }
+  }
+}
 </script>
 
 
 <style scoped>
-#dictation-main-title {
+#selectbox{
+  border-width : 3px;
+}
+#dictation-bg{
+  margin: auto;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  opacity: 0.6;
+  content: "";
+  background-image : url("@/assets/1.png");
+  background-size: cover;
+}
+/* #dictation-main-title {
   font-size: 3rem;
   line-height: 1;
+}
+*/
+#dictaion-answer-sheet {
+    border: 1px dotted black;
+    font-size: 2rem;
+    width: 110%;
+}
+/*
+#dictation-main {
+  border-width: 3px;
+  padding-left: 45%;  
+  padding-top: 30%;  
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-self: center;
+  align-items: center;
+  background-color: transparent;
+} */
+
+h1 {
+  font-size: 3em;
+}
+h2 {
+  font-size: 2em;
+}
+.container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2%;
+  
+  
+}
+
+.box {
+  width: 1200px;
+  height: 600px;
+  display: flex;
+  justify-content: center;
+  
+}
+
+.content {
+  /* display: flex; */
+  /* justify-content: space-around; */
+}
+
+.text-box {
+  float: right;
+  flex-flow: column wrap;
+}
+
+.form-label {
+
+}
+
+svg {
+  width: 10%;
+  height: 10%;
+}
+
+b {
+  font-size: 1.2em;
+}
+
+.buttons {
+  margin: 3%;
+  /* float: right; */
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  float: right;
+}
+.button {
+  padding-left: 3%;
+  padding-right: 3%;
+}
+
+.btn-animate {
+  text-decoration: none;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 0px 16px 47px -15px #cda6ee;
+  background: none;
+  transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+  border-radius: 8px;
+  overflow: hidden;
+  outline: none;
+  transform: translateZ(0);
+}
+.btn-animate span {
+  position: relative;
+  z-index: 2;
+}
+.btn-animate:before, .btn-animate:after {
+  border-radius: 8px;
+  content: "";
+  z-index: -1;
+  background: linear-gradient(100deg, #0cccd6, #9e158f);
+  
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.btn-animate:after {
+  
+  background: linear-gradient(100deg, #0cccd6, #9e158f);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transition-delay: 0.1s;
+}
+.btn-animate:hover {
+  box-shadow: 0px 16px 47px -15px  #cda6ee;
+}
+.btn-animate:hover:after {
+  transform: scaleY(1);
+  transform-origin: bottom;
+  transition-delay: 0s;
+}
+.btn-animate:active {
+  transform: translateY(4px) translateZ(0);
+  box-shadow: 0px 8px 10px -6px  #cda6ee;
 }
 </style>

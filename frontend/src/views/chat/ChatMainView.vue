@@ -113,4 +113,5 @@ export default {
   height : 50px;
   padding-top : 2rem
 }
+
 </style>
