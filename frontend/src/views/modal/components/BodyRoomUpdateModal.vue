@@ -197,6 +197,11 @@ computed : {
   /* background-color: transparent; */
 }
 
+
+.modal-title {
+  font-size: 1.2rem;
+}
+
 .modal-content {
   /* padding: 8%; */
 }

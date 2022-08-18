@@ -41,17 +41,19 @@
   </div>
 
   <div id="body-detail-session-body-left" class="col-md-5">
-    <div class="body-quiz-limit-timer" v-if="status && !answerTime">제한 시간 : {{this.$store.state.games.TimerStr}} 초</div> 
+    <div class="body-quiz-limit-timer">제한 시간 : {{this.$store.state.games.TimerStr}} 초</div> 
+     <!-- v-if="status && !answerTime" -->
     <!-- 메인화면 -->
     <div id="body-detail-main-video">
     <!-- col-md-8 -->
       <user-video :stream-manager="mainStreamManager" v-if="!answerTime && status"/>
-      <p v-if="answerTime"> 정답은 : {{answer}}</p>
-      <p v-if="answerTime"> 난이도는 : {{point}}</p>
-      <div class="card-body" v-if="resultTime">
+      <span id="the-answer" v-if="answerTime"> 정답 : {{answer}}</span>
+      &nbsp; &nbsp;
+      <span id="difficulty" v-if="answerTime"> 난이도 : {{point}}</span>
+      <!-- <div class="card-body" >
           <div class="words-detail-rank">
-            <div class="overflow-x-auto">
-              <table class="table table-zebra w-full" id="rank-table">
+            <div class="overflow-x-auto"> -->
+              <table class="table w-full" id="main-video-rank-table" v-if="resultTime">
                 <!-- head -->
                 <thead>
                   <tr>                        
@@ -67,9 +69,9 @@
                   </tr>
                 </tbody>
               </table>
-            </div>
+            <!-- </div>
           </div>
-        </div>
+        </div> -->
     </div>
     <!-- 캠,마이크,나가기,설정 -->
     <div class="cam-buttons">
@@ -90,19 +92,21 @@
       </span>
       <!-- 마이크 -->
       <span class="body-detail-icon-area" @click='muteAudio'>
-        <!-- <MicrophoneIcon style="height: 40; width: 40;"/>							 -->
-        <div v-if='!publisher.stream.audioActive'>
-          <!-- <h1>음소거제거</h1> -->
-          <svg xmlns="http://www.w3.org/2000/svg" style="height: 50%; width: 50%;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-          </svg>                
-        </div>
-        <div v-else>
-          <!-- <h1>음소거</h1> -->
-          <svg xmlns="http://www.w3.org/2000/svg" style="height: 50%; width: 50%;" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd" />
-          </svg>           
-          <!-- <img src="@/assets/microphone2.png" alt="mic"> -->
+        <!-- <MicrophoneIcon style="height: 40; width: 40;"/>	-->
+        <div v-if="!(joker == profile.nickname)">
+          <div v-if='!publisher.stream.audioActive'>
+            <!-- <h1>음소거제거</h1> -->
+            <svg xmlns="http://www.w3.org/2000/svg" style="height: 50%; width: 50%;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+            </svg>                
+          </div>
+          <div v-else>
+            <!-- <h1>음소거</h1> -->
+            <svg xmlns="http://www.w3.org/2000/svg" style="height: 50%; width: 50%;" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd" />
+            </svg>           
+            <!-- <img src="@/assets/microphone2.png" alt="mic"> -->
+          </div>
         </div>
       </span>
       <!-- 나가기 -->
@@ -123,9 +127,10 @@
       </div>
       <div v-else class="body-detail-answer-send">
       
-        <input type="text" name="" id="body-detail-answer-sheet" v-model="temp" size="30"
+        <input type="text" name="" id="body-detail-answer-sheet" v-model="temp" size="26"
         placeholder="답을 입력해주세요." @keyup.enter="sendAnswer" v-if="!isCorrect && !(joker == profile.nickname) &&!answerTime"/>
-        <PaperAirplaneIcon style="height: 35; width: 35;" @click="sendAnswer" v-if="!isCorrect && !(joker == profile.nickname)&&!answerTime"/>
+        <button class="btn btn-active" @click="sendAnswer" v-if="!isCorrect && !(joker == profile.nickname) && !answerTime">submit</button>
+        <!-- <PaperAirplaneIcon style="height: 35; width: 35;" @click="sendAnswer" v-if="!isCorrect && !(joker == profile.nickname)&&!answerTime"/> -->
       </div>
     </div>
     <!-- 정오답 알림 메시지 -->
@@ -160,8 +165,7 @@
             <table class="table w-full" id="rank-table">
               <!-- head -->
               <thead>
-                <tr>
-                  
+                <tr>                  
                   <th>Nickname</th>
                   <th>Score</th>
                 </tr>
@@ -193,10 +197,11 @@
     <div class="body-detail-start-box">
       <div v-if="!status && (profile.nickname == isHost)" class="body-detail-leader-button">
         <button id="start-btn" @click="sendStart"     
-        class="bg-transparent hover:bg-yellow-500 text-yellow-700 font-semibold hover:text-white 
-        py-2 px-2 border border-yellow-500 hover:border-transparent rounded-full">
+        class="bg-yellow-500 hover:bg-transparent text-yellow-700 font-semibold hover:text-white 
+        py-2 px-4 border border-yellow-500 hover:border-transparent rounded-full">
           START
         </button>
+        <!-- <button class="btn btn-primary" id="start-btn" @click="sendStart">START</button> -->
       </div>
       <div v-if="cnt && status" class="body-start-box-timer">
         <h1>{{threecount}}</h1>
@@ -255,7 +260,7 @@ export default {
     // MicrophoneIcon,
     LogoutIcon,
     CogIcon,
-    PaperAirplaneIcon,
+    // PaperAirplaneIcon,
   },
   data () {
     return {
@@ -488,7 +493,7 @@ export default {
     setTimeout(() => {this.threecount = 3}, 1000)
     setTimeout(() => {this.threecount = 2}, 2000)
     setTimeout(() => {this.threecount = 1}, 3000)
-    setTimeout(() => {this.threecount = 'start!'}, 4000)
+    setTimeout(() => {this.threecount = 'START!'}, 4000)
     setTimeout(() => { this.cnt=false, this.answerTime = false,this.trigger=false }, 4500)
     setTimeout(() => { this.timerStart(this.timeLimit) }, 4500)
     this.threecount = 3
@@ -750,7 +755,7 @@ export default {
 <style>
 svg {
   cursor: pointer;
-  color: #ffff;
+  color: black;
   /* width: 40;
   height: 40;  */
 }
@@ -854,7 +859,7 @@ svg {
   justify-content : center;
 	align-items : center;
 
-  color: #ffff;
+  color: black;
 
 }
 
@@ -868,7 +873,7 @@ svg {
   justify-content : center;
 	align-items : center;
 
-  color: #ffff;
+  color: black;
 
 }
 
@@ -961,9 +966,10 @@ video {
 #body-detail-main-video p {
   /* position: absolute; */
   display: inline-block;
+  background: transparent;
   padding-left: 5px;
   padding-right: 5px;
-  font-size: 22px;
+  font-size: 2.6rem;
   color: black;
   font-weight: bold;
   border-radius: 5px;
@@ -990,6 +996,7 @@ user-video {
   border-style: solid;
   border-radius: 10% 10% 10% 10%;
   border-color: white;
+  background-color: black;
 
 }
 
@@ -1001,7 +1008,7 @@ user-video {
 .body-quiz-limit-timer {
   font-size: 1.6rem;
   font-weight: bolder;
-  color: #ffff;
+  color: black;
   /* height: 16%; */
   display: flex;
   justify-content: center;
@@ -1022,6 +1029,21 @@ user-video {
   align-items: center;
   
   background-color: transparent;
+}
+
+#the-answer {
+  font-size: 1.8rem;
+  color: white;
+}
+
+#difficulty {
+  font-size: 1.8rem;
+  color: white;
+
+}
+
+#main-video-rank-table {
+  color: white;
 }
 
 .cam-buttons {
@@ -1069,7 +1091,7 @@ img {
   align-items: center;
 
   font-weight: bolder;
-  color: #ffff;
+  color: black;
 
   
 }
@@ -1078,9 +1100,9 @@ img {
 
 #body-detail-answer-sheet {
     /* border: 1; */
-    border: 1px dotted black;
+    border: 3px solid black;
     font-size: 2rem;
-    width: 90%;
+    width: 88%;
 }
 
 .body-detail-check-answer {
@@ -1173,10 +1195,14 @@ img {
 }
 
 #start-btn {
-  border: 1rem solid;
+  /* border: 1rem solid; */
   font-size: 3rem;
   font-weight: bolder;
   text-align: center;
+  background-color: #f1c4d9;
+  color: #ffff;
+  border: none;
+  
 }
 
 .body-detail-start-box {
@@ -1190,7 +1216,7 @@ img {
    border: 3px solid white;
    border-radius:20px; */
   position: fixed;
-  bottom: 6%;
+  bottom: 2%;
   display:flex;
   justify-content: center;
   align-items: center;
@@ -1211,8 +1237,11 @@ img {
 }
 
 .body-start-box-timer h1 {
+  /* color: rgb(166, 122, 0); */
   color: rgb(166, 122, 0);
   font-size: 3rem;
+  font-weight: 900;
+
 
 }
 

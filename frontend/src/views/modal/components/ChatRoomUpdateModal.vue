@@ -114,6 +114,10 @@ export default {
   border-radius: 6% 6% 6% 6%;
 }
 
+.modal-title {
+  font-size: 1.2rem;
+}
+
 .roomTitle{
   text-shadow: 5px 5px 70px rgba(190, 209, 212, 0.582);
   font-size: 70px;

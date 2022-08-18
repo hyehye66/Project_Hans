@@ -26,6 +26,8 @@
             <label for="exampleFormControlInput1" class="form-label">
               <AcademicCapIcon />           
               <!-- <span>e-mail</span> -->
+              <b>이메일</b>
+              <br>
               <b>{{profile.email}}</b>
             </label>            
           </div>

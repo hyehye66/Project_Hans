@@ -172,8 +172,12 @@ computed : {...mapGetters(['authHeader','profile'])}
   border-radius: 6% 6% 6% 6%; */
 }
 
+.modal-title {
+  font-size: 1.2rem;
+}
+
 .title-input {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
 }
 
 .roomTitle{

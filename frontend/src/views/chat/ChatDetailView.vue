@@ -20,7 +20,7 @@
             <div class="chat-detail-total-time">
             <!--  h-30 w-40 p-2 border-2 border-gray-400 bg-gray-200 -->
             <!-- <div class="h-full w-full bg-gray-400"> -->
-                <h1>총 진행시간</h1>
+                <h1></h1>
             </div>
         </div>
 
@@ -99,7 +99,8 @@
           </div>
           <div class="my-chat-input">
               <input v-model="myChat" type="text" @keyup.enter="startChatting"  class="my-chatting"/>
-              <PaperAirplaneIcon style="height: 35; width: 35;" @click="startChatting" />
+              <button class="btn btn-active" @click="startChatting">submit</button>
+              <!-- <PaperAirplaneIcon style="height: 35; width: 35;" @click="startChatting" /> -->
           </div>            
         </div>
 
@@ -144,7 +145,7 @@ export default {
     // MicrophoneIcon,
     LogoutIcon,
     CogIcon,
-    PaperAirplaneIcon,
+    // PaperAirplaneIcon,
   },
   data () {
     return {
@@ -315,7 +316,7 @@ export default {
 /* scoped 금물 */
 svg {
   cursor: pointer;
-  color: #ffff;
+  color: black;
   /* width: 40;
   height: 40;  */
 }
@@ -344,7 +345,7 @@ svg {
   opacity: 0.6;
   content: "";
   /* background: url("@/assets/15.png"); */
-  background-image : url("@/assets/conversation-room-bg2.jpg");
+  background-image : url("@/assets/conversation-room-bg3.png");
   background-size: cover;
   
 }
@@ -418,7 +419,7 @@ svg {
   justify-content : center;
 	align-items : center;
 
-  color: #ffff;
+  color: black;
 
 }
 
@@ -432,7 +433,7 @@ svg {
   justify-content : center;
 	align-items : center;
 
-  color: #ffff;
+  color: black;
 
 }
 
@@ -659,6 +660,7 @@ img {
 .my-chat-input {
   /* border: 1; */
   /* border: 1px dotted black; */
+  /* border: 3px solid black; */
   border: none;
   font-size: 1.6rem;
   /* width: 90%; */
@@ -672,7 +674,7 @@ img {
 }
 
 .my-chatting {
-  width: 80%;
+  width: 70%;
 }
 
 .chat-detail-chat-series {
