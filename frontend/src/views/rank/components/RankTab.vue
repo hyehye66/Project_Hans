@@ -37,10 +37,10 @@
                   <thead>
                     <tr>
                       <!-- <th></th> -->
-                      <th>순위</th>
-                      <th>닉네임</th>
-                      <th>점수</th>
-                      <th>티어</th>
+                      <th style="font-size: 1.1rem">순위</th>
+                      <th style="font-size: 1.1rem">닉네임</th>
+                      <th style="font-size: 1.1rem">점수</th>
+                      <th style="font-size: 1.1rem">티어</th>
                     </tr>
                   </thead>
                   <tbody v-if="!this.$store.state.ranks.isSearch">
@@ -338,5 +338,7 @@ words-search-bar {
   color: #f16b48;
 
 }
+
+
 
 </style>

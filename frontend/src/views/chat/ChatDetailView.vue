@@ -79,8 +79,8 @@
         </div>
 
         <div class="chat-detail-session-right col-md-4">
-          <div class="chat-box">
-            <div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-offset="0" class="scrollspy-example" tabindex="0">
+          <div id="chat-box">
+            <!-- <div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-offset="0" class="scrollspy-example" tabindex="0"> -->
               <!-- <h4 id="scrollspyHeading1">First heading</h4>
               <p>...</p>
               <h4 id="scrollspyHeading2">Second heading</h4>
@@ -92,10 +92,14 @@
               <h4 id="scrollspyHeading5">Fifth heading</h4>
               <p>...</p> -->
 
-              <ul v-for="idx in chattingList" :key="idx">
+            <!-- <div v-scroll:#chat-box="handleScroll"> -->
+
+              <ul v-for="idx in chattingList" :key="idx" v-chat-scroll>
                 <li class="one-chat">{{idx}}</li>
               </ul>
-            </div>                
+            <!-- </div> -->
+            <!-- </div> -->
+
           </div>
           <div class="my-chat-input">
               <input v-model="myChat" type="text" @keyup.enter="startChatting"  class="my-chatting"/>
@@ -131,6 +135,11 @@ import axios from 'axios'
 import { mapGetters } from 'vuex';
 import { VideoCameraIcon, MicrophoneIcon, LogoutIcon, CogIcon, PaperAirplaneIcon } from '@heroicons/vue/outline';
 import ChatRoomUpdateModal from '@/views/modal/components/ChatRoomUpdateModal.vue'
+// import VueChatScroll from 'vue-chat-scroll';
+
+// Vue.use(VueChatScroll);
+
+
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
@@ -158,11 +167,15 @@ export default {
         myUserName: '영택임' + Math.floor(Math.random() * 100),
         myChat : '',
         chattingList : [],
+        scrollPostion : 0,
 
         open : false,
         isHost : this.$route.params.host,
     }
   },
+  // props:{
+  //      session: Object,
+  //   },
   
   created(){
     this.joinSession(),
@@ -305,10 +318,32 @@ export default {
       },    
     isOpen (){
         return this.open = !this.open
+    },
+    handleScroll(e){
+			this.scrollPostion = e.target.scrollTop;
+
+			if(this.scrollPosition > 100){
+				console.log("UP")
+			} else {
+				console.log("DOWN")
+			}
+
+		},
+    
+  },
+  watch: {
+      chat() {
+         setTimeout(() => {
+         var chatDiv = document.getElementById("chat-box");
+         chatDiv.scrollTo({
+            // document.body.scrollTop = document.body.scrollHeight;
+            top: chatDiv.scrollHeight - chatDiv.clientHeight,
+            behavior: 'smooth'
+         })
+         }, 50);
       },
-        
-        
-  }} 
+   },
+} 
 
 </script>
 
@@ -693,7 +728,7 @@ img {
 } */
 
 
-.chat-box {
+#chat-box {
   margin-top: 8%;
   margin-left: 6%;
   margin-right: 6%;
@@ -708,31 +743,45 @@ img {
   color:white;
  
 }
-.chat-box::-webkit-scrollbar {
+#chat-box::-webkit-scrollbar {
   width: 8px; 
   height: 8px;
  
 }
-.chat-box::-webkit-scrollbar-track {
+#chat-box::-webkit-scrollbar-track {
    background: #3f3150;
    border-radius: 20px;
 }
-.chat-box::-webkit-scrollbar-corner {
+#chat-box::-webkit-scrollbar-corner {
    background: #3f3150;
    border-radius: 20px;
   
 }
-.chat-box::-webkit-scrollbar-thumb {
+#chat-box::-webkit-scrollbar-thumb {
    background:  #b0a2c8;
    border-radius: 20px;
 }
-.chat-box::-webkit-scrollbar-button {
+#chat-box::-webkit-scrollbar-button {
   background-color: #dccbe0;
   border-radius: 20px;
 }
 
 .one-chat {
   font-size: 1.2rem;
+
+  /* position: relative;
+   float: right;
+   display: block;
+   color: #fff;
+   text-align: right;
+   background: linear-gradient(120deg, #df80bf, #56136b);
+   border-radius: 10px 10px 0 10px;
+   margin-bottom:10px;
+   margin-left:30px;
+   margin-right: 10px;
+   padding:5px; */
+   /* 한줄씩 나오는거 */
+   clear: both;
 }
 
 
