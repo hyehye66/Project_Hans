@@ -51,8 +51,8 @@
       &nbsp; &nbsp;
       <span id="difficulty" v-if="answerTime"> 난이도 : {{point}}</span>
       <!-- <div class="card-body" >
-          <div class="words-detail-rank">
-            <div class="overflow-x-auto"> -->
+          <div class="words-detail-rank"> -->
+            <!-- <div class="overflow-x-auto"> -->
               <table class="table w-full" id="main-video-rank-table" v-if="resultTime">
                 <!-- head -->
                 <thead>
@@ -69,8 +69,8 @@
                   </tr>
                 </tbody>
               </table>
-            <!-- </div>
-          </div>
+            <!-- </div> -->
+          <!-- </div>
         </div> -->
     </div>
     <!-- 캠,마이크,나가기,설정 -->
