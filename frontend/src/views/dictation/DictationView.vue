@@ -1,19 +1,15 @@
 <template>
     <NavBar />
-       
     <div class="container">
-    
-      <!-- <div id="dictation-bg"> -->
         <div class="box relative flex flex-col min-w-0 break-words w-full  shadow-lg bg-white rounded"> 
            <svg style="cursor: pointer" @click="this.$router.go()" id="dictation-Leavebutton"  fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z"/>
-          
         </svg> 
       <div class="px-4 py-5 flex-auto" style="width: 100%;">
         <div class="content tab-space" >
           <h1>받아쓰기</h1>
           <br>
-          
+        
 
         <div>
         

@@ -48,16 +48,6 @@ const routes = [
     component :() => import('@/views/words/WordsDetailView.vue'),
   },
   {
-    path : '/song',
-    name : 'SongMainView',
-    component :() => import('@/views/song/SongMainView.vue'),
-  },
-  {
-    path : '/song/detail',
-    name : 'SongDetailView',
-    component :() => import('@/views/song/SongDetailView.vue'),
-  },
-  {
     path : '/body',
     name : 'BodyMainView',
     component :() => import('@/views/body/BodyMainView.vue'),

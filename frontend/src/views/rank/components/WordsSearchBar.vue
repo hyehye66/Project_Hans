@@ -24,30 +24,12 @@
       </div>
     </div>
 
-    <!-- modeSequence 부분 확인요망 -->
-    <!-- 기존 modeSequence와 받아온 데이터의 modeSequence 비교 -->
-    <!-- this.modeSequece === resultData.mode.modeSequence -->
-    <!-- :modeSequece === resultData.mode.modeSequence -->
-
-    <!-- <div class="nickname-rank" v-if="this.$store.state.ranks.searchFinish===true && rankings.mode.modeSequence === this.modeSequence"> -->
-      <!-- <search-result :rank="rank" />등
-      <search-result :nickname="resultData.nickname" />
-      <search-result :score="resultData.score" />
-      <search-result :tier="resultData.tier" />                 -->
-      
-      <!-- <p>등수 : {{this.resultData.rank}}</p>
-      <p>닉네임 : {{this.resultData.nickname}}</p>
-      <p>점수 : {{this.resultData.score}}</p>
-      <p>티어 : {{this.resultData.tier}}</p> -->
-      
-    <!-- </div> -->
 
   </div>
 </template>
 
 <script>
-// import SearchResult from '@/views/rank/components/SearchResult.vue'
-// import axios from 'axios'
+
 import {mapGetters, mapActions, mapState} from 'vuex'
 
 export default {
@@ -74,53 +56,7 @@ export default {
     ...mapActions(['searchStart']),
   },
 
-    // searchStart () {
-    //   axios ( {
-    //       url: `/api/rankings/search?nickname=${this.searchNickname}&modeSequence=${this.modeSequence}`,
-    //       headers: this.authHeader,
-    //       method: "get",
-    //       data: {
-    //         nickname: this.searchNickname,
-    //         modeSequence: this.modeSequence,
-    //       },
-    //     },
-    //   ).then(res => {        
-    //     this.resultData = res.data.data
-    //     this.searchFinish = true
-    //     this.searchNickname = ''
-    //     this.status = res.data.status
-    //     this.$store.state.ranks.isSearch = true
-    //   }).catch(err => console.error(err))
-
-
-
-      // if (this.searchNickname == '') {
-      //   alert('존재하지 않는 닉네임입니다.')
-      // } else {        
-      //   axios ( {
-      //     url: `/api/rankings/search?nickname=${this.nickname}&id=${this.modeSequence}`,
-      //     headers: this.authHeader,
-      //     method: "get",
-      //     data: {
-      //       searchNickname: this.searchNickname,
-      //       modeSequence: this.modeSequence,
-      //     },
-      //   },
-      // ).then(res => {        
-      //   console.log(res.data.data)
-      //   this.resultData = res.data.data
-      //   this.searchFinish = true
-      //   this.searchNickname = ''
-
-      // }).catch(err => console.error(this.authHeader))
-
-      // }      
-  //   },
-  // },
-
-  // mounted () {
-  //   this.searchStart()
-  // },
+    
   computed: {
     ...mapGetters(["authHeader"]),
     // 닉네임 갱신 함수

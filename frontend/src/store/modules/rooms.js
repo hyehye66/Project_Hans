@@ -31,28 +31,72 @@ export default {
       }
     },
 
-    searchRoomTitle({state, getters},{title, mode}){
+    searchRoomTitle({state, getters, dispatch},{title, mode}){
       axios ( {
           url: `/api/${mode}/rooms/search-title?title=${title}`,
-          headers: getters.authHeader,
+          headers: {Authorization : getters.authHeader.Authorization},
           method: "get",
         })
       .then(res => {   
         state.isSearch = true
         state.searchRooms = ''
         state.searchRooms = res.data.data.listRooms.content
-      }).catch(err => console.log('실패!!!!'))
+      }).catch(err => {
+        if (err.response.data.status === 'sucess'){
+          console.log('성공!!!!!!')
+        }
+        else{
+          console.log('실패!!!!!!!')
+          axios({
+            url: `/api/${mode}/rooms/search-title?title=${title}`,
+            method: 'get',
+            headers: getters.authHeader,
+            
+            
+          }).then(res =>{
+            state.isSearch = true
+            state.searchRooms = ''
+            state.searchRooms = res.data.data.listRooms.content
+
+            const accessToken = res.headers.authorization
+            dispatch('reissuanceToken', accessToken)
+          }).catch(err => {
+            console.log(err.response.data)
+          })
+        }
+      })
     },
-    searchRoomNickname({state, getters}, {nickname, mode}){
+    searchRoomNickname({state, getters, dispatch}, {nickname, mode}){
       axios ( {
         url: `/api/${mode}/rooms/search-nickname?nickname=${nickname}`,
-        headers: getters.authHeader,
+        headers: {Authorization : getters.authHeader.Authorization},
         method: "get",
       })
     .then(res => {   
       state.isSearch = true     
       state.searchRooms = res.data.data.listRooms.content
-    }).catch(err => console.log('실패!!!!'))
+    }).catch(err =>{
+      if (err.response.data.status === 'sucess'){
+        console.log('성공!!!!!!')
+      }
+      else{
+        console.log('실패!!!!!!!')
+        axios({
+          url: `/api/${mode}/rooms/search-nickname?nickname=${nickname}`,
+          method: 'get',
+          headers: getters.authHeader,
+          
+        }).then(res =>{
+          state.isSearch = true     
+          state.searchRooms = res.data.data.listRooms.content
+          
+          const accessToken = res.headers.authorization
+          dispatch('reissuanceToken', accessToken)
+        }).catch(err => {
+          console.log(err.response.data)
+        })
+      }
+    })
     },
 
     getSession({state, dispatch, getters},{mode, page}){
@@ -70,9 +114,32 @@ export default {
         }
           })
           .catch(err => {
-          console.log(err.status)
-          console.log(err,'error here')})
+            if (err.response.data.status === 'sucess'){
+              console.log('성공!!!!!!')
+            }
+            else{
+              console.log('실패!!!!!!!')
+              axios({
+                url : `/api/${mode}/rooms?page=${page}`,
+                method: 'get',
+                headers: getters.authHeader,
+                
+              }).then(res =>{
+                state.rooms = res.data.data.listRooms.content, state.totalRoomPage =res.data.data.listRooms.totalPages
+                if(page==0){
+                  dispatch('getRange',state.totalRoomPage)
+              }
+  
+                const accessToken = res.headers.authorization
+                dispatch('reissuanceToken', accessToken)
+              }).catch(err => {
+                console.log(err.response.data)
+              })
+            }
+          })
     },
+
+
     getRange({state}, n){
       state.range = []
       for(let i =0 ; i < n; i++ ){

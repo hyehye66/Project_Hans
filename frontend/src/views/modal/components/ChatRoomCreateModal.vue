@@ -73,16 +73,41 @@ export default {
         title : this.sessionName,
         restrict_num : 6
        },
-       headers : this.authHeader}, 
+      headers: {Authorization : this.$store.getters.authHeader.Authorization}}, 
     ).
     then(res => {
 
-      console.log(res)
       this.$router.push({ name: 'ChatDetailView', params: { mode : this.mode, sessionName : this.sessionName, token : res.data.data.token, roomSequence : res.data.data.roomSequence,restrict_num : res.data.data.restrictNum}})
       
 
     })
-    .catch(err => console.log(err,1234))
+     .catch(err => {
+          console.log('에러발생!')
+          if (err.response.data.status === 'sucess'){
+            console.log('성공!!!!!!')
+          }
+          else{
+            console.log('실패!!!!!!!')
+            axios({
+            url : `api/conversation/rooms`,
+            method : 'post',
+            data : {
+            title : this.sessionName,
+            restrict_num : 6
+            },
+              headers: this.$store.getters.authHeader,
+              
+            }).then(res =>{
+              this.$router.push({ name: 'ChatDetailView', params: { mode : this.mode, sessionName : this.sessionName, token : res.data.data.token, roomSequence : res.data.data.roomSequence,restrict_num : res.data.data.restrictNum}})
+
+              const accessToken = res.headers.authorization
+              this.$store.actions.member.reissuanceToken(accessToken)
+            }).catch(err => {
+              console.log(err.response.data)
+            })
+          }
+
+        })
         
     
   },

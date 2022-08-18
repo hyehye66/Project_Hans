@@ -102,7 +102,7 @@ export default {
         axios({
             url : `/api/word-game/rooms/random`,
             method : 'post',
-            headers : this.authHeader})
+           headers: {Authorization : this.$store.getters.authHeader.Authorization}})
         .then(res => {
           console.log(res.data.data)
         this.$router.push({ name: 'WordsDetailView', 
@@ -111,7 +111,33 @@ export default {
         roomSequence : res.data.data.room.roomSequence,
         problemIdx : res.data.data.room.totalQuestion}})})
 
-        .catch(err => alert('입장 가능한 방이 없습니다!'))
+         .catch(err => {
+          alert('입장 가능한 방이 없습니다!')
+          if (err.response.data.status === 'sucess'){
+            console.log('성공!!!!!!')
+          }
+          else{
+            console.log('실패!!!!!!!')
+            axios({
+              url : `/api/word-game/rooms/random`,
+              method : 'post',
+              headers: this.$store.getters.authHeader,
+              
+            }).then(res =>{
+              this.$router.push({ name: 'WordsDetailView', 
+        params: { mode : res.data.data.room.mode.modeSequence, 
+        sessionName : res.data.data.room.title, token : res.data.data.token, 
+        roomSequence : res.data.data.room.roomSequence,
+        problemIdx : res.data.data.room.totalQuestion}})
+
+              const accessToken = res.headers.authorization
+              this.$store.actions.member.reissuanceToken(accessToken)
+            }).catch(err => {
+              console.log(err.response.data)
+            })
+          }
+
+        })
       }
     },
     isHowtowordOpen(){

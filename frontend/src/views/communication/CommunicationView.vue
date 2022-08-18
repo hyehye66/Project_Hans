@@ -9,7 +9,6 @@
 </template>
 
 <script>
-// import CommunicationRecord from './components/CommunicationRecord.vue'
 import CommunicationTab from './components/CommunicationTab.vue'
 import NavBar from "@/components/NavBar.vue";
 import axios from 'axios'
@@ -19,7 +18,6 @@ import { mapGetters } from 'vuex'
 export default {
   name : 'CommunicationView',
   components : {
-    // CommunicationRecord,
     CommunicationTab,
     NavBar,
   },
@@ -34,11 +32,33 @@ export default {
         {
         url : '/api/situations',
         method : 'get',
-        headers : this.authHeader
+        headers: {Authorization : this.$store.getters.authHeader.Authorization},
         }
       )
       .then(res => {this.situationSentence = res.data.data.situations, console.log(this.situationSentence)})
-      .catch(err => console.log(err))
+       .catch(err => {
+          if (err.response.data.status === 'sucess'){
+            console.log('성공!!!!!!')
+          }
+          else{
+            console.log('실패!!!!!!!')
+            axios({
+              url : '/api/situations',
+              method : 'get',
+              headers: this.$store.getters.authHeader,
+              
+            }).then(res =>{
+             this.situationSentence = res.data.data.situations
+             
+
+              const accessToken = res.headers.authorization
+              this.$store.actions.member.reissuanceToken(accessToken)
+            }).catch(err => {
+              console.log(err.response.data)
+            })
+          }
+
+        })
 
     }
   },

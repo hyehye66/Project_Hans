@@ -23,20 +23,13 @@
       </div>
     </div>
 
-    <!-- modeSequence 부분 확인요망 -->
-    <!-- 기존 modeSequence와 받아온 데이터의 modeSequence 비교 -->
-    <!-- <div class="search-result" v-if="searchFinish===true && modeSequence === this.modeSequence">
-      <search-result :nickname="resultData.nickname" />
-      <search-result :score="resultData.score" />
-      <search-result :tier="resultData.tier" />     
-    </div> -->
+
 
   </div>
 </template>
 
 <script>
-import SearchResult from '@/views/rank/components/SearchResult.vue'
-import axios from 'axios'
+
 import {mapGetters, mapActions} from 'vuex'
 
 export default {
@@ -60,53 +53,10 @@ export default {
   methods: {
     ...mapActions(['searchStart']),
 
-    // searchStart () {
-    //   console.log(123)
-    //   axios ( {
-    //       url: `/api/rankings/search?nickname=${this.searchNickname}&modeSequence=${this.modeSequence}`,
-    //       headers: this.authHeader,
-    //       method: "get",
-    //       data: {
-    //         searchNickname: this.searchNickname,
-    //         modeSequence: this.modeSequence,
-    //       },
-    //     },
-    //   ).then(res => {        
-    //     console.log(res.data.data)
-    //     this.resultData = res.data.data
-    //     this.searchFinish = true
-    //     this.searchNickname = ''
-
-    //   }).catch(err => console.error(this.authHeader))
-
-
-      // if (this.searchNickname == '') {
-      //   alert('존재하지 않는 닉네임입니다.')
-      // } else {        
-      //   axios ( {
-      //     url: `/api/rankings/search?nickname=${this.nickname}&id=${this.modeSequence}`,
-      //     headers: this.authHeader,
-      //     method: "get",
-      //     data: {
-      //       searchNickname: this.searchNickname,
-      //       modeSequence: this.modeSequence,
-      //     },
-      //   },
-      // ).then(res => {        
-      //   console.log(res.data.data)
-      //   this.resultData = res.data.data
-      //   this.searchFinish = true
-      //   this.searchNickname = ''
-
-      // }).catch(err => console.error(this.authHeader))
-
-      // }      
-    // },
+    
 
   },
-  // mounted () {
-  //   this.searchStart()
-  // },
+
   computed: {
     ...mapGetters(["authHeader"])
   }
