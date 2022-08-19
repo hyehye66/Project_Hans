@@ -186,8 +186,8 @@ computed : {...mapGetters(['authHeader','profile'])}
   padding: 2%;
   position: absolute;
   display : flex; 
-  /* top: 16%; */
-  bottom: 6%;
+  top: 10%;
+  /* bottom: 16%; */
   left: 50%;
   width: 300px;
   margin-left: -150px; 
@@ -207,6 +207,7 @@ computed : {...mapGetters(['authHeader','profile'])}
 
 .title-input {
   font-size: 1.2rem;
+  border: 0.1rem solid grey;
 }
 
 .roomTitle{

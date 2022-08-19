@@ -356,8 +356,7 @@ export default {
          chatDiv.scrollTo({
             // document.body.scrollTop = document.body.scrollHeight;
             // top: chatDiv.scrollHeight,
-            // top: chatDiv.scrollHeight - chatDiv.clientHeight,
-            bottom: chatDiv.scrollHeight - chatDiv.clientHeight,
+            top: chatDiv.scrollHeight - chatDiv.clientHeight,
             behavior: 'smooth'
          })
          }, 50);
@@ -760,7 +759,7 @@ img {
   align-items: center;
   height: 70vh;
   margin-right: 2.2vw;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.6);
   color:white;
  
 }
@@ -789,6 +788,7 @@ img {
 
 .one-chat {
   font-size: 1.2rem;
+  margin: 1%;
 
   /* position: relative;
    float: right;

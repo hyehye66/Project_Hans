@@ -10,7 +10,7 @@
       <div class="modal-body">
         <div class="row_box">
           <h6>방 이름 : </h6>
-          <input type="text" v-model="contents.roomTitle" placeholder="방 이름을 입력해주세요" />
+          <input type="text" class="title-input" v-model="contents.roomTitle" placeholder="방 이름을 입력해주세요" />
           <p v-if="!contents.roomTitle" style="color:red; font-size:13px; font-style:italic; margin-top:10px;">방 이름을 입력해주세요.</p>
         </div>
         <br>
@@ -129,7 +129,7 @@ export default {
 .modal { 
   position: absolute;
   display : flex; 
-  top: 20%;
+  top: 8%;
   left: 50%;
   width: 300px;
   margin-left: -150px; 
@@ -137,12 +137,18 @@ export default {
   z-index: 90;
   visibility: visible;
   opacity: 100;
-  border: 0.05rem solid rgb(76,76,76,0.4);
-  border-radius: 6% 6% 6% 6%;
+  /* border: 0.05rem solid rgb(76,76,76,0.4);
+  border-radius: 6% 6% 6% 6%; */
+  background-color: transparent;
 }
 
 .modal-title {
   font-size: 1.2rem;
+}
+
+.title-input {
+  font-size: 1.3rem;
+  border: 0.1rem solid grey;
 }
 
 .roomTitle{
@@ -165,8 +171,8 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content:space-around;
-  padding: 10px 0 10px 0;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  /* padding: 10px 0 10px 0;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); */
 }
 .row_box {
   width: 26vw;

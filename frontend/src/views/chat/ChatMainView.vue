@@ -114,4 +114,8 @@ export default {
   padding-top : 2rem
 }
 
+.form-control {
+  
+}
+
 </style>
