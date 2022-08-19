@@ -7,6 +7,44 @@
   </div>
   <div class="carousel-inner" id="inner" style="width:auto height:auto">
     <div class="carousel-item active">
+      <img src="@/assets/8.png" class="d-block w-100" alt="...">
+      <!-- style="max-width: 100%; height: auto;" -->
+      <div class="carousel-caption-two text-white d-none d-md-block">
+        <h5 class="c2-t1 font-black">How do you say this in Korean?</h5>
+        <br>
+        <p class="c2-t2 font-black">적재적소 표현이 궁금하다면</p>
+        <p class="c2-t3 font-black">
+          <button type="button" 
+          class="bg-newBlue1 hover:bg-newGrey2 text-white font-bold py-2 px-4 rounded-full" 
+          id="start">
+          <router-link :to="{name:'CommunicationView'}" >학습하러 가기</router-link>            
+          </button>
+        </p>
+
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="@/assets/carousel4.png" class="d-block w-100" alt="...">
+      <div class="carousel-caption-three text-black d-none d-md-block">
+        <h5 class="c3-t1 font-black">a More Effective Way to Improve Your Vocabulary</h5>
+        <br>
+        <p class="c3-t2 font-black">아름다운 한국어 낱말을 배울 수 있는</p>
+        <span class="c3-t3 font-black">          
+          <button type="button" 
+          class="carousel3-btn bg-newBlue1 hover:bg-newBlue1 text-white font-bold py-2 px-6 rounded-full" 
+          id="start">
+          <router-link :to="{name:'WordsMainView'}" >낱말퀴즈</router-link>            
+          </button>
+        </span>
+
+      </div>
+      <!-- <div class="carousel-caption d-none d-md-block">
+        <h5>Third slide label</h5>
+        <p>Some representative placeholder content for the third slide.</p>
+      </div> -->
+    </div>
+
+    <div class="carousel-item">
       <img src="@/assets/home3.png" class="d-block w-100"  alt="...">
       <!-- <p align="right">
         <img src="@/assets/home.png" alt="..."> -->
@@ -29,48 +67,15 @@
         <br>          
         <button type="button" 
         class="bg-newBlue1 hover:bg-newGrey2 text-white font-bold py-2 px-5 rounded-full" 
-        id="start">
+        id="login-start">
         <router-link :to="{name: 'LoginView'}">Start</router-link>          
         </button>
       </div>      
     </div>
-    <div class="carousel-item">
-      <img src="@/assets/8.png" class="d-block w-100" alt="...">
-      <!-- style="max-width: 100%; height: auto;" -->
-      <div class="carousel-caption-two text-white d-none d-md-block">
-        <h5 class="c2-t1 font-black">How do you say this in Korean?</h5>
-        <br>
-        <p class="c2-t2 font-black">적재적소 표현이 궁금하다면</p>
-        <p class="c2-t3 font-black">
-          <button type="button" 
-          class="bg-newBlue1 hover:bg-newGrey2 text-white font-bold py-2 px-4 rounded-full" 
-          id="start">
-          <router-link :to="{name:'CommunicationView'}" >학습하러 가기</router-link>            
-          </button>
-        </p>
 
-      </div>
-    </div>
-    <div class="carousel-item">
-      <img src="@/assets/carousel4.png" class="d-block w-100" alt="...">
-      <div class="carousel-caption-three text-black d-none d-md-block">
-        <h5 class="c3-t1 font-black">a More Effective Way to Improve Your Vocabulary</h5>
-        <br>
-        <p class="c3-t2 font-black">한국 문화를 엿볼 수 있는</p>
-        <span class="c3-t3 font-black">          
-          <button type="button" 
-          class="carousel3-btn bg-newBlue1 hover:bg-newBlue1 text-white font-bold py-2 px-6 rounded-full" 
-          id="start">
-          <router-link :to="{name:'WordsMainView'}" >낱말퀴즈</router-link>            
-          </button>
-        </span>
 
-      </div>
-      <!-- <div class="carousel-caption d-none d-md-block">
-        <h5>Third slide label</h5>
-        <p>Some representative placeholder content for the third slide.</p>
-      </div> -->
-    </div>
+
+
   </div>
   <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -165,8 +170,8 @@ img {
 
 .carousel-caption {
   /* padding: 10px 20px; */
-  width: 35%;
-  height: 65%;
+  width: 30vw;
+  height: 65vh;
   /* background-color: #FFEEBC; */
   text-align: center;
   position: absolute;
@@ -177,8 +182,8 @@ img {
 
 .carousel-caption-two {
   /* padding: 10px 20px; */
-  width: 35%;
-  height: 65%;
+  width: 35vw;
+  height: 68vh;
   /* background-color: #FFEEBC; */
   text-align: center;
   position: absolute;
@@ -191,7 +196,7 @@ img {
 .carousel-caption-three {
   /* padding: 10px 20px; */
   width: 60%;
-  height: 65%;
+  height: 66%;
   /* background-color: #FFEEBC; */
   text-align: center;
   position: absolute;
@@ -218,9 +223,30 @@ img {
 }
 .c1-t3 {
   font-size: 2rem;
+  /* padding-left: 11%; */
+  width: 90%;
+  text-align: center;
 }
+
+.carousel-caption {
+  display: flex;
+  justify-content: center;
+  flex-flow: column;
+  align-items: center;
+}
+
 #start {
   font-size: 2rem;
+}
+#login-start {
+  /* padding-left: 26%; */
+  font-size: 2rem;
+  width: 10vw;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  margin-bottom: 8%;
+
 }
 
 .c2-t1 {
