@@ -151,6 +151,7 @@ computed : {...mapGetters(['authHeader','profile'])}
 
 .title-input {
   font-size: 1.3rem;
+  border: 0.1rem solid grey;
 }
 
 .modal_content {

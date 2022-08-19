@@ -126,6 +126,16 @@ export default {
 </script>
 
 <style scoped>
+.carousel-control-next-icon,
+.carousel-control-prev-icon {
+  width: 3vw;
+  height: 3vw;
+  /* background-color: grey; */
+  /* max-height:21%; 
+  margin-top:21%; */
+  
+}
+
 img {
     height: 100vh;
     width: 100vw;
